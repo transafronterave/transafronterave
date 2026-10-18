@@ -139,6 +139,9 @@ footer h4{color:#fff;margin-bottom:12px}footer li{list-style:none;margin:7px 0}f
 .rcats{gap:10px}.rcats button{min-width:72px;font-size:.74rem}.rcats .cir{width:66px;height:66px;font-size:1.9rem}
 .steps{grid-template-columns:1fr 1fr}.calc{grid-template-columns:1fr}.bens{gap:8px}.ben{padding:10px;font-size:.74rem}
 .fgrid{grid-template-columns:1fr}}
+.fbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0 14px}.fbar select{padding:9px 10px;border:1px solid #d6dae3;border-radius:10px;background:#fff;font:inherit;font-size:.85rem}
+.chk{font-size:.85rem;display:flex;gap:6px;align-items:center}.fcnt{margin-left:auto;color:#6b7280;font-size:.82rem}
+.more{text-align:center;margin:16px 0 4px}.more button{padding:12px 26px;border-radius:999px;border:2px solid #0b3c8a;background:#fff;color:#0b3c8a;font-weight:700;cursor:pointer}
 </style></head><body>
 <div class="promo">🚚 <b>Envíos MRW a toda Venezuela</b> · Compramos por ti en Colombia · Precios finales en USD</div>
 <header class="hdr"><div class="flag"></div>
@@ -181,8 +184,11 @@ footer h4{color:#fff;margin-bottom:12px}footer li{list-style:none;margin:7px 0}f
 </div>
 <section class="sec" id="catalogo"><div class="sh"><h2 id="ctitle">Todos los productos</h2><button id="clr" data-c="">Limpiar filtros</button></div>
 <p class="rate" id="trm"></p>
-<select id="cat" hidden><option value="">Todas las categorías</option></select>
-<div class="grid" id="grid"></div></section>
+<div class="fbar"><select id="cat" aria-label="Categoría"><option value="">Todas las categorías</option></select>
+<select id="sort" aria-label="Ordenar"><option value="">Más relevantes</option><option value="pa">Menor precio</option><option value="pd">Mayor precio</option><option value="dd">Mayor descuento</option></select>
+<select id="pmax" aria-label="Precio"><option value="">Cualquier precio</option><option value="15">Hasta $15</option><option value="30">Hasta $30</option><option value="60">Hasta $60</option><option value="120">Hasta $120</option></select>
+<label class="chk"><input type="checkbox" id="onlyoff"> Solo ofertas</label><span id="cnt" class="fcnt"></span></div>
+<div class="grid" id="grid"></div><div class="more"><button id="more" hidden>Ver más productos</button></div><div id="sent"></div></section>
 <section class="how" id="como"><h2>¿Cómo funciona?</h2><div class="steps">
 <div class="step"><b>1</b>Elige tu producto o pídenos cualquiera de Colombia</div>
 <div class="step"><b>2</b>Paga en USDT, Bolívares o Pesos colombianos</div>
@@ -204,70 +210,56 @@ footer h4{color:#fff;margin-bottom:12px}footer li{list-style:none;margin:7px 0}f
 <script>
 // ===== CONFIGURACIÓN (editar) =====
 const CFG={tasaCOPporUSD:3174.67,fuente:"binance",margen:0.20,whatsapp:"584120886940",mrwCOPporKg:30000};
-// ===== PRODUCTOS (ejemplo) =====
-const P=[
-{n:"Audífonos Bluetooth 1Hora AUT209",c:"Tecnología",cop:19900,antes:99900,kg:0.2,e:"🎧",img:"img/p01.jpg"},
-{n:"Resaltadores Pelikan pastel x6",c:"Papelería",cop:15850,antes:18700,kg:0.1,e:"🖍️",img:"img/p02.jpg"},
-{n:"Colores Prismacolor Junior x36",c:"Papelería",cop:63500,kg:0.4,e:"🎨",img:"img/p03.jpg"},
-{n:"Calculadora de mesa Casio MJ-12VCB",c:"Papelería",cop:54900,kg:0.3,e:"🧮",img:"img/p04.jpg"},
-{n:"Cámara infantil sumergible",c:"Juguetes",cop:79900,antes:89900,kg:0.3,e:"📷",img:"img/p05.jpg"},
-{n:"Secador Remington Keratin Protect",c:"Belleza",cop:35000,antes:78500,kg:0.8,e:"💨",img:"img/p06.jpg"},
-{n:"Secador cepillo Aguacate con iones",c:"Belleza",cop:32000,antes:50000,kg:0.7,e:"💇",img:"img/p07.jpg"},
-{n:"Audífonos inalámbricos M10",c:"Tecnología",cop:25895,antes:51999,kg:0.2,e:"🎧",img:"img/p08.jpg"},
-{n:"Audífonos Ambie",c:"Tecnología",cop:28660,antes:56500,kg:0.2,e:"🎵",img:"img/p09.jpg"},
-{n:"Licuadora Black+Decker 550 W",c:"Electrodomésticos",cop:119000,antes:130000,kg:2.5,e:"🥤",img:"img/p10.jpg"},
-{n:"Audífonos Redmi Buds 6 Play",c:"Tecnología",cop:59900,antes:99900,kg:0.2,e:"🎧",img:"img/p11.jpg"},
-{n:"Plancha Remington Aguacate S9960",c:"Belleza",cop:172900,antes:271000,kg:0.7,e:"✨",img:"img/p12.jpg"},
-{n:"Kit taladro inalámbrico 24V Prtool",c:"Herramientas",cop:89000,antes:149900,kg:2.0,e:"🔩",img:"img/p13.jpg"},
-{n:"Bloques Arma Todo 1000 piezas",c:"Juguetes",cop:69900,antes:84900,kg:1.2,e:"🧱",img:"img/p14.jpg"},
-{n:"Set construcción Spider-Man vs moto",c:"Juguetes",cop:79900,kg:0.4,e:"🕷️",img:"img/p15.jpg"},
-{n:"Kit atornillador 4.8V Black+Decker",c:"Herramientas",cop:89900,kg:1.0,e:"🪛",img:"img/p16.jpg"},
-{n:"Destornilladores de precisión x6",c:"Herramientas",cop:10900,kg:0.2,e:"🔧",img:"img/p17.jpg"},
-{n:"Destornilladores Stanley CushionGrip x2",c:"Herramientas",cop:25900,antes:29900,kg:0.3,e:"🪛",img:"img/p18.jpg"},
-{n:"Set destornilladores 4 piezas",c:"Herramientas",cop:11900,kg:0.3,e:"🔧",img:"img/p19.jpg"},
-{n:"Linterna recargable 80 m",c:"Hogar",cop:59900,kg:0.4,e:"🔦",img:"img/p20.jpg"}];
+// ===== PRODUCTOS: se cargan desde productos.json (generado por scripts/catalogo.py) =====
+let P=[],BYID={};
 const usd=(cop,kg)=>(cop*(1+CFG.margen)+Math.max(1,Math.ceil(kg))*CFG.mrwCOPporKg)/CFG.tasaCOPporUSD;
 const $=id=>document.getElementById(id);
-P.forEach((p,i)=>p.id=i);
-const CATS=[...new Set(P.map(p=>p.c))];
-const ICO={"Tecnología":"🎧","Papelería":"✏️","Juguetes":"🧸","Belleza":"💄","Electrodomésticos":"🔌","Herramientas":"🛠️","Hogar":"🏠"};
-const BG={"Tecnología":"#e6ecff","Papelería":"#fff4cc","Juguetes":"#ffe6ea","Belleza":"#fde8f3","Electrodomésticos":"#e5f6f1","Herramientas":"#fff0dc","Hogar":"#eaf3ff"};
+const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+let CATS=[];
+const ICO={"Tecnología":"🎧","Celulares":"📱","Papelería":"✏️","Juguetes":"🧸","Belleza":"💄","Electrodomésticos":"🔌","Herramientas":"🛠️","Hogar":"🏠","Deportes":"⚽"};
+const BG={"Tecnología":"#e6ecff","Celulares":"#e8f0ff","Papelería":"#fff4cc","Juguetes":"#ffe6ea","Belleza":"#fde8f3","Electrodomésticos":"#e5f6f1","Herramientas":"#fff0dc","Hogar":"#eaf3ff","Deportes":"#e9f8e6"};
 const wa=t=>`https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent(t)}`;
-const esc=s=>s.replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
-CATS.forEach(c=>$("cat").add(new Option(c,c)));
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+function setupCats(){CATS=[...new Set(P.map(p=>p.c))];
+const n=c=>P.filter(p=>p.c==c).length;
+$("cat").innerHTML=`<option value="">Todas las categorías (${P.length})</option>`+CATS.map(c=>`<option value="${c}">${c} (${n(c)})</option>`).join("");
 $("cnav").innerHTML=`<button data-c="" class="on">Todo</button>`+CATS.map(c=>`<button data-c="${c}">${c}</button>`).join("")+`<button data-go="cotiza">Cotiza tu producto</button><button data-go="como">Cómo funciona</button>`;
-$("slst").innerHTML=`<button data-c="">🛍️ Ver todo</button>`+CATS.map(c=>`<button data-c="${c}">${ICO[c]||"📦"} ${c}</button>`).join("");
+$("slst").innerHTML=`<button data-c="">🛍️ Ver todo</button>`+CATS.map(c=>`<button data-c="${c}">${ICO[c]||"📦"} ${c} <small style="color:#9ca3af">${n(c)}</small></button>`).join("");
 $("rcats").innerHTML=CATS.map(c=>`<button data-c="${c}"><span class="cir" style="background:${BG[c]||"#fff"}">${ICO[c]||"📦"}</span>${c}</button>`).join("")+`<button data-go="cotiza"><span class="cir">🧾</span>Cotiza</button>`;
-$("fcats").innerHTML=CATS.map(c=>`<li><a href="#catalogo" data-c="${c}">${c}</a></li>`).join("");
+$("fcats").innerHTML=CATS.map(c=>`<li><a href="#catalogo" data-c="${c}">${c}</a></li>`).join("");}
 function card(p){const v=usd(p.cop,p.kg);const a=p.antes&&p.antes>p.cop?usd(p.antes,p.kg):0;const pct=a?Math.round((1-v/a)*100):0;
-return `<article class="card">${pct>0?`<span class="badge">-${pct}%</span>`:""}<div class="pimg" style="background:${BG[p.c]||"#eef1f7"}">${p.img?`<img src="${p.img}" alt="${esc(p.n)}" loading="lazy" onerror="this.outerHTML='<span>${p.e}</span>'">`:`<span>${p.e}</span>`}</div>
+return `<article class="card">${pct>0?`<span class="badge">-${pct}%</span>`:""}<div class="pimg" style="background:${BG[p.c]||"#eef1f7"}">${p.img?`<img src="${p.img}" alt="${esc(p.n)}" loading="lazy" decoding="async" width="300" height="300" onerror="this.outerHTML='<span>${p.e}</span>'">`:`<span>${p.e}</span>`}</div>
 <div class="pb"><span class="pc">${esc(p.c)}</span><h3 class="pn">${esc(p.n)}</h3><div class="pp"><b class="${pct>0?"":"reg"}">$${v.toFixed(2)}</b>${pct>0?`<s>Antes $${a.toFixed(2)}</s>`:""}</div>
 <span class="ship">🚚 Envío MRW incluido</span><button class="add" data-add="${p.id}">Agregar</button></div></article>`}
 const disc=p=>p.antes?1-p.cop/p.antes:0;
 function rail(id,list){const t=$(id);t.innerHTML=list.map(card).join("");}
+function mix(list,k){const g={};list.forEach(p=>(g[p.c]=g[p.c]||[]).push(p));const out=[];let i=0;while(out.length<k&&Object.values(g).some(a=>a[i])){Object.values(g).forEach(a=>{if(a[i]&&out.length<k)out.push(a[i])});i++}return out}
 function renderHome(){
-rail("best",[0,10,12,5,9,13,15,19,7,11].map(i=>P[i]));
-rail("deals",P.filter(p=>p.antes).sort((a,b)=>disc(b)-disc(a)));
-$("catsecs").innerHTML=CATS.filter(c=>P.filter(p=>p.c==c).length>=3).map(c=>`<section class="sec"><div class="sh"><h2>${ICO[c]||""} ${c}</h2><button data-c="${c}">Ver todo ›</button></div><div class="rail"><div class="track">${P.filter(p=>p.c==c).map(card).join("")}</div></div></section>`).join("");
+rail("best",mix(P.filter(p=>p.top),18));
+rail("deals",P.filter(p=>p.antes&&disc(p)>.05).sort((a,b)=>disc(b)-disc(a)).slice(0,18));
+$("catsecs").innerHTML=CATS.filter(c=>P.filter(p=>p.c==c).length>=3).map(c=>`<section class="sec"><div class="sh"><h2>${ICO[c]||""} ${c}</h2><button data-c="${c}">Ver todo ›</button></div><div class="rail"><div class="track">${P.filter(p=>p.c==c).slice(0,12).map(card).join("")}</div></div></section>`).join("");
 document.querySelectorAll(".rail").forEach(r=>{if(r.querySelector(".arr"))return;const t=r.querySelector(".track");
 r.insertAdjacentHTML("beforeend",`<button class="arr l" aria-label="Anterior">‹</button><button class="arr r" aria-label="Siguiente">›</button>`);
 r.querySelector(".arr.l").onclick=()=>t.scrollBy({left:-t.clientWidth*.8,behavior:"smooth"});r.querySelector(".arr.r").onclick=()=>t.scrollBy({left:t.clientWidth*.8,behavior:"smooth"});});}
-function render(){const q=$("q").value.toLowerCase().trim(),c=$("cat").value;
-const L=P.filter(p=>p.n.toLowerCase().includes(q)&&(!c||p.c==c));
-$("ctitle").textContent=q?`Resultados para “${$("q").value}”`:(c||"Todos los productos");
-$("grid").innerHTML=L.length?L.map(card).join(""):`<div class="empty" style="grid-column:1/-1">No encontramos “${esc(q)}”. ¡Cotízalo abajo y te lo traemos! 👇</div>`;
+const PAGE=24;let L=[],shown=0;
+function render(){const raw=$("q").value.trim(),q=norm(raw).split(/\s+/).filter(Boolean),c=$("cat").value,so=$("sort").value,pm=+$("pmax").value||0,off=$("onlyoff").checked;
+L=P.filter(p=>(!c||p.c==c)&&(!off||disc(p)>.05)&&q.every(w=>p._s.includes(w))&&(!pm||usd(p.cop,p.kg)<=pm));
+if(so=="pa")L.sort((a,b)=>usd(a.cop,a.kg)-usd(b.cop,b.kg));else if(so=="pd")L.sort((a,b)=>usd(b.cop,b.kg)-usd(a.cop,a.kg));else if(so=="dd")L.sort((a,b)=>disc(b)-disc(a));
+$("ctitle").textContent=raw?`Resultados para “${raw}”`:(c||"Todos los productos");$("cnt").textContent=L.length+" productos";
+shown=0;$("grid").innerHTML=L.length?"":`<div class="empty" style="grid-column:1/-1">No encontramos “${esc(raw)}”. ¡Cotízalo abajo y te lo traemos! 👇</div>`;more();
 document.querySelectorAll(".cnav button[data-c]").forEach(b=>b.classList.toggle("on",b.dataset.c==c));}
-function setCat(c){$("cat").value=c;$("q").value="";render();closeAll();$("catalogo").scrollIntoView({behavior:"smooth"});}
+function more(){const n=L.slice(shown,shown+PAGE);$("grid").insertAdjacentHTML("beforeend",n.map(card).join(""));shown+=n.length;$("more").hidden=shown>=L.length;}
+function setCat(c){$("cat").value=c;$("q").value="";$("onlyoff").checked=false;render();closeAll();$("catalogo").scrollIntoView({behavior:"smooth"});}
 function calc(){const v=usd(+$("cp").value,+$("cw").value).toFixed(2);$("cres").textContent="$"+v+" USD";
 $("cwa").href=wa("Hola, quiero cotizar un producto de "+$("cp").value+" COP, "+$("cw").value+" kg ($"+v+")")}
 // carrito
-let C=JSON.parse(localStorage.getItem("tfcart")||"{}");
-const save=()=>{localStorage.setItem("tfcart",JSON.stringify(C));drawCart()};
-function drawCart(){const ids=Object.keys(C).filter(i=>P[i]&&C[i]>0);let tot=0,n=0;
-$("ci").innerHTML=ids.length?ids.map(i=>{const p=P[i],v=usd(p.cop,p.kg);tot+=v*C[i];n+=C[i];return `<div class="ci"><span class="e">${p.img?`<img src="${p.img}" alt="" onerror="this.outerHTML='${p.e}'">`:p.e}</span><div class="d">${esc(p.n)}<b>$${(v*C[i]).toFixed(2)}</b></div><div class="qty"><button data-q="${i}" data-d="-1">−</button>${C[i]}<button data-q="${i}" data-d="1">+</button></div></div>`}).join(""):`<div class="empty">Tu carrito está vacío 🛒</div>`;
+let C=JSON.parse(localStorage.getItem("tfcart2")||"{}");
+const save=()=>{localStorage.setItem("tfcart2",JSON.stringify(C));drawCart()};
+function drawCart(){const ids=Object.keys(C).filter(i=>BYID[i]&&C[i]>0);let tot=0,n=0;
+$("ci").innerHTML=ids.length?ids.map(i=>{const p=BYID[i],v=usd(p.cop,p.kg);tot+=v*C[i];n+=C[i];return `<div class="ci"><span class="e">${p.img?`<img src="${p.img}" alt="" onerror="this.outerHTML='${p.e}'">`:p.e}</span><div class="d">${esc(p.n)}<b>$${(v*C[i]).toFixed(2)}</b></div><div class="qty"><button data-q="${i}" data-d="-1">−</button>${C[i]}<button data-q="${i}" data-d="1">+</button></div></div>`}).join(""):`<div class="empty">Tu carrito está vacío 🛒</div>`;
 $("ct").textContent="$"+tot.toFixed(2);$("cc").textContent=n;}
-function sendCart(){const ids=Object.keys(C).filter(i=>P[i]&&C[i]>0);if(!ids.length)return toast("Agrega productos primero");let tot=0;
-const lines=ids.map(i=>{const p=P[i],v=usd(p.cop,p.kg);tot+=v*C[i];return `• ${C[i]} x ${p.n} — $${(v*C[i]).toFixed(2)}`});
+function sendCart(){const ids=Object.keys(C).filter(i=>BYID[i]&&C[i]>0);if(!ids.length)return toast("Agrega productos primero");let tot=0;
+const lines=ids.map(i=>{const p=BYID[i],v=usd(p.cop,p.kg);tot+=v*C[i];return `• ${C[i]} x ${p.n} — $${(v*C[i]).toFixed(2)}`});
 window.open(wa("Hola TRANSAFRONTERA VE, quiero hacer este pedido (envío MRW incluido):\n"+lines.join("\n")+"\nTotal: $"+tot.toFixed(2)+" USD"),"_blank");}
 let tt;function toast(m){$("toast").textContent=m;$("toast").classList.add("on");clearTimeout(tt);tt=setTimeout(()=>$("toast").classList.remove("on"),1800)}
 function closeAll(){["ov","side","cart"].forEach(i=>$(i).classList.remove("on"))}
@@ -286,8 +278,10 @@ const S=[...document.querySelectorAll(".slide")];let si=0,ht;
 $("dots").innerHTML=S.map((_,i)=>`<button aria-label="Slide ${i+1}" class="${i?"":"on"}"></button>`).join("");
 const D=[...$("dots").children];function go(i){si=(i+S.length)%S.length;S.forEach((s,k)=>s.classList.toggle("on",k==si));D.forEach((d,k)=>d.classList.toggle("on",k==si));clearInterval(ht);ht=setInterval(()=>go(si+1),5000)}
 D.forEach((d,i)=>d.onclick=()=>go(i));$("hl").onclick=()=>go(si-1);$("hr").onclick=()=>go(si+1);go(0);
-["q","cat"].forEach(i=>$(i).oninput=render);["cp","cw"].forEach(i=>$(i).oninput=calc);
-function all(){renderHome();render();calc();drawCart()}all();
+["q","cat","sort","pmax","onlyoff"].forEach(i=>$(i).oninput=render);$("more").onclick=more;
+new IntersectionObserver(es=>{if(es[0].isIntersecting&&shown&&shown<L.length&&shown<PAGE*4)more()},{rootMargin:"400px"}).observe($("sent"));["cp","cw"].forEach(i=>$(i).oninput=calc);
+function all(){if(P.length){renderHome();render()}calc();drawCart()}
+fetch("productos.json").then(r=>r.json()).then(d=>{P=d.productos||d;P.forEach(p=>{BYID[p.id]=p;p._s=norm(p.n+" "+p.c)});setupCats();all()}).catch(()=>{$("grid").innerHTML='<div class="empty">No se pudo cargar el catálogo. Recarga la página.</div>'});calc();
 let T={};function showTRM(){$("trm").textContent="💱 Tasa usada: $"+CFG.tasaCOPporUSD.toLocaleString("es-CO")+" COP/USD ("+(CFG.fuente=="binance"&&T.usdt_venta?"USDT Binance P2P":"TRM")+")"+(T.trm?" · TRM $"+T.trm.toLocaleString("es-CO"):"")+(T.usdt_compra?" · USDT compra $"+T.usdt_compra.toLocaleString("es-CO")+" / venta $"+T.usdt_venta.toLocaleString("es-CO"):"")+(T.actualizado?" · "+T.actualizado:"")}showTRM();
 fetch("tasas.json?"+Date.now()).then(r=>r.json()).then(d=>{T=d;const v=CFG.fuente=="binance"&&d.usdt_venta?d.usdt_venta:d.trm;if(v>1000){CFG.tasaCOPporUSD=v}all();showTRM()}).catch(()=>{});
 </script></body></html>
