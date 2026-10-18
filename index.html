@@ -78,6 +78,8 @@ a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer;border:0
 .card:hover{box-shadow:0 8px 24px #0d214f1f;transform:translateY(-2px)}
 .pimg{height:170px;display:flex;align-items:center;justify-content:center;position:relative;font-size:4.2rem}
 .pimg:before{content:"";position:absolute;width:120px;height:120px;border-radius:50%;background:#fff;opacity:.75}
+.pimg img{position:relative;width:100%;height:100%;object-fit:contain;padding:12px;mix-blend-mode:multiply}.pimg:has(img):before{display:none}.pimg:has(img){background:#fff!important}
+.ci .e img{width:100%;height:100%;object-fit:contain;border-radius:10px;background:#fff}
 .pimg span{position:relative;filter:drop-shadow(0 8px 8px #0002)}
 .badge{position:absolute;top:10px;left:10px;background:var(--r);color:#fff;font-weight:800;font-size:.8rem;padding:4px 8px;border-radius:6px;z-index:1}
 .pb{padding:12px 14px 14px;display:flex;flex-direction:column;flex:1}
@@ -204,26 +206,26 @@ footer h4{color:#fff;margin-bottom:12px}footer li{list-style:none;margin:7px 0}f
 const CFG={tasaCOPporUSD:3174.67,fuente:"binance",margen:0.20,whatsapp:"584120886940",mrwCOPporKg:30000};
 // ===== PRODUCTOS (ejemplo) =====
 const P=[
-{n:"Audífonos Bluetooth 1Hora AUT209",c:"Tecnología",cop:19900,antes:99900,kg:0.2,e:"🎧",tienda:"[tienda]",url:"https://[tienda]/audifonos-in-ear-bluetooth-1hora-aut209-negro-683975/p"},
-{n:"Resaltadores Pelikan pastel x6",c:"Papelería",cop:15850,antes:18700,kg:0.1,e:"🖍️",tienda:"[tienda]",url:"https://[tienda]/resaltadores-pelikan-colores-pastel-x-6-unidades-576166/p"},
-{n:"Colores Prismacolor Junior x36",c:"Papelería",cop:63500,kg:0.4,e:"🎨",tienda:"[tienda]",url:"https://[tienda]/colores-prismacolor-x-36-unidades-630338/p"},
-{n:"Calculadora de mesa Casio MJ-12VCB",c:"Papelería",cop:54900,kg:0.3,e:"🧮",tienda:"[tienda]",url:"https://[tienda]/calculadora-de-mesa-casio-mj-12vcb/p"},
-{n:"Cámara infantil sumergible",c:"Juguetes",cop:79900,antes:89900,kg:0.3,e:"📷",tienda:"[tienda]",url:"https://[tienda]/camara-infantil-sumergible-con-estuche-azul-696215/p"},
-{n:"Secador Remington Keratin Protect",c:"Belleza",cop:35000,antes:78500,kg:0.8,e:"💨",tienda:"[tienda]",url:"https://[tienda]/secador-cabello-remington-keratin-protect-3000-w-re-2003-105029276-mp/p"},
-{n:"Secador cepillo Aguacate con iones",c:"Belleza",cop:32000,antes:50000,kg:0.7,e:"💇",tienda:"[tienda]",url:"https://[tienda]/secador-cepillo-de-cabello-aguacate-con-iones-102548321-mp/p"},
-{n:"Audífonos inalámbricos M10",c:"Tecnología",cop:25895,antes:51999,kg:0.2,e:"🎧",tienda:"[tienda]",url:"https://[tienda]/audifonos-m10-104175271-mp/p"},
-{n:"Audífonos Ambie",c:"Tecnología",cop:28660,antes:56500,kg:0.2,e:"🎵",tienda:"[tienda]",url:"https://[tienda]/audifonos-ambie-102823085/p"},
-{n:"Licuadora Black+Decker 550 W",c:"Electrodomésticos",cop:119000,antes:130000,kg:2.5,e:"🥤",tienda:"[tienda]",url:"https://[tienda]/licuadora-550w-10-velocidades-884899/p"},
-{n:"Audífonos Redmi Buds 6 Play",c:"Tecnología",cop:59900,antes:99900,kg:0.2,e:"🎧",tienda:"[tienda]",url:"https://[tienda]/product/73025565/Audifonos-earbuds-Xiaomi-Bluetooth-Redmi-Buds-6-Play-Ng"},
-{n:"Plancha Remington Aguacate S9960",c:"Belleza",cop:172900,antes:271000,kg:0.7,e:"✨",tienda:"[tienda]",url:"https://[tienda]/product/117197333/Plancha-Alisadora-de-Cabello-Aguacate-Macadamia-Remington-S9960"},
-{n:"Kit taladro inalámbrico 24V Prtool",c:"Herramientas",cop:89000,antes:149900,kg:2.0,e:"🔩",tienda:"[tienda]",url:"https://[tienda]/product/157722978/kit-taladro-percutor-inalambrico-24v-mandril-metalico-prtool"},
-{n:"Bloques Arma Todo 1000 piezas",c:"Juguetes",cop:69900,antes:84900,kg:1.2,e:"🧱",tienda:"[tienda]",url:"https://[tienda]/product/132178386/Arma-Todo-Bloques-Para-Armar-1000-Piezas"},
-{n:"Set construcción Spider-Man vs moto",c:"Juguetes",cop:79900,kg:0.4,e:"🕷️",tienda:"[tienda]",url:"https://[tienda]/product/73573668/spider-man-vs-moto-del-motorista-f"},
-{n:"Kit atornillador 4.8V Black+Decker",c:"Herramientas",cop:89900,kg:1.0,e:"🪛",tienda:"[tienda]",url:"https://[tienda]/product/279076/kit-atornillador-48v-15-accesorios-black-and-decker/279076/"},
-{n:"Destornilladores de precisión x6",c:"Herramientas",cop:10900,kg:0.2,e:"🔧",tienda:"[tienda]",url:"https://[tienda]/product/97959/juego-destornilladores-precision-6-piezas-cpp067d/97959/"},
-{n:"Destornilladores Stanley CushionGrip x2",c:"Herramientas",cop:25900,antes:29900,kg:0.3,e:"🪛",tienda:"[tienda]",url:"https://[tienda]/product/388976/juego-de-destornilladores-2-piezas-cushiongrip-stanley/388976/"},
-{n:"Set destornilladores 4 piezas",c:"Herramientas",cop:11900,kg:0.3,e:"🔧",tienda:"[tienda]",url:"https://[tienda]/product/62307/set-destornilladores-4-piezas-cc226/62307/"},
-{n:"Linterna recargable 80 m",c:"Hogar",cop:59900,kg:0.4,e:"🔦",tienda:"[tienda]",url:"https://[tienda]/product/3055636/linterna-recargable-alcance-80-metros/3055636/"}];
+{n:"Audífonos Bluetooth 1Hora AUT209",c:"Tecnología",cop:19900,antes:99900,kg:0.2,e:"🎧",tienda:"[tienda]",url:"https://[tienda]/audifonos-in-ear-bluetooth-1hora-aut209-negro-683975/p",img:"img/p01.jpg"},
+{n:"Resaltadores Pelikan pastel x6",c:"Papelería",cop:15850,antes:18700,kg:0.1,e:"🖍️",tienda:"[tienda]",url:"https://[tienda]/resaltadores-pelikan-colores-pastel-x-6-unidades-576166/p",img:"img/p02.jpg"},
+{n:"Colores Prismacolor Junior x36",c:"Papelería",cop:63500,kg:0.4,e:"🎨",tienda:"[tienda]",url:"https://[tienda]/colores-prismacolor-x-36-unidades-630338/p",img:"img/p03.jpg"},
+{n:"Calculadora de mesa Casio MJ-12VCB",c:"Papelería",cop:54900,kg:0.3,e:"🧮",tienda:"[tienda]",url:"https://[tienda]/calculadora-de-mesa-casio-mj-12vcb/p",img:"img/p04.jpg"},
+{n:"Cámara infantil sumergible",c:"Juguetes",cop:79900,antes:89900,kg:0.3,e:"📷",tienda:"[tienda]",url:"https://[tienda]/camara-infantil-sumergible-con-estuche-azul-696215/p",img:"img/p05.jpg"},
+{n:"Secador Remington Keratin Protect",c:"Belleza",cop:35000,antes:78500,kg:0.8,e:"💨",tienda:"[tienda]",url:"https://[tienda]/secador-cabello-remington-keratin-protect-3000-w-re-2003-105029276-mp/p",img:"img/p06.jpg"},
+{n:"Secador cepillo Aguacate con iones",c:"Belleza",cop:32000,antes:50000,kg:0.7,e:"💇",tienda:"[tienda]",url:"https://[tienda]/secador-cepillo-de-cabello-aguacate-con-iones-102548321-mp/p",img:"img/p07.jpg"},
+{n:"Audífonos inalámbricos M10",c:"Tecnología",cop:25895,antes:51999,kg:0.2,e:"🎧",tienda:"[tienda]",url:"https://[tienda]/audifonos-m10-104175271-mp/p",img:"img/p08.jpg"},
+{n:"Audífonos Ambie",c:"Tecnología",cop:28660,antes:56500,kg:0.2,e:"🎵",tienda:"[tienda]",url:"https://[tienda]/audifonos-ambie-102823085/p",img:"img/p09.jpg"},
+{n:"Licuadora Black+Decker 550 W",c:"Electrodomésticos",cop:119000,antes:130000,kg:2.5,e:"🥤",tienda:"[tienda]",url:"https://[tienda]/licuadora-550w-10-velocidades-884899/p",img:"img/p10.jpg"},
+{n:"Audífonos Redmi Buds 6 Play",c:"Tecnología",cop:59900,antes:99900,kg:0.2,e:"🎧",tienda:"[tienda]",url:"https://[tienda]/product/73025565/Audifonos-earbuds-Xiaomi-Bluetooth-Redmi-Buds-6-Play-Ng",img:"img/p11.jpg"},
+{n:"Plancha Remington Aguacate S9960",c:"Belleza",cop:172900,antes:271000,kg:0.7,e:"✨",tienda:"[tienda]",url:"https://[tienda]/product/117197333/Plancha-Alisadora-de-Cabello-Aguacate-Macadamia-Remington-S9960",img:"img/p12.jpg"},
+{n:"Kit taladro inalámbrico 24V Prtool",c:"Herramientas",cop:89000,antes:149900,kg:2.0,e:"🔩",tienda:"[tienda]",url:"https://[tienda]/product/157722978/kit-taladro-percutor-inalambrico-24v-mandril-metalico-prtool",img:"img/p13.jpg"},
+{n:"Bloques Arma Todo 1000 piezas",c:"Juguetes",cop:69900,antes:84900,kg:1.2,e:"🧱",tienda:"[tienda]",url:"https://[tienda]/product/132178386/Arma-Todo-Bloques-Para-Armar-1000-Piezas",img:"img/p14.jpg"},
+{n:"Set construcción Spider-Man vs moto",c:"Juguetes",cop:79900,kg:0.4,e:"🕷️",tienda:"[tienda]",url:"https://[tienda]/product/73573668/spider-man-vs-moto-del-motorista-f",img:"img/p15.jpg"},
+{n:"Kit atornillador 4.8V Black+Decker",c:"Herramientas",cop:89900,kg:1.0,e:"🪛",tienda:"[tienda]",url:"https://[tienda]/product/279076/kit-atornillador-48v-15-accesorios-black-and-decker/279076/",img:"img/p16.jpg"},
+{n:"Destornilladores de precisión x6",c:"Herramientas",cop:10900,kg:0.2,e:"🔧",tienda:"[tienda]",url:"https://[tienda]/product/97959/juego-destornilladores-precision-6-piezas-cpp067d/97959/",img:"img/p17.jpg"},
+{n:"Destornilladores Stanley CushionGrip x2",c:"Herramientas",cop:25900,antes:29900,kg:0.3,e:"🪛",tienda:"[tienda]",url:"https://[tienda]/product/388976/juego-de-destornilladores-2-piezas-cushiongrip-stanley/388976/",img:"img/p18.jpg"},
+{n:"Set destornilladores 4 piezas",c:"Herramientas",cop:11900,kg:0.3,e:"🔧",tienda:"[tienda]",url:"https://[tienda]/product/62307/set-destornilladores-4-piezas-cc226/62307/",img:"img/p19.jpg"},
+{n:"Linterna recargable 80 m",c:"Hogar",cop:59900,kg:0.4,e:"🔦",tienda:"[tienda]",url:"https://[tienda]/product/3055636/linterna-recargable-alcance-80-metros/3055636/",img:"img/p20.jpg"}];
 const usd=(cop,kg)=>(cop*(1+CFG.margen)+Math.max(1,Math.ceil(kg))*CFG.mrwCOPporKg)/CFG.tasaCOPporUSD;
 const $=id=>document.getElementById(id);
 P.forEach((p,i)=>p.id=i);
@@ -238,7 +240,7 @@ $("slst").innerHTML=`<button data-c="">🛍️ Ver todo</button>`+CATS.map(c=>`<
 $("rcats").innerHTML=CATS.map(c=>`<button data-c="${c}"><span class="cir" style="background:${BG[c]||"#fff"}">${ICO[c]||"📦"}</span>${c}</button>`).join("")+`<button data-go="cotiza"><span class="cir">🧾</span>Cotiza</button>`;
 $("fcats").innerHTML=CATS.map(c=>`<li><a href="#catalogo" data-c="${c}">${c}</a></li>`).join("");
 function card(p){const v=usd(p.cop,p.kg);const a=p.antes&&p.antes>p.cop?usd(p.antes,p.kg):0;const pct=a?Math.round((1-v/a)*100):0;
-return `<article class="card">${pct>0?`<span class="badge">-${pct}%</span>`:""}<div class="pimg" style="background:${BG[p.c]||"#eef1f7"}"><span>${p.e}</span></div>
+return `<article class="card">${pct>0?`<span class="badge">-${pct}%</span>`:""}<div class="pimg" style="background:${BG[p.c]||"#eef1f7"}">${p.img?`<img src="${p.img}" alt="${esc(p.n)}" loading="lazy" onerror="this.outerHTML='<span>${p.e}</span>'">`:`<span>${p.e}</span>`}</div>
 <div class="pb"><span class="pc">${esc(p.c)}</span><h3 class="pn">${esc(p.n)}</h3><div class="pp"><b class="${pct>0?"":"reg"}">$${v.toFixed(2)}</b>${pct>0?`<s>Antes $${a.toFixed(2)}</s>`:""}</div>
 <span class="ship">🚚 Envío MRW incluido</span><button class="add" data-add="${p.id}">Agregar</button></div></article>`}
 const disc=p=>p.antes?1-p.cop/p.antes:0;
@@ -262,7 +264,7 @@ $("cwa").href=wa("Hola, quiero cotizar un producto de "+$("cp").value+" COP, "+$
 let C=JSON.parse(localStorage.getItem("tfcart")||"{}");
 const save=()=>{localStorage.setItem("tfcart",JSON.stringify(C));drawCart()};
 function drawCart(){const ids=Object.keys(C).filter(i=>P[i]&&C[i]>0);let tot=0,n=0;
-$("ci").innerHTML=ids.length?ids.map(i=>{const p=P[i],v=usd(p.cop,p.kg);tot+=v*C[i];n+=C[i];return `<div class="ci"><span class="e">${p.e}</span><div class="d">${esc(p.n)}<b>$${(v*C[i]).toFixed(2)}</b></div><div class="qty"><button data-q="${i}" data-d="-1">−</button>${C[i]}<button data-q="${i}" data-d="1">+</button></div></div>`}).join(""):`<div class="empty">Tu carrito está vacío 🛒</div>`;
+$("ci").innerHTML=ids.length?ids.map(i=>{const p=P[i],v=usd(p.cop,p.kg);tot+=v*C[i];n+=C[i];return `<div class="ci"><span class="e">${p.img?`<img src="${p.img}" alt="" onerror="this.outerHTML='${p.e}'">`:p.e}</span><div class="d">${esc(p.n)}<b>$${(v*C[i]).toFixed(2)}</b></div><div class="qty"><button data-q="${i}" data-d="-1">−</button>${C[i]}<button data-q="${i}" data-d="1">+</button></div></div>`}).join(""):`<div class="empty">Tu carrito está vacío 🛒</div>`;
 $("ct").textContent="$"+tot.toFixed(2);$("cc").textContent=n;}
 function sendCart(){const ids=Object.keys(C).filter(i=>P[i]&&C[i]>0);if(!ids.length)return toast("Agrega productos primero");let tot=0;
 const lines=ids.map(i=>{const p=P[i],v=usd(p.cop,p.kg);tot+=v*C[i];return `• ${C[i]} x ${p.n} — $${(v*C[i]).toFixed(2)}`});
