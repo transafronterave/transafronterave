@@ -40,7 +40,6 @@ footer{background:var(--n);color:#fff;text-align:center;padding:26px;font-size:.
 <div class="step"><b>3</b>Lo compramos y despachamos desde Cúcuta</div>
 <div class="step"><b>4</b>Recíbelo por MRW en tu ciudad</div></section>
 <h2 id="catalogo">Catálogo</h2>
-<p class="note">Precios de referencia actualizados el 18 oct 2026</p>
 <p class="note" id="trm" style="color:#0D214F;font-weight:600"></p>
 <div class="filters"><input id="q" placeholder="Buscar producto..."><select id="cat"><option value="">Todas las categorías</option></select>
 </div>
@@ -86,7 +85,6 @@ function render(){const q=$("q").value.toLowerCase(),c=$("cat").value;
 $("grid").innerHTML=P.filter(p=>p.n.toLowerCase().includes(q)&&(!c||p.c==c)).map(p=>{const v=usd(p.cop,p.kg).toFixed(2);
 return `<div class="card"><div class="img">${p.e}</div><div class="body"><span class="cat">${p.c}</span><h3>${p.n}</h3>
 <div class="price">$${v}<small>Incluye envío MRW a cualquier oficina en Venezuela</small></div>
-<small class="ref" style="display:block;font-size:11px;color:#777;margin:4px 0">Precio de referencia: <a href="${p.url}" target="_blank" rel="noopener">${p.tienda}</a></small>
 <a class="btn" target="_blank" href="https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent("Hola TRANSAFRONTERA VE, quiero: "+p.n+" ($"+v+") con envío MRW")}">Pedir por WhatsApp</a></div></div>`}).join("")}
 function calc(){const v=usd(+$("cp").value,+$("cw").value).toFixed(2);$("cres").textContent="Precio final: $"+v+" USD";
 $("cwa").href=`https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent("Hola, quiero cotizar un producto de "+$("cp").value+" COP, "+$("cw").value+" kg ($"+v+")")}`}
