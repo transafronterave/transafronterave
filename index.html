@@ -1,94 +1,291 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRANSAFRONTERA VE | Compras de Colombia a toda Venezuela</title>
+<title>TRANSAFRONTERA VE | Tienda online: compras en Colombia con envío a toda Venezuela</title>
+<meta name="description" content="Compramos por ti en Colombia y te lo enviamos por MRW a toda Venezuela. Precios finales en USD.">
+<link rel="icon" href="logo-tf.png">
 <style>
-:root{--y:#FFCC00;--b:#00247D;--r:#CF142B;--n:#0D214F}
-*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,Segoe UI,Roboto,sans-serif}
-body{background:#f5f7fb;color:#1b2333}
-.flag{height:6px;background:linear-gradient(var(--y) 0 33%,var(--b) 33% 66%,var(--r) 66%)}
-header{background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 5%;box-shadow:0 2px 8px #0001;position:sticky;top:0;z-index:5}
-header img{height:52px}.brand{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--n);font-size:1.3rem}
-nav a{margin-left:18px;color:var(--n);text-decoration:none;font-weight:600}
-.hero{background:linear-gradient(120deg,var(--n),var(--b));color:#fff;padding:60px 5%;text-align:center}
-.hero h1{font-size:2.2rem;margin-bottom:12px}.hero p{opacity:.9;max-width:640px;margin:auto}
-.btn{display:inline-block;background:var(--y);color:var(--n);padding:12px 26px;border-radius:30px;font-weight:800;text-decoration:none;margin-top:22px;border:0;cursor:pointer}
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;padding:40px 5%}
-.step{background:#fff;border-radius:14px;padding:20px;text-align:center;box-shadow:0 2px 10px #0001}.step b{display:block;font-size:2rem;color:var(--r)}
-h2{padding:10px 5%;color:var(--n)}
-.filters{padding:0 5% 10px;display:flex;gap:10px;flex-wrap:wrap}
-.filters input,.filters select{padding:10px 14px;border:1px solid #ccd;border-radius:10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;padding:10px 5% 50px}
-.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px #0001;display:flex;flex-direction:column}
-.card .img{height:160px;background:#eef1f7;display:flex;align-items:center;justify-content:center;font-size:3.5rem}
-.card .body{padding:14px;flex:1;display:flex;flex-direction:column}.card h3{font-size:1rem;margin-bottom:6px}
-.cat{font-size:.75rem;color:#667}.price{font-size:1.5rem;font-weight:800;color:var(--n);margin:8px 0}
-.price small{font-size:.75rem;color:#667;font-weight:400;display:block}
-.card .btn{margin-top:auto;text-align:center;padding:10px;font-size:.9rem}
-.calc{background:#fff;margin:0 5% 40px;border-radius:14px;padding:24px;box-shadow:0 2px 10px #0001}
-.calc label{display:block;margin:10px 0 4px;font-weight:600}.calc input,.calc select{width:100%;padding:10px;border:1px solid #ccd;border-radius:10px}
-footer{background:var(--n);color:#fff;text-align:center;padding:26px;font-size:.9rem}
-.note{font-size:.75rem;color:#a33;padding:0 5%}
+:root{--y:#FFCC00;--b:#00247D;--r:#CF142B;--n:#0D214F;--g:#f2f3f7;--t:#1b2333;--m:#6b7280}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--g);color:var(--t);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer;border:0;background:none}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px}
+/* promo */
+.promo{background:var(--n);color:#fff;font-size:.8rem;text-align:center;padding:7px 10px}
+.promo b{color:var(--y)}
+/* header */
+.hdr{position:sticky;top:0;z-index:40;background:#fff;box-shadow:0 2px 10px #0d214f14}
+.hdr .flag{height:4px;background:linear-gradient(90deg,var(--y) 0 33.3%,var(--b) 33.3% 66.6%,var(--r) 66.6%)}
+.hrow{display:flex;align-items:center;gap:18px;padding:12px 16px;max-width:1240px;margin:0 auto}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0}.logo img{height:46px}
+.logo span{font-weight:900;color:var(--n);font-size:1.05rem;line-height:1;letter-spacing:-.3px}.logo span i{display:block;font-style:normal;color:var(--r);font-size:.7rem;letter-spacing:2px}
+.menu-btn{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--n);padding:8px 10px;border-radius:10px}
+.menu-btn:hover{background:var(--g)}.burger{width:20px;height:14px;position:relative;border-top:2.5px solid var(--n);border-bottom:2.5px solid var(--n)}.burger:after{content:"";position:absolute;left:0;right:0;top:3.5px;border-top:2.5px solid var(--n)}
+.search{flex:1;display:flex;align-items:center;background:var(--g);border:2px solid transparent;border-radius:30px;padding:0 6px 0 18px;transition:.2s}
+.search:focus-within{border-color:var(--b);background:#fff}
+.search input{flex:1;border:0;background:none;padding:12px 0;font-size:.95rem;outline:0;min-width:0}
+.search button{width:38px;height:38px;border-radius:50%;background:var(--y);color:var(--n);font-size:1.05rem}
+.hact{display:flex;align-items:center;gap:6px}
+.hact a,.hact button{display:flex;flex-direction:column;align-items:center;font-size:.7rem;color:var(--n);font-weight:600;padding:4px 8px;border-radius:10px;position:relative}
+.hact .ic{font-size:1.4rem;line-height:1.2}
+.cnt{position:absolute;top:-2px;right:2px;background:var(--r);color:#fff;font-size:.68rem;min-width:19px;height:19px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;border:2px solid #fff}
+.cnav{border-top:1px solid #eceef3;overflow-x:auto;scrollbar-width:none}.cnav::-webkit-scrollbar{display:none}
+.cnav .wrap{display:flex;gap:4px;white-space:nowrap}
+.cnav button{padding:10px 12px;font-size:.86rem;color:#374151;font-weight:600;border-bottom:3px solid transparent}
+.cnav button:hover,.cnav button.on{color:var(--b);border-color:var(--y)}
+/* side menu */
+.ov{position:fixed;inset:0;background:#0009;z-index:60;opacity:0;pointer-events:none;transition:.25s}.ov.on{opacity:1;pointer-events:auto}
+.side{position:fixed;top:0;bottom:0;left:0;width:300px;max-width:85vw;background:#fff;z-index:70;transform:translateX(-100%);transition:.3s;display:flex;flex-direction:column}
+.side.on{transform:none}.side h3{background:var(--n);color:#fff;padding:18px;display:flex;justify-content:space-between;align-items:center}
+.side h3 button{color:#fff;font-size:1.4rem}.side .lst{overflow:auto}
+.side .lst button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px 18px;border-bottom:1px solid #eee;font-weight:600}
+.side .lst button:hover{background:var(--g);color:var(--b)}
+/* hero */
+.hero{position:relative;margin-top:16px;border-radius:18px;overflow:hidden;height:330px}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 6%;opacity:0;transition:opacity .7s;color:#fff}
+.slide.on{opacity:1;z-index:1}
+.slide .tx{max-width:520px}.slide small{display:inline-block;background:#fff3;padding:5px 12px;border-radius:20px;font-weight:700;font-size:.78rem;letter-spacing:1px;text-transform:uppercase}
+.slide h2{font-size:2.6rem;line-height:1.05;margin:12px 0 10px;font-weight:900}.slide p{opacity:.92;font-size:1.05rem}
+.slide .cta{display:inline-block;margin-top:18px;background:#fff;color:var(--n);padding:12px 26px;border-radius:30px;font-weight:800}
+.slide .art{font-size:7.5rem;filter:drop-shadow(0 12px 20px #0005);display:flex;gap:6px}
+.s1{background:radial-gradient(circle at 80% 30%,#ff5a6e 0,transparent 45%),linear-gradient(115deg,var(--r),#7a0c1a)}
+.s2{background:radial-gradient(circle at 85% 70%,#3d6cff 0,transparent 45%),linear-gradient(115deg,var(--n),var(--b))}
+.s3{background:radial-gradient(circle at 80% 40%,#fff6 0,transparent 40%),linear-gradient(115deg,#f5b800,var(--y));color:var(--n)}
+.s3 small{background:#0d214f1a}.s3 .cta{background:var(--n);color:#fff}
+.dots{position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:8px;z-index:3}
+.dots button{width:10px;height:10px;border-radius:6px;background:#fff8;transition:.3s}.dots button.on{width:28px;background:#fff}
+.arr{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:42px;height:42px;border-radius:50%;background:#fff;color:var(--n);font-size:1.3rem;box-shadow:0 2px 10px #0003}
+.arr.l{left:14px}.arr.r{right:14px}
+/* round cats */
+.rcats{display:flex;gap:18px;justify-content:space-between;overflow-x:auto;padding:22px 4px 6px;scrollbar-width:none}.rcats::-webkit-scrollbar{display:none}
+.rcats button{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:90px;font-size:.82rem;font-weight:600;color:#374151}
+.rcats .cir{width:86px;height:86px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:2.4rem;box-shadow:0 3px 12px #0d214f14;border:3px solid #fff;transition:.2s}
+.rcats button:hover .cir{border-color:var(--y);transform:translateY(-3px)}
+/* benefits */
+.bens{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}
+.ben{background:#fff;border-radius:14px;padding:14px;display:flex;gap:12px;align-items:center;font-size:.82rem;color:var(--m)}
+.ben b{display:block;color:var(--n);font-size:.92rem}.ben .i{font-size:1.7rem}
+/* sections */
+.sec{background:#fff;border-radius:18px;padding:20px;margin:18px 0}
+.sh{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;gap:10px}
+.sh h2{font-size:1.35rem;color:var(--n);font-weight:800}.sh h2 em{font-style:normal;color:var(--r)}
+.sh button{color:var(--b);font-weight:700;font-size:.88rem;white-space:nowrap}
+.rail{position:relative}
+.track{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 64px)/5);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px 2px 8px}
+.track::-webkit-scrollbar{display:none}.track>*{scroll-snap-align:start}
+.rail .arr{width:38px;height:38px;font-size:1.1rem;top:90px}.rail .arr.l{left:-12px}.rail .arr.r{right:-12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:16px}
+/* card */
+.card{background:#fff;border:1px solid #eceef3;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:.2s;position:relative}
+.card:hover{box-shadow:0 8px 24px #0d214f1f;transform:translateY(-2px)}
+.pimg{height:170px;display:flex;align-items:center;justify-content:center;position:relative;font-size:4.2rem}
+.pimg:before{content:"";position:absolute;width:120px;height:120px;border-radius:50%;background:#fff;opacity:.75}
+.pimg span{position:relative;filter:drop-shadow(0 8px 8px #0002)}
+.badge{position:absolute;top:10px;left:10px;background:var(--r);color:#fff;font-weight:800;font-size:.8rem;padding:4px 8px;border-radius:6px;z-index:1}
+.pb{padding:12px 14px 14px;display:flex;flex-direction:column;flex:1}
+.pc{font-size:.7rem;font-weight:800;color:var(--m);text-transform:uppercase;letter-spacing:.6px}
+.pn{font-size:.92rem;font-weight:500;margin:4px 0 8px;line-height:1.3;min-height:2.6em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pp{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.pp b{font-size:1.35rem;color:var(--r);font-weight:900}.pp b.reg{color:var(--n)}
+.pp s{color:var(--m);font-size:.82rem}
+.ship{display:inline-flex;align-items:center;gap:4px;margin:8px 0 12px;font-size:.72rem;font-weight:700;color:#0a7a3d;background:#e7f7ee;padding:4px 8px;border-radius:6px;align-self:flex-start}
+.add{margin-top:auto;background:var(--n);color:#fff;font-weight:800;padding:10px;border-radius:24px;font-size:.88rem;transition:.2s}
+.add:hover{background:var(--b)}.add.ok{background:#0a7a3d}
+.empty{padding:40px;text-align:center;color:var(--m)}
+.rate{font-size:.78rem;color:var(--n);font-weight:600;background:#fff8d6;border:1px solid #ffe680;border-radius:10px;padding:8px 12px;margin-bottom:12px}
+/* steps */
+.how{background:linear-gradient(115deg,var(--n),var(--b));color:#fff;border-radius:18px;padding:28px 22px;margin:18px 0}
+.how h2{text-align:center;margin-bottom:20px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.step{background:#ffffff14;border:1px solid #ffffff26;border-radius:14px;padding:18px;text-align:center;font-size:.92rem}
+.step b{display:flex;margin:0 auto 10px;width:44px;height:44px;border-radius:50%;background:var(--y);color:var(--n);align-items:center;justify-content:center;font-size:1.2rem}
+/* calc */
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center}
+.calc label{display:block;margin:10px 0 4px;font-weight:700;font-size:.88rem;color:var(--n)}
+.calc input{width:100%;padding:12px 14px;border:2px solid #e3e6ee;border-radius:12px;font-size:1rem;outline:0}.calc input:focus{border-color:var(--b)}
+.cbox{background:var(--g);border-radius:16px;padding:22px;text-align:center}
+.cbox .price{font-size:2rem;font-weight:900;color:var(--n);margin:6px 0 14px}
+.wa{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;font-weight:800;padding:12px 24px;border-radius:30px}
+/* footer */
+footer{background:var(--n);color:#cfd6e6;margin-top:30px;font-size:.88rem}
+.fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px;padding:36px 16px}
+footer h4{color:#fff;margin-bottom:12px}footer li{list-style:none;margin:7px 0}footer a:hover{color:var(--y)}
+.flogo{height:80px;background:#fff;border-radius:12px;padding:4px;margin-bottom:10px}
+.pay{display:flex;flex-wrap:wrap;gap:8px}.pay span{background:#fff;color:var(--n);font-weight:800;font-size:.78rem;padding:6px 10px;border-radius:8px}
+.fbot{border-top:1px solid #ffffff1f;padding:14px 16px;text-align:center;font-size:.78rem}
+/* cart */
+.cart{position:fixed;top:0;right:0;bottom:0;width:380px;max-width:92vw;background:#fff;z-index:70;transform:translateX(100%);transition:.3s;display:flex;flex-direction:column}
+.cart.on{transform:none}.cart h3{padding:18px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;color:var(--n)}
+.cart h3 button{font-size:1.4rem}
+.citems{flex:1;overflow:auto;padding:8px 18px}
+.ci{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f0f0f0;align-items:center}
+.ci .e{width:54px;height:54px;border-radius:10px;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0}
+.ci .d{flex:1;font-size:.85rem}.ci .d b{display:block;color:var(--n);margin-top:3px}
+.qty{display:flex;align-items:center;gap:6px}.qty button{width:26px;height:26px;border-radius:50%;background:var(--g);font-weight:800}
+.cfoot{padding:18px;border-top:1px solid #eee}.cfoot .tot{display:flex;justify-content:space-between;font-weight:800;font-size:1.15rem;color:var(--n);margin-bottom:12px}
+.cfoot .wa{width:100%;justify-content:center;border:0}
+.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,120px);background:var(--n);color:#fff;padding:12px 20px;border-radius:30px;z-index:90;transition:.3s;font-weight:600}
+.toast.on{transform:translate(-50%,0)}
+.fwa{position:fixed;right:18px;bottom:18px;width:56px;height:56px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.7rem;z-index:30;box-shadow:0 4px 14px #0004}
+/* responsive */
+@media(max-width:1000px){.track{grid-auto-columns:calc((100% - 32px)/3)}.bens{grid-template-columns:repeat(2,1fr)}.fgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){
+.hrow{flex-wrap:wrap;gap:8px 10px;padding:10px 12px}.logo img{height:38px}.logo span{font-size:.9rem}
+.menu-btn{order:-1;padding:6px}.menu-btn .lbl{display:none}.hact{margin-left:auto}.hact .lbl{display:none}
+.search{order:5;flex-basis:100%}
+.hero{height:250px;border-radius:14px}.slide{padding:0 22px}.slide h2{font-size:1.6rem}.slide p{font-size:.88rem}.slide .art{font-size:3.6rem;position:absolute;right:14px;bottom:30px;opacity:.9}.slide .tx{max-width:72%}.arr{display:none}.rail .arr{display:none}
+.track{grid-auto-columns:calc((100% - 12px)/2);gap:12px}.grid{grid-template-columns:repeat(2,1fr);gap:10px}
+.sec{padding:14px;border-radius:14px}.pimg{height:130px;font-size:3.2rem}.pimg:before{width:90px;height:90px}.pp b{font-size:1.15rem}
+.rcats{gap:10px}.rcats button{min-width:72px;font-size:.74rem}.rcats .cir{width:66px;height:66px;font-size:1.9rem}
+.steps{grid-template-columns:1fr 1fr}.calc{grid-template-columns:1fr}.bens{gap:8px}.ben{padding:10px;font-size:.74rem}
+.fgrid{grid-template-columns:1fr}}
 </style></head><body>
-<div class="flag"></div>
-<header><div class="brand"><img src="logo-tf.png" alt="TF">TRANSAFRONTERA VE</div>
-<nav><a href="#catalogo">Catálogo</a><a href="#como">Cómo funciona</a><a href="#cotiza">Cotiza</a></nav></header>
-<section class="hero"><h1>Lo mejor de Colombia, en tu puerta en Venezuela</h1>
-<p>Compramos por ti en tiendas de Colombia y te lo enviamos por MRW a cualquier estado. Precio final en dólares, sin sorpresas.</p>
-<a class="btn" href="#catalogo">Ver productos</a></section>
-<section class="steps" id="como">
-<div class="step"><b>1</b>Elige tu producto o pídenos cualquiera de Colombia</div>
-<div class="step"><b>2</b>Paga en USD, Bs o COP</div>
-<div class="step"><b>3</b>Lo compramos y despachamos desde Cúcuta</div>
-<div class="step"><b>4</b>Recíbelo por MRW en tu ciudad</div></section>
-<h2 id="catalogo">Catálogo</h2>
-<p class="note" id="trm" style="color:#0D214F;font-weight:600"></p>
-<div class="filters"><input id="q" placeholder="Buscar producto..."><select id="cat"><option value="">Todas las categorías</option></select>
+<div class="promo">🚚 <b>Envíos MRW a toda Venezuela</b> · Compramos por ti en Colombia · Precios finales en USD</div>
+<header class="hdr"><div class="flag"></div>
+<div class="hrow">
+<button class="menu-btn" id="mb" aria-label="Categorías"><span class="burger"></span><span class="lbl">Categorías</span></button>
+<a class="logo" href="#"><img src="logo-tf.png" alt="TF"><span>TRANSAFRONTERA<i>VENEZUELA</i></span></a>
+<form class="search" id="sf" role="search"><input id="q" type="search" placeholder="¿Qué buscas hoy? Audífonos, taladro, secador..." autocomplete="off"><button aria-label="Buscar">🔍</button></form>
+<div class="hact"><a id="hwa" target="_blank" rel="noopener"><span class="ic">💬</span><span class="lbl">Ayuda</span></a>
+<button id="cb" aria-label="Carrito"><span class="ic">🛒</span><span class="lbl">Carrito</span><span class="cnt" id="cc">0</span></button></div>
 </div>
-<div class="grid" id="grid"></div>
-<section class="calc" id="cotiza"><h2 style="padding:0">¿Quieres algo que no está? Cotízalo</h2>
-<label>Precio en Colombia (COP)</label><input id="cp" type="number" value="100000">
-<label>Peso aproximado (kg)</label><input id="cw" type="number" value="1" step="0.5">
+<nav class="cnav"><div class="wrap" id="cnav"></div></nav>
+</header>
+<div class="ov" id="ov"></div>
+<aside class="side" id="side"><h3>Categorías <button id="sx">×</button></h3><div class="lst" id="slst"></div></aside>
+<aside class="cart" id="cart"><h3>🛒 Tu carrito <button id="cx">×</button></h3><div class="citems" id="ci"></div>
+<div class="cfoot"><div class="tot"><span>Total</span><span id="ct">$0.00</span></div><button class="wa" id="cwsend">💬 Enviar pedido por WhatsApp</button>
+<p style="font-size:.72rem;color:#6b7280;margin-top:8px;text-align:center">Cada producto incluye envío MRW. Te confirmamos disponibilidad y pago por WhatsApp.</p></div></aside>
+<div class="toast" id="toast"></div>
+<a class="fwa" id="fwa" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
 
-<div class="price" id="cres"></div>
-<a class="btn" id="cwa" target="_blank">Pedir por WhatsApp</a></section>
-<footer><img src="logo.png" alt="logo" style="height:90px;border-radius:12px;background:#fff;padding:4px"><br><br>
-TRANSAFRONTERA VE · Cúcuta – Venezuela · Envíos por MRW<br>© 2026</footer>
+<main class="wrap">
+<section class="hero" id="hero">
+<div class="slide s1 on"><div class="tx"><small>🎁 Temporada de regalos</small><h2>Regala lo mejor de Colombia</h2><p>Juguetes, belleza y más, con envío MRW incluido a tu ciudad.</p><button class="cta" data-c="Juguetes">Ver regalos</button></div><div class="art">🎁🧸</div></div>
+<div class="slide s2"><div class="tx"><small>⚡ Tecnología</small><h2>Audífonos y gadgets hasta -50%</h2><p>Precios de oferta de tiendas colombianas, en dólares y sin sorpresas.</p><button class="cta" data-c="Tecnología">Comprar tecnología</button></div><div class="art">🎧📱</div></div>
+<div class="slide s3"><div class="tx"><small>🛠️ Herramientas</small><h2>Equipa tu taller desde $10</h2><p>Taladros, destornilladores y kits para el hogar y el trabajo.</p><button class="cta" data-c="Herramientas">Ver herramientas</button></div><div class="art">🔩🪛</div></div>
+<button class="arr l" id="hl" aria-label="Anterior">‹</button><button class="arr r" id="hr" aria-label="Siguiente">›</button>
+<div class="dots" id="dots"></div>
+</section>
+<div class="rcats" id="rcats"></div>
+<div class="bens">
+<div class="ben"><span class="i">🚚</span><div><b>Envío MRW incluido</b>A cualquier oficina del país</div></div>
+<div class="ben"><span class="i">💵</span><div><b>Precio final en USD</b>Sin costos ocultos</div></div>
+<div class="ben"><span class="i">🇨🇴</span><div><b>Compramos por ti</b>En tiendas de Colombia</div></div>
+<div class="ben"><span class="i">💬</span><div><b>Atención por WhatsApp</b>Te acompañamos en todo</div></div>
+</div>
+<div id="home">
+<section class="sec"><div class="sh"><h2>🔥 Lo más <em>vendido</em></h2><button data-c="">Ver todo ›</button></div><div class="rail"><div class="track" id="best"></div></div></section>
+<section class="sec"><div class="sh"><h2>🏷️ <em>Ofertas</em> imperdibles</h2><button data-c="">Ver todo ›</button></div><div class="rail"><div class="track" id="deals"></div></div></section>
+<div id="catsecs"></div>
+</div>
+<section class="sec" id="catalogo"><div class="sh"><h2 id="ctitle">Todos los productos</h2><button id="clr" data-c="">Limpiar filtros</button></div>
+<p class="rate" id="trm"></p>
+<select id="cat" hidden><option value="">Todas las categorías</option></select>
+<div class="grid" id="grid"></div></section>
+<section class="how" id="como"><h2>¿Cómo funciona?</h2><div class="steps">
+<div class="step"><b>1</b>Elige tu producto o pídenos cualquiera de Colombia</div>
+<div class="step"><b>2</b>Paga en USDT, Bolívares o Pesos colombianos</div>
+<div class="step"><b>3</b>Lo compramos y despachamos desde Cúcuta</div>
+<div class="step"><b>4</b>Recíbelo por MRW en tu ciudad</div></div></section>
+<section class="sec" id="cotiza"><div class="calc"><div>
+<div class="sh" style="margin:0"><h2>¿Quieres algo que no está? <em>Cotízalo</em></h2></div>
+<p style="color:#6b7280;font-size:.9rem">Pega el precio en pesos colombianos y el peso aproximado. Te damos el precio final con envío MRW.</p>
+<label for="cp">Precio en Colombia (COP)</label><input id="cp" type="number" value="100000">
+<label for="cw">Peso aproximado (kg)</label><input id="cw" type="number" value="1" step="0.5"></div>
+<div class="cbox"><div style="color:#6b7280;font-weight:600">Tu precio estimado</div><div class="price" id="cres"></div><a class="wa" id="cwa" target="_blank" rel="noopener">💬 Pedir por WhatsApp</a></div></div></section>
+</main>
+<footer><div class="wrap fgrid">
+<div><img class="flogo" src="logo.png" alt="TRANSAFRONTERA VE"><p>Compramos por ti en tiendas de Colombia y te lo enviamos por MRW a cualquier estado de Venezuela. Precio final en dólares, sin sorpresas.</p></div>
+<div><h4>Ayuda</h4><ul><li><a href="#como">Cómo funciona</a></li><li><a href="#cotiza">Cotiza un producto</a></li><li><a class="fwl" target="_blank" rel="noopener">Escríbenos por WhatsApp</a></li><li>Envíos por MRW</li></ul></div>
+<div><h4>Categorías</h4><ul id="fcats"></ul></div>
+<div><h4>Medios de pago</h4><div class="pay"><span>₮ USDT</span><span>Bs Bolívares</span><span>$ Pesos colombianos</span></div><p style="margin-top:14px">📍 Cúcuta – Venezuela</p></div>
+</div><div class="fbot">© 2026 TRANSAFRONTERA VE · Todos los derechos reservados · Precios en USD sujetos a la tasa del día</div></footer>
 <script>
 // ===== CONFIGURACIÓN (editar) =====
 const CFG={tasaCOPporUSD:3174.67,fuente:"binance",margen:0.20,whatsapp:"584120886940",mrwCOPporKg:30000};
 // ===== PRODUCTOS (ejemplo) =====
 const P=[
-{n:"Audífonos Bluetooth 1Hora AUT209",c:"Tecnología",cop:19900,kg:0.2,e:"🎧",tienda:"[tienda]",url:"https://[tienda]/audifonos-in-ear-bluetooth-1hora-aut209-negro-683975/p"},
-{n:"Resaltadores Pelikan pastel x6",c:"Papelería",cop:15850,kg:0.1,e:"🖍️",tienda:"[tienda]",url:"https://[tienda]/resaltadores-pelikan-colores-pastel-x-6-unidades-576166/p"},
+{n:"Audífonos Bluetooth 1Hora AUT209",c:"Tecnología",cop:19900,antes:99900,kg:0.2,e:"🎧",tienda:"[tienda]",url:"https://[tienda]/audifonos-in-ear-bluetooth-1hora-aut209-negro-683975/p"},
+{n:"Resaltadores Pelikan pastel x6",c:"Papelería",cop:15850,antes:18700,kg:0.1,e:"🖍️",tienda:"[tienda]",url:"https://[tienda]/resaltadores-pelikan-colores-pastel-x-6-unidades-576166/p"},
 {n:"Colores Prismacolor Junior x36",c:"Papelería",cop:63500,kg:0.4,e:"🎨",tienda:"[tienda]",url:"https://[tienda]/colores-prismacolor-x-36-unidades-630338/p"},
 {n:"Calculadora de mesa Casio MJ-12VCB",c:"Papelería",cop:54900,kg:0.3,e:"🧮",tienda:"[tienda]",url:"https://[tienda]/calculadora-de-mesa-casio-mj-12vcb/p"},
-{n:"Cámara infantil sumergible",c:"Juguetes",cop:79900,kg:0.3,e:"📷",tienda:"[tienda]",url:"https://[tienda]/camara-infantil-sumergible-con-estuche-azul-696215/p"},
-{n:"Secador Remington Keratin Protect",c:"Belleza",cop:35000,kg:0.8,e:"💨",tienda:"[tienda]",url:"https://[tienda]/secador-cabello-remington-keratin-protect-3000-w-re-2003-105029276-mp/p"},
-{n:"Secador cepillo Aguacate con iones",c:"Belleza",cop:32000,kg:0.7,e:"💇",tienda:"[tienda]",url:"https://[tienda]/secador-cepillo-de-cabello-aguacate-con-iones-102548321-mp/p"},
-{n:"Audífonos inalámbricos M10",c:"Tecnología",cop:25895,kg:0.2,e:"🎧",tienda:"[tienda]",url:"https://[tienda]/audifonos-m10-104175271-mp/p"},
-{n:"Audífonos Ambie",c:"Tecnología",cop:28660,kg:0.2,e:"🎵",tienda:"[tienda]",url:"https://[tienda]/audifonos-ambie-102823085/p"},
-{n:"Licuadora Black+Decker 550 W",c:"Electrodomésticos",cop:119000,kg:2.5,e:"🥤",tienda:"[tienda]",url:"https://[tienda]/licuadora-550w-10-velocidades-884899/p"},
-{n:"Audífonos Redmi Buds 6 Play",c:"Tecnología",cop:59900,kg:0.2,e:"🎧",tienda:"[tienda]",url:"https://[tienda]/product/73025565/Audifonos-earbuds-Xiaomi-Bluetooth-Redmi-Buds-6-Play-Ng"},
-{n:"Plancha Remington Aguacate S9960",c:"Belleza",cop:172900,kg:0.7,e:"✨",tienda:"[tienda]",url:"https://[tienda]/product/117197333/Plancha-Alisadora-de-Cabello-Aguacate-Macadamia-Remington-S9960"},
-{n:"Kit taladro inalámbrico 24V Prtool",c:"Herramientas",cop:89000,kg:2.0,e:"🔩",tienda:"[tienda]",url:"https://[tienda]/product/157722978/kit-taladro-percutor-inalambrico-24v-mandril-metalico-prtool"},
-{n:"Bloques Arma Todo 1000 piezas",c:"Juguetes",cop:69900,kg:1.2,e:"🧱",tienda:"[tienda]",url:"https://[tienda]/product/132178386/Arma-Todo-Bloques-Para-Armar-1000-Piezas"},
+{n:"Cámara infantil sumergible",c:"Juguetes",cop:79900,antes:89900,kg:0.3,e:"📷",tienda:"[tienda]",url:"https://[tienda]/camara-infantil-sumergible-con-estuche-azul-696215/p"},
+{n:"Secador Remington Keratin Protect",c:"Belleza",cop:35000,antes:78500,kg:0.8,e:"💨",tienda:"[tienda]",url:"https://[tienda]/secador-cabello-remington-keratin-protect-3000-w-re-2003-105029276-mp/p"},
+{n:"Secador cepillo Aguacate con iones",c:"Belleza",cop:32000,antes:50000,kg:0.7,e:"💇",tienda:"[tienda]",url:"https://[tienda]/secador-cepillo-de-cabello-aguacate-con-iones-102548321-mp/p"},
+{n:"Audífonos inalámbricos M10",c:"Tecnología",cop:25895,antes:51999,kg:0.2,e:"🎧",tienda:"[tienda]",url:"https://[tienda]/audifonos-m10-104175271-mp/p"},
+{n:"Audífonos Ambie",c:"Tecnología",cop:28660,antes:56500,kg:0.2,e:"🎵",tienda:"[tienda]",url:"https://[tienda]/audifonos-ambie-102823085/p"},
+{n:"Licuadora Black+Decker 550 W",c:"Electrodomésticos",cop:119000,antes:130000,kg:2.5,e:"🥤",tienda:"[tienda]",url:"https://[tienda]/licuadora-550w-10-velocidades-884899/p"},
+{n:"Audífonos Redmi Buds 6 Play",c:"Tecnología",cop:59900,antes:99900,kg:0.2,e:"🎧",tienda:"[tienda]",url:"https://[tienda]/product/73025565/Audifonos-earbuds-Xiaomi-Bluetooth-Redmi-Buds-6-Play-Ng"},
+{n:"Plancha Remington Aguacate S9960",c:"Belleza",cop:172900,antes:271000,kg:0.7,e:"✨",tienda:"[tienda]",url:"https://[tienda]/product/117197333/Plancha-Alisadora-de-Cabello-Aguacate-Macadamia-Remington-S9960"},
+{n:"Kit taladro inalámbrico 24V Prtool",c:"Herramientas",cop:89000,antes:149900,kg:2.0,e:"🔩",tienda:"[tienda]",url:"https://[tienda]/product/157722978/kit-taladro-percutor-inalambrico-24v-mandril-metalico-prtool"},
+{n:"Bloques Arma Todo 1000 piezas",c:"Juguetes",cop:69900,antes:84900,kg:1.2,e:"🧱",tienda:"[tienda]",url:"https://[tienda]/product/132178386/Arma-Todo-Bloques-Para-Armar-1000-Piezas"},
 {n:"Set construcción Spider-Man vs moto",c:"Juguetes",cop:79900,kg:0.4,e:"🕷️",tienda:"[tienda]",url:"https://[tienda]/product/73573668/spider-man-vs-moto-del-motorista-f"},
 {n:"Kit atornillador 4.8V Black+Decker",c:"Herramientas",cop:89900,kg:1.0,e:"🪛",tienda:"[tienda]",url:"https://[tienda]/product/279076/kit-atornillador-48v-15-accesorios-black-and-decker/279076/"},
 {n:"Destornilladores de precisión x6",c:"Herramientas",cop:10900,kg:0.2,e:"🔧",tienda:"[tienda]",url:"https://[tienda]/product/97959/juego-destornilladores-precision-6-piezas-cpp067d/97959/"},
-{n:"Destornilladores Stanley CushionGrip x2",c:"Herramientas",cop:25900,kg:0.3,e:"🪛",tienda:"[tienda]",url:"https://[tienda]/product/388976/juego-de-destornilladores-2-piezas-cushiongrip-stanley/388976/"},
+{n:"Destornilladores Stanley CushionGrip x2",c:"Herramientas",cop:25900,antes:29900,kg:0.3,e:"🪛",tienda:"[tienda]",url:"https://[tienda]/product/388976/juego-de-destornilladores-2-piezas-cushiongrip-stanley/388976/"},
 {n:"Set destornilladores 4 piezas",c:"Herramientas",cop:11900,kg:0.3,e:"🔧",tienda:"[tienda]",url:"https://[tienda]/product/62307/set-destornilladores-4-piezas-cc226/62307/"},
 {n:"Linterna recargable 80 m",c:"Hogar",cop:59900,kg:0.4,e:"🔦",tienda:"[tienda]",url:"https://[tienda]/product/3055636/linterna-recargable-alcance-80-metros/3055636/"}];
 const usd=(cop,kg)=>(cop*(1+CFG.margen)+Math.max(1,Math.ceil(kg))*CFG.mrwCOPporKg)/CFG.tasaCOPporUSD;
 const $=id=>document.getElementById(id);
-
-[...new Set(P.map(p=>p.c))].forEach(c=>$("cat").add(new Option(c,c)));
-function render(){const q=$("q").value.toLowerCase(),c=$("cat").value;
-$("grid").innerHTML=P.filter(p=>p.n.toLowerCase().includes(q)&&(!c||p.c==c)).map(p=>{const v=usd(p.cop,p.kg).toFixed(2);
-return `<div class="card"><div class="img">${p.e}</div><div class="body"><span class="cat">${p.c}</span><h3>${p.n}</h3>
-<div class="price">$${v}<small>Incluye envío MRW a cualquier oficina en Venezuela</small></div>
-<a class="btn" target="_blank" href="https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent("Hola TRANSAFRONTERA VE, quiero: "+p.n+" ($"+v+") con envío MRW")}">Pedir por WhatsApp</a></div></div>`}).join("")}
-function calc(){const v=usd(+$("cp").value,+$("cw").value).toFixed(2);$("cres").textContent="Precio final: $"+v+" USD";
-$("cwa").href=`https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent("Hola, quiero cotizar un producto de "+$("cp").value+" COP, "+$("cw").value+" kg ($"+v+")")}`}
-["q","cat"].forEach(i=>$(i).oninput=render);["cp","cw"].forEach(i=>$(i).oninput=calc);render();calc();
-let T={};function showTRM(){$("trm").textContent="Tasa usada: $"+CFG.tasaCOPporUSD.toLocaleString("es-CO")+" COP/USD ("+(CFG.fuente=="binance"&&T.usdt_venta?"USDT Binance P2P":"TRM")+")"+(T.trm?" · TRM $"+T.trm.toLocaleString("es-CO"):"")+(T.usdt_compra?" · USDT compra $"+T.usdt_compra.toLocaleString("es-CO")+" / venta $"+T.usdt_venta.toLocaleString("es-CO"):"")+(T.actualizado?" · "+T.actualizado:"")}showTRM();
-fetch("tasas.json?"+Date.now()).then(r=>r.json()).then(d=>{T=d;const v=CFG.fuente=="binance"&&d.usdt_venta?d.usdt_venta:d.trm;if(v>1000){CFG.tasaCOPporUSD=v}render();calc();showTRM()}).catch(()=>{});
+P.forEach((p,i)=>p.id=i);
+const CATS=[...new Set(P.map(p=>p.c))];
+const ICO={"Tecnología":"🎧","Papelería":"✏️","Juguetes":"🧸","Belleza":"💄","Electrodomésticos":"🔌","Herramientas":"🛠️","Hogar":"🏠"};
+const BG={"Tecnología":"#e6ecff","Papelería":"#fff4cc","Juguetes":"#ffe6ea","Belleza":"#fde8f3","Electrodomésticos":"#e5f6f1","Herramientas":"#fff0dc","Hogar":"#eaf3ff"};
+const wa=t=>`https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent(t)}`;
+const esc=s=>s.replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+CATS.forEach(c=>$("cat").add(new Option(c,c)));
+$("cnav").innerHTML=`<button data-c="" class="on">Todo</button>`+CATS.map(c=>`<button data-c="${c}">${c}</button>`).join("")+`<button data-go="cotiza">Cotiza tu producto</button><button data-go="como">Cómo funciona</button>`;
+$("slst").innerHTML=`<button data-c="">🛍️ Ver todo</button>`+CATS.map(c=>`<button data-c="${c}">${ICO[c]||"📦"} ${c}</button>`).join("");
+$("rcats").innerHTML=CATS.map(c=>`<button data-c="${c}"><span class="cir" style="background:${BG[c]||"#fff"}">${ICO[c]||"📦"}</span>${c}</button>`).join("")+`<button data-go="cotiza"><span class="cir">🧾</span>Cotiza</button>`;
+$("fcats").innerHTML=CATS.map(c=>`<li><a href="#catalogo" data-c="${c}">${c}</a></li>`).join("");
+function card(p){const v=usd(p.cop,p.kg);const a=p.antes&&p.antes>p.cop?usd(p.antes,p.kg):0;const pct=a?Math.round((1-v/a)*100):0;
+return `<article class="card">${pct>0?`<span class="badge">-${pct}%</span>`:""}<div class="pimg" style="background:${BG[p.c]||"#eef1f7"}"><span>${p.e}</span></div>
+<div class="pb"><span class="pc">${esc(p.c)}</span><h3 class="pn">${esc(p.n)}</h3><div class="pp"><b class="${pct>0?"":"reg"}">$${v.toFixed(2)}</b>${pct>0?`<s>Antes $${a.toFixed(2)}</s>`:""}</div>
+<span class="ship">🚚 Envío MRW incluido</span><button class="add" data-add="${p.id}">Agregar</button></div></article>`}
+const disc=p=>p.antes?1-p.cop/p.antes:0;
+function rail(id,list){const t=$(id);t.innerHTML=list.map(card).join("");}
+function renderHome(){
+rail("best",[0,10,12,5,9,13,15,19,7,11].map(i=>P[i]));
+rail("deals",P.filter(p=>p.antes).sort((a,b)=>disc(b)-disc(a)));
+$("catsecs").innerHTML=CATS.filter(c=>P.filter(p=>p.c==c).length>=3).map(c=>`<section class="sec"><div class="sh"><h2>${ICO[c]||""} ${c}</h2><button data-c="${c}">Ver todo ›</button></div><div class="rail"><div class="track">${P.filter(p=>p.c==c).map(card).join("")}</div></div></section>`).join("");
+document.querySelectorAll(".rail").forEach(r=>{if(r.querySelector(".arr"))return;const t=r.querySelector(".track");
+r.insertAdjacentHTML("beforeend",`<button class="arr l" aria-label="Anterior">‹</button><button class="arr r" aria-label="Siguiente">›</button>`);
+r.querySelector(".arr.l").onclick=()=>t.scrollBy({left:-t.clientWidth*.8,behavior:"smooth"});r.querySelector(".arr.r").onclick=()=>t.scrollBy({left:t.clientWidth*.8,behavior:"smooth"});});}
+function render(){const q=$("q").value.toLowerCase().trim(),c=$("cat").value;
+const L=P.filter(p=>p.n.toLowerCase().includes(q)&&(!c||p.c==c));
+$("ctitle").textContent=q?`Resultados para “${$("q").value}”`:(c||"Todos los productos");
+$("grid").innerHTML=L.length?L.map(card).join(""):`<div class="empty" style="grid-column:1/-1">No encontramos “${esc(q)}”. ¡Cotízalo abajo y te lo traemos! 👇</div>`;
+document.querySelectorAll(".cnav button[data-c]").forEach(b=>b.classList.toggle("on",b.dataset.c==c));}
+function setCat(c){$("cat").value=c;$("q").value="";render();closeAll();$("catalogo").scrollIntoView({behavior:"smooth"});}
+function calc(){const v=usd(+$("cp").value,+$("cw").value).toFixed(2);$("cres").textContent="$"+v+" USD";
+$("cwa").href=wa("Hola, quiero cotizar un producto de "+$("cp").value+" COP, "+$("cw").value+" kg ($"+v+")")}
+// carrito
+let C=JSON.parse(localStorage.getItem("tfcart")||"{}");
+const save=()=>{localStorage.setItem("tfcart",JSON.stringify(C));drawCart()};
+function drawCart(){const ids=Object.keys(C).filter(i=>P[i]&&C[i]>0);let tot=0,n=0;
+$("ci").innerHTML=ids.length?ids.map(i=>{const p=P[i],v=usd(p.cop,p.kg);tot+=v*C[i];n+=C[i];return `<div class="ci"><span class="e">${p.e}</span><div class="d">${esc(p.n)}<b>$${(v*C[i]).toFixed(2)}</b></div><div class="qty"><button data-q="${i}" data-d="-1">−</button>${C[i]}<button data-q="${i}" data-d="1">+</button></div></div>`}).join(""):`<div class="empty">Tu carrito está vacío 🛒</div>`;
+$("ct").textContent="$"+tot.toFixed(2);$("cc").textContent=n;}
+function sendCart(){const ids=Object.keys(C).filter(i=>P[i]&&C[i]>0);if(!ids.length)return toast("Agrega productos primero");let tot=0;
+const lines=ids.map(i=>{const p=P[i],v=usd(p.cop,p.kg);tot+=v*C[i];return `• ${C[i]} x ${p.n} — $${(v*C[i]).toFixed(2)}`});
+window.open(wa("Hola TRANSAFRONTERA VE, quiero hacer este pedido (envío MRW incluido):\n"+lines.join("\n")+"\nTotal: $"+tot.toFixed(2)+" USD"),"_blank");}
+let tt;function toast(m){$("toast").textContent=m;$("toast").classList.add("on");clearTimeout(tt);tt=setTimeout(()=>$("toast").classList.remove("on"),1800)}
+function closeAll(){["ov","side","cart"].forEach(i=>$(i).classList.remove("on"))}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-add],[data-c],[data-go],[data-q]");if(!t)return;
+if(t.dataset.add!=null){const i=t.dataset.add;C[i]=(C[i]||0)+1;save();toast("✅ Agregado al carrito");t.classList.add("ok");t.textContent="✓ Agregado";setTimeout(()=>{t.classList.remove("ok");t.textContent="Agregar"},1200)}
+else if(t.dataset.q!=null){const i=t.dataset.q;C[i]=(C[i]||0)+ +t.dataset.d;if(C[i]<=0)delete C[i];save()}
+else if(t.dataset.go){closeAll();$(t.dataset.go).scrollIntoView({behavior:"smooth"})}
+else{e.preventDefault();setCat(t.dataset.c)}});
+$("mb").onclick=()=>{$("side").classList.add("on");$("ov").classList.add("on")};
+$("cb").onclick=()=>{$("cart").classList.add("on");$("ov").classList.add("on")};
+["ov","sx","cx"].forEach(i=>$(i).onclick=closeAll);$("cwsend").onclick=sendCart;
+$("sf").onsubmit=e=>{e.preventDefault();render();$("catalogo").scrollIntoView({behavior:"smooth"})};
+["hwa","fwa"].forEach(i=>$(i).href=wa("Hola TRANSAFRONTERA VE, necesito ayuda con una compra"));document.querySelectorAll(".fwl").forEach(a=>a.href=$("hwa").href);
+// hero
+const S=[...document.querySelectorAll(".slide")];let si=0,ht;
+$("dots").innerHTML=S.map((_,i)=>`<button aria-label="Slide ${i+1}" class="${i?"":"on"}"></button>`).join("");
+const D=[...$("dots").children];function go(i){si=(i+S.length)%S.length;S.forEach((s,k)=>s.classList.toggle("on",k==si));D.forEach((d,k)=>d.classList.toggle("on",k==si));clearInterval(ht);ht=setInterval(()=>go(si+1),5000)}
+D.forEach((d,i)=>d.onclick=()=>go(i));$("hl").onclick=()=>go(si-1);$("hr").onclick=()=>go(si+1);go(0);
+["q","cat"].forEach(i=>$(i).oninput=render);["cp","cw"].forEach(i=>$(i).oninput=calc);
+function all(){renderHome();render();calc();drawCart()}all();
+let T={};function showTRM(){$("trm").textContent="💱 Tasa usada: $"+CFG.tasaCOPporUSD.toLocaleString("es-CO")+" COP/USD ("+(CFG.fuente=="binance"&&T.usdt_venta?"USDT Binance P2P":"TRM")+")"+(T.trm?" · TRM $"+T.trm.toLocaleString("es-CO"):"")+(T.usdt_compra?" · USDT compra $"+T.usdt_compra.toLocaleString("es-CO")+" / venta $"+T.usdt_venta.toLocaleString("es-CO"):"")+(T.actualizado?" · "+T.actualizado:"")}showTRM();
+fetch("tasas.json?"+Date.now()).then(r=>r.json()).then(d=>{T=d;const v=CFG.fuente=="binance"&&d.usdt_venta?d.usdt_venta:d.trm;if(v>1000){CFG.tasaCOPporUSD=v}all();showTRM()}).catch(()=>{});
 </script></body></html>
