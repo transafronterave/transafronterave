@@ -1,0 +1,14 @@
+name: Actualizar tasas
+on:
+  schedule: [{cron: "*/30 * * * *"}]
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  tasas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/tasas.py
+      - run: |
+          git config user.name "tasas-bot"; git config user.email "transafronterave@gmail.com"
+          git add tasas.json; git diff --cached --quiet || (git commit -m "Tasas $(date -u +%H:%M)" && git push)
