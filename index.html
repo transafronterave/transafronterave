@@ -41,6 +41,7 @@ footer{background:var(--n);color:#fff;text-align:center;padding:26px;font-size:.
 <div class="step"><b>4</b>Recíbelo por MRW en tu ciudad</div></section>
 <h2 id="catalogo">Catálogo</h2>
 <p class="note">Precios de referencia actualizados el 18 oct 2026</p>
+<p class="note" id="trm" style="color:#0D214F;font-weight:600"></p>
 <div class="filters"><input id="q" placeholder="Buscar producto..."><select id="cat"><option value="">Todas las categorías</option></select>
 </div>
 <div class="grid" id="grid"></div>
@@ -54,7 +55,7 @@ footer{background:var(--n);color:#fff;text-align:center;padding:26px;font-size:.
 TRANSAFRONTERA VE · Cúcuta – Venezuela · Envíos por MRW<br>© 2026</footer>
 <script>
 // ===== CONFIGURACIÓN (editar) =====
-const CFG={tasaCOPporUSD:4000,margen:0.20,whatsapp:"584120886940",mrwCOPporKg:30000};
+const CFG={tasaCOPporUSD:3174.67,margen:0.20,whatsapp:"584120886940",mrwCOPporKg:30000};
 // ===== PRODUCTOS (ejemplo) =====
 const P=[
 {n:"Audífonos Bluetooth 1Hora AUT209",c:"Tecnología",cop:19900,kg:0.2,e:"🎧",tienda:"[tienda]",url:"https://[tienda]/audifonos-in-ear-bluetooth-1hora-aut209-negro-683975/p"},
@@ -90,4 +91,6 @@ return `<div class="card"><div class="img">${p.e}</div><div class="body"><span c
 function calc(){const v=usd(+$("cp").value,+$("cw").value).toFixed(2);$("cres").textContent="Precio final: $"+v+" USD";
 $("cwa").href=`https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent("Hola, quiero cotizar un producto de "+$("cp").value+" COP, "+$("cw").value+" kg ($"+v+")")}`}
 ["q","cat"].forEach(i=>$(i).oninput=render);["cp","cw"].forEach(i=>$(i).oninput=calc);render();calc();
+function showTRM(){$("trm").textContent="TRM del día: $"+CFG.tasaCOPporUSD.toLocaleString("es-CO")+" COP por USD"}showTRM();
+fetch("https://www.datos.gov.co/resource/32sa-8pi3.json?$order=vigenciadesde%20DESC&$limit=1").then(r=>r.json()).then(d=>{const v=parseFloat(d[0].valor);if(v>1000){CFG.tasaCOPporUSD=v;render();calc();showTRM()}}).catch(()=>{});
 </script></body></html>
