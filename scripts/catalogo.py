@@ -60,11 +60,20 @@ def item(store, src_id, url, name, cat, cop, antes, kg, emo, img, specs=None, ra
                 antes=int(round(antes)) if antes and antes > cop * 1.01 else None, kg=round(k or kg, 2),
                 kgsrc="spec" if k else "est", e=emo, src_img=img, rank=rank)
 
-# ---------- VTEX ([tienda] / [tienda]) ----------
-def vtex(store, base, q, cat, kg, emo, n=40):
+# ---------- Fuentes ----------
+# La configuración de tiendas (URLs, nombres) NO se publica: se lee de la variable de entorno
+# CATALOGO_FUENTES (secreto del repo) o de scripts/data/fuentes_config.json (.gitignore).
+def load_cfg():
+    raw = os.environ.get("CATALOGO_FUENTES")
+    if not raw:
+        fp = os.path.join(DATA, "fuentes_config.json")
+        if os.path.exists(fp): raw = open(fp, encoding="utf-8").read()
+    if not raw: sys.exit("Falta CATALOGO_FUENTES o scripts/data/fuentes_config.json")
+    return json.loads(raw)
+
+def vtex(t, q, cat, kg, emo, n=40):
     out = []
-    url = f"{base}/catalog_system/pub/products/search?ft={urllib.parse.quote(q)}&O=OrderByTopSaleDESC&_from=0&_to={n-1}"
-    r = get(url)
+    r = get(f"{t['api']}/catalog_system/pub/products/search?ft={urllib.parse.quote(q)}&O=OrderByTopSaleDESC&_from=0&_to={n-1}")
     if not r: return out
     try: data = r.json()
     except Exception: return out
@@ -73,34 +82,29 @@ def vtex(store, base, q, cat, kg, emo, n=40):
             it = p["items"][0]; off = it["sellers"][0]["commertialOffer"]
             if not off.get("AvailableQuantity") or not off.get("Price"): continue
             specs = {k: p.get(k) for k in p.get("allSpecifications", [])}
-            home = base.replace("/io/api", "").replace("/api", "")
-            out.append(item(store, p["productId"], f"{home}/{p['linkText']}/p", p["productName"], cat, off["Price"],
+            out.append(item(t["nombre"], p["productId"], f"{t['home']}/{p['linkText']}/p", p["productName"], cat, off["Price"],
                             max(off.get("ListPrice") or 0, off.get("PriceWithoutDiscount") or 0), kg, emo,
                             it["images"][0]["imageUrl"].split("?")[0], specs, rk))
         except (KeyError, IndexError, TypeError): pass
     return out
 
-# ---------- Algolia ([tienda]): clave pública de búsqueda publicada en su web ----------
-ALK = {}
-def alk_cfg():
-    if ALK: return ALK
-    r = get("https://[tienda]/search/?text=audifonos")
-    h = r.text if r else ""
-    for k, pat in (("app", r"applicationId\s*:\s*'([^']+)'"), ("key", r"apiKey\s*:\s*'([^']+)'"), ("idx", r"indexName\s*:\s*'([^']+)'")):
-        m = re.search(pat, h); ALK[k] = m.group(1) if m else None
-    return ALK
-
-def tienda_algolia(q, cat, kg, emo, n=40):
-    c = alk_cfg()
-    if not c.get("key"): print("  [tienda]: sin configuración de búsqueda", file=sys.stderr); return []
+# Índice de búsqueda: la clave pública de solo-búsqueda se lee de la propia página de búsqueda de la tienda.
+def algolia(t, q, cat, kg, emo, n=40):
+    if "_c" not in t:
+        r = get(t["page"]); h = r.text if r else ""; c = {}
+        for k, pat in (("app", r"applicationId\s*:\s*'([^']+)'"), ("key", r"apiKey\s*:\s*'([^']+)'"), ("idx", r"indexName\s*:\s*'([^']+)'")):
+            m = re.search(pat, h); c[k] = m.group(1) if m else None
+        t["_c"] = c
+    c = t["_c"]
+    if not c.get("key"): print("  algolia: sin configuración", file=sys.stderr); return []
     time.sleep(DELAY)
     try:
         r = S.post(f"https://{c['app'].lower()}-dsn.algolia.net/1/indexes/{c['idx']}/query",
-                   headers={"X-Algolia-Application-Id": c["app"], "X-Algolia-API-Key": c["key"], "Referer": "https://[tienda]/"},
+                   headers={"X-Algolia-Application-Id": c["app"], "X-Algolia-API-Key": c["key"], "Referer": t["home"] + "/"},
                    json={"params": urllib.parse.urlencode({"query": q, "hitsPerPage": n})}, timeout=30)
         hits = r.json().get("hits", [])
     except Exception as e:
-        print("  [tienda] err", e, file=sys.stderr); return []
+        print("  algolia err", e, file=sys.stderr); return []
     out = []
     for rk, h in enumerate(hits):
         try:
@@ -112,13 +116,12 @@ def tienda_algolia(q, cat, kg, emo, n=40):
                 parts = a.split("=")
                 if len(parts) >= 3: specs[parts[1]] = parts[2]
             img = h.get("img-820wx820h_string") or h.get("img-750wx750h_string")
-            out.append(item("[tienda]", h["objectID"], "https://[tienda]" + h.get("url_es_string", ""), h["name_text_es"], cat, cop, antes, kg, emo, img, specs, rk))
+            out.append(item(t["nombre"], h["objectID"], t["home"] + h.get("url_es_string", ""), h["name_text_es"], cat, cop, antes, kg, emo, img, specs, rk))
         except (KeyError, ValueError, TypeError): pass
     return out
 
-# ---------- [tienda] ----------
-def tienda_soco(q, cat, kg, emo):
-    base = "https://[tienda]/s/search/v1/soco"
+def soco(t, q, cat, kg, emo):
+    base = t["api"]
     r = get(f"{base}?q={urllib.parse.quote(q)}&priceGroup=10&page=1&zone=")
     try: d = r.json()["data"]
     except Exception: return []
@@ -135,20 +138,12 @@ def tienda_soco(q, cat, kg, emo):
             cop = pr.get("INTERNET") or pr.get("EVENT") or pr.get("NORMAL")
             if not cop or not p.get("mediaUrls"): continue
             specs = {h["key"]: h["value"] for h in p.get("highlights", [])}
-            out.append(item("[tienda]", p["productId"], f"https://[tienda]/product/{p['productId']}/",
+            out.append(item(t["nombre"], p["productId"], f"{t['home']}{p['productId']}/",
                             p["displayName"], cat, cop, pr.get("NORMAL"), kg, emo, p["mediaUrls"][0], specs, rk))
         except (KeyError, TypeError): pass
     return out
 
-STORES = {
- "[tienda]": lambda q, c, k, e: vtex("[tienda]", "https://[tienda]/io/api", q, c, k, e),
- "[tienda]": lambda q, c, k, e: vtex("[tienda]", "https://[tienda]/api", q, c, k, e),
- "[tienda]": tienda_algolia,
- "[tienda]": tienda_soco,
-}
-# Qué categorías tiene sentido buscar en cada tienda
-SKIP = {"[tienda]": {"Celulares", "Juguetes", "Belleza", "Papelería"}, "[tienda]": {"Herramientas", "Electrodomésticos", "Deportes", "Belleza"},
-        "[tienda]": {"Papelería", "Herramientas"}}
+ADAPT = {"vtex": vtex, "algolia": algolia, "soco": soco}
 
 import unicodedata
 def nrm(t): return "".join(ch for ch in unicodedata.normalize("NFD", t.lower()) if unicodedata.category(ch) != "Mn")
@@ -165,9 +160,10 @@ def ok(p):
 
 def collect():
     allp, seen, fails = [], set(), []
-    for st, fn in STORES.items():
+    for t in load_cfg().values():
+        st = t["nombre"]; fn = lambda q, c, k, e, t=t: ADAPT[t["tipo"]](t, q, c, k, e)
         for cat, qs in Q.items():
-            if cat in SKIP.get(st, ()): continue
+            if cat in t.get("skip", []): continue
             got = []
             for q, kg, emo in qs:
                 try: res = fn(q, cat, kg, emo)

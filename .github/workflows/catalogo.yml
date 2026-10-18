@@ -14,6 +14,7 @@ jobs:
         with: {python-version: "3.12"}
       - run: pip install requests pillow
       - run: python3 scripts/catalogo.py
+        env: {CATALOGO_FUENTES: "${{ secrets.CATALOGO_FUENTES }}"}
       - run: |
           git config user.name "transafronterave"; git config user.email "transafronterave@gmail.com"
           git add -A productos.json img
