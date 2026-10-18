@@ -38,6 +38,17 @@ Q = {
  "Belleza": [("secador de pelo",.8,"💨"),("plancha para cabello",.6,"✨"),("perfume",.4,"🌸"),("maquillaje",.15,"💄"),("afeitadora",.4,"🪒"),("cepillo electrico",.3,"🪥"),("crema",.3,"🧴")],
  "Deportes": [("balon",.5,"⚽"),("termo deportivo",.4,"🥤"),("mancuernas",3,"🏋️"),("tapete yoga",1,"🧘")],
 }
+# Perfiles de tienda (farmacias / jugueterías): consultas propias y solo estas categorías.
+Q_FARMA = {
+ "Belleza": [("crema hidratante",.25,"🧴"),("protector solar",.2,"☀️"),("serum facial",.1,"💧"),("limpiador facial",.25,"🧼"),("shampoo",.45,"🧴"),("acondicionador",.45,"🧴"),("tratamiento capilar",.3,"💆"),("contorno de ojos",.08,"👁️")],
+ "Maquillaje": [("base maquillaje",.1,"💄"),("labial",.05,"💋"),("pestañina",.05,"👁️"),("polvo compacto",.08,"💄"),("delineador",.04,"✏️"),("corrector",.05,"💄"),("rubor",.06,"🌸"),("sombras",.1,"🎨")],
+ "Cuidado personal": [("desodorante",.2,"🧴"),("crema dental",.2,"🪥"),("cepillo dental",.08,"🪥"),("enjuague bucal",.6,"🫧"),("jabon liquido",.5,"🧼"),("crema corporal",.45,"🧴"),("toallas higienicas",.2,"🌸"),("maquina de afeitar",.1,"🪒")],
+ "Vitaminas y venta libre": [("vitamina c",.15,"💊"),("multivitaminico",.2,"💊"),("omega 3",.2,"🐟"),("colageno",.4,"💊"),("magnesio",.2,"💊"),("acetaminofen",.05,"💊"),("ibuprofeno",.05,"💊"),("antiacido",.15,"💊"),("curitas",.05,"🩹"),("gasa",.08,"🩹"),("alcohol antiseptico",.4,"🩹"),("suero oral",.5,"💧")],
+}
+PERFIL = {"farmacia": Q_FARMA, "juguetes": {"Juguetes": Q["Juguetes"]}}
+# Solo venta libre: se descartan medicamentos con fórmula, antibióticos, controlados, inyectables y cadena de frío.
+RXBLOCK = re.compile(r"f[oó]rmula m[eé]dica|venta bajo|prescripci|antibi[oó]tic|antiinfeccios|controlad|inyect|ampolla|jeringa|aguja|insulina|vacuna|refrigera|cadena de fr[ií]o|\b2\s*°?\s*c?\s*(a|-)\s*8\s*°|amoxi|azitro|cefal|ciproflox|claritro|doxicicl|metronid|clindami|penicil|tramadol|code[ií]na|morfina|oxicod|clonazep|alpraz|diazep|lorazep|zolpidem|fentan|pregabal|gabapent|anticoncept|levonorg|hormon|testoster|estradi|cortico|prednis|dexameta|betameta|sildenaf|tadalaf|metformin|losart|enalapr|atorvast|omepraz|esomepraz|isotretin|finaster|minoxidil oral|clopidog|warfar|tretino|antidepres|sertral|fluoxet|quetiap|risperid|ketorolac|diclofenac.*(ampolla|inyect)|n[aá]proxeno s[oó]dico 550|metocarbam|tizanid|orfenadr|carisoprod|\b800\s*mg|\b\d{2,3}\.?000\s*u\.?i", re.I)
+
 EXCL = re.compile(r"televisor|\btv\b|nevera|refrigerador|congelador|lavadora|secadora de ropa|estufa|horno(?! tostador)|microondas|aire acondicionado|sof[aá]|colch[oó]n|cama\b|base cama|mueble|escritorio|silla|comedor|closet|bicicleta|patineta el[eé]ctrica|scooter|caminadora|el[ií]ptica|gimnasio|monitor|computador de escritorio|all in one|impresora|compresor|generador|hidrolavadora|escalera|carretilla|piscina|parrilla|asador|cilindro|tanque|repuesto|pin |licencia|tarjeta regalo|bono|recarga|garant[ií]a|servicio|instalaci[oó]n|kit escolar x|lavavajilla|torre de sonido|barra de sonido|minicomponente|consola", re.I)
 PER_CAT = int(os.environ.get("PER_CAT", "22"))
 MINCOP, MAXCOP, MAXKG = 8000, 2500000, 8.0
@@ -71,6 +82,12 @@ def load_cfg():
     if not raw: sys.exit("Falta CATALOGO_FUENTES o scripts/data/fuentes_config.json")
     return json.loads(raw)
 
+def rx_vtex(p):
+    sp = {k: " ".join(map(str, p.get(k) or [])) for k in p.get("allSpecifications", [])}
+    if re.search(r"^s[ií]", sp.get("Producto RX", ""), re.I) or re.search(r"rx|f[oó]rmula", sp.get("Producto Formulado", ""), re.I): return True
+    txt = " ".join(p.get("categories", [])) + " " + " ".join(sp.values())
+    return bool(RXBLOCK.search(txt))
+
 def vtex(t, q, cat, kg, emo, n=40):
     out = []
     r = get(f"{t['api']}/catalog_system/pub/products/search?ft={urllib.parse.quote(q)}&O=OrderByTopSaleDESC&_from=0&_to={n-1}")
@@ -81,6 +98,7 @@ def vtex(t, q, cat, kg, emo, n=40):
         try:
             it = p["items"][0]; off = it["sellers"][0]["commertialOffer"]
             if not off.get("AvailableQuantity") or not off.get("Price"): continue
+            if t.get("perfil") == "farmacia" and rx_vtex(p): continue
             specs = {k: p.get(k) for k in p.get("allSpecifications", [])}
             out.append(item(t["nombre"], p["productId"], f"{t['home']}/{p['linkText']}/p", p["productName"], cat, off["Price"],
                             max(off.get("ListPrice") or 0, off.get("PriceWithoutDiscount") or 0), kg, emo,
@@ -143,26 +161,57 @@ def soco(t, q, cat, kg, emo):
         except (KeyError, TypeError): pass
     return out
 
-ADAPT = {"vtex": vtex, "algolia": algolia, "soco": soco}
+# Plataforma con sesión de invitado; el detalle trae stock y banderas de regulación/fórmula/cadena de frío.
+def sfcc(t, q, cat, kg, emo, n=24):
+    if "_s" not in t:
+        time.sleep(DELAY)
+        try: t["_s"] = S.post(f"{t['api']}/customer-service/login", json={}, timeout=30).ok
+        except requests.RequestException: t["_s"] = False
+    inv = t.get("inv", "COL_INV_DEFAULT")
+    r = get(f"{t['api']}/product-service/products/search?limit={n}&offset=0&sort=&q={urllib.parse.quote(q)}&inventoryId={inv}")
+    try: hits = r.json().get("hits", [])
+    except Exception: return []
+    out = []
+    for rk, h in enumerate(hits):
+        if len(out) >= 12: break
+        if root_miss(q, h.get("productName", "")) or RXBLOCK.search(h.get("productName", "")): continue
+        d = get(f"{t['api']}/product-service/products/detail/{h['productId']}?inventoryId={inv}")
+        try: p = d.json()["productData"]
+        except Exception: continue
+        if not p.get("stock") or p.get("regulated") or p.get("isMedProduct") or p.get("isFreezerRequired") or p.get("showModalContraceptive"): continue
+        if RXBLOCK.search(" ".join(str(p.get(k, "")) for k in ("categoria", "pageKeywords", "activeIngredient"))): continue
+        pr = p.get("prices") or {}
+        cop = pr.get("price-sale-col") or pr.get("price-list-col") or p.get("price")
+        try: img = p["imageGroups"][0]["images"][0]["link"]
+        except (KeyError, IndexError): img = (h.get("image") or {}).get("link")
+        if not cop: continue
+        out.append(item(t["nombre"], p["id"], f"{t['home']}/{p.get('pageUrl','')}/{p['id']}.html", p["name"], cat, cop,
+                        pr.get("price-list-col"), kg, emo, img, None, rk))
+    return out
+
+ADAPT = {"sfcc": sfcc, "vtex": vtex, "algolia": algolia, "soco": soco}
 
 import unicodedata
 def nrm(t): return "".join(ch for ch in unicodedata.normalize("NFD", t.lower()) if unicodedata.category(ch) != "Mn")
 BULKY = re.compile(r"partybox|party box|torre|bafle|karaoke|\b(1[5-9]|[2-9]\d)\s*(\"|pulgadas)|set de \d+ ollas|bater[ií]a de cocina", re.I)
 
+def root_miss(q, n): return nrm(q.split()[0])[:5] not in nrm(n)
+
 def ok(p):
     # relevancia: el nombre debe contener la raíz de la palabra principal de la consulta
-    root = nrm(p["q"].split()[0])[:5]
-    if root not in nrm(p["n"]): return False
+    if root_miss(p["q"], p["n"]): return False
+    if p["c"] in Q_FARMA and RXBLOCK.search(p["n"]): return False
     wk = kg_from(p["n"])  # p.ej. "Mancuernas 40 Kg"
     if wk and wk > MAXKG and not re.search(r"capacidad|soporta|hasta", p["n"], re.I): return False
     if BULKY.search(p["n"]) and p["c"] != "Celulares": return False
     return (MINCOP <= p["cop"] <= MAXCOP and p["kg"] <= MAXKG and p["src_img"] and not EXCL.search(p["n"]))
 
-def collect():
-    allp, seen, fails = [], set(), []
-    for t in load_cfg().values():
+def collect(solo=None, seen=None):
+    allp, seen, fails = [], seen or set(), []
+    for key, t in load_cfg().items():
+        if solo and key not in solo: continue
         st = t["nombre"]; fn = lambda q, c, k, e, t=t: ADAPT[t["tipo"]](t, q, c, k, e)
-        for cat, qs in Q.items():
+        for cat, qs in PERFIL.get(t.get("perfil"), Q).items():
             if cat in t.get("skip", []): continue
             got = []
             for q, kg, emo in qs:
@@ -196,9 +245,18 @@ def save_img(src, dest):
     except Exception: return False
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--no-img", action="store_true"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--no-img", action="store_true")
+    ap.add_argument("--solo", help="claves de tienda separadas por coma; conserva el resto desde scripts/data/fuentes.json")
+    a = ap.parse_args()
     os.makedirs(DATA, exist_ok=True); os.makedirs(IMG, exist_ok=True)
-    prods, fails = collect()
+    keep = []
+    if a.solo:
+        solo = set(a.solo.split(",")); cfg = load_cfg(); names = {cfg[k]["nombre"] for k in solo if k in cfg}
+        keep = [p for p in json.load(open(os.path.join(DATA, "fuentes.json"), encoding="utf-8"))["productos"] if p["store"] not in names]
+        seen = {(p["store"], p["sid"]) for p in keep} | {p["n"].lower()[:40] for p in keep}
+        prods, fails = collect(solo, seen); prods = keep + prods
+    else:
+        prods, fails = collect()
     pub, priv, used = [], [], set()
     for p in prods:
         h = hashlib.sha1(f"{p['store']}:{p['sid']}".encode()).hexdigest()[:10]

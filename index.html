@@ -216,8 +216,8 @@ const usd=(cop,kg)=>(cop*(1+CFG.margen)+Math.max(1,Math.ceil(kg))*CFG.mrwCOPporK
 const $=id=>document.getElementById(id);
 const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 let CATS=[];
-const ICO={"Tecnología":"🎧","Celulares":"📱","Papelería":"✏️","Juguetes":"🧸","Belleza":"💄","Electrodomésticos":"🔌","Herramientas":"🛠️","Hogar":"🏠","Deportes":"⚽"};
-const BG={"Tecnología":"#e6ecff","Celulares":"#e8f0ff","Papelería":"#fff4cc","Juguetes":"#ffe6ea","Belleza":"#fde8f3","Electrodomésticos":"#e5f6f1","Herramientas":"#fff0dc","Hogar":"#eaf3ff","Deportes":"#e9f8e6"};
+const ICO={"Tecnología":"🎧","Celulares":"📱","Papelería":"✏️","Juguetes":"🧸","Belleza":"💄","Electrodomésticos":"🔌","Herramientas":"🛠️","Hogar":"🏠","Deportes":"⚽","Maquillaje":"💋","Cuidado personal":"🧴","Vitaminas y venta libre":"💊"};
+const BG={"Tecnología":"#e6ecff","Celulares":"#e8f0ff","Papelería":"#fff4cc","Juguetes":"#ffe6ea","Belleza":"#fde8f3","Electrodomésticos":"#e5f6f1","Herramientas":"#fff0dc","Hogar":"#eaf3ff","Deportes":"#e9f8e6","Maquillaje":"#fde6ee","Cuidado personal":"#e6f4fb","Vitaminas y venta libre":"#e8f7ee"};
 const wa=t=>`https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent(t)}`;
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 function setupCats(){CATS=[...new Set(P.map(p=>p.c))];
