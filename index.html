@@ -111,7 +111,13 @@ footer{background:var(--n);color:#cfd6e6;margin-top:30px;font-size:.88rem}
 .fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px;padding:36px 16px}
 footer h4{color:#fff;margin-bottom:12px}footer li{list-style:none;margin:7px 0}footer a:hover{color:var(--y)}
 .flogo{height:80px;background:#fff;border-radius:12px;padding:4px;margin-bottom:10px}
-.pay{display:flex;flex-wrap:wrap;gap:8px}.pay span{background:#fff;color:var(--n);font-weight:800;font-size:.78rem;padding:6px 10px;border-radius:8px}
+.pay{display:flex;flex-wrap:wrap;gap:8px}.pay span{background:#fff;color:var(--n);font-weight:800;font-size:.78rem;padding:6px 10px;border-radius:8px;display:inline-flex;align-items:center;gap:6px;border:1px solid #e8ebf2;box-shadow:0 1px 2px #0d214f0a}
+.paysec{background:#fff;border:1px solid #eceef3;border-radius:14px;padding:16px 18px;margin:4px 0 20px}
+.paysec .sh{margin-bottom:12px}.paysec .sh h2{font-size:1.15rem}
+.paysec .pay span{background:var(--g);border-color:#e3e6ee}
+.paynote{margin-top:10px;font-size:.78rem;color:#6b7280}
+.cart .payline{font-size:.72rem;color:#6b7280;margin:0 0 10px;line-height:1.35;text-align:center}
+footer .pay span{background:#fff}
 .fbot{border-top:1px solid #ffffff1f;padding:14px 16px;text-align:center;font-size:.78rem}
 /* cart */
 .cart{position:fixed;top:0;right:0;bottom:0;width:380px;max-width:92vw;background:#fff;z-index:70;transform:translateX(100%);transition:.3s;display:flex;flex-direction:column}
@@ -157,7 +163,9 @@ footer h4{color:#fff;margin-bottom:12px}footer li{list-style:none;margin:7px 0}f
 <div class="ov" id="ov"></div>
 <aside class="side" id="side"><h3>Categorías <button id="sx">×</button></h3><div class="lst" id="slst"></div></aside>
 <aside class="cart" id="cart"><h3>🛒 Tu carrito <button id="cx">×</button></h3><div class="citems" id="ci"></div>
-<div class="cfoot"><div class="tot"><span>Total</span><span id="ct">$0.00</span></div><button class="wa" id="cwsend">💬 Enviar pedido por WhatsApp</button>
+<div class="cfoot"><div class="tot"><span>Total</span><span id="ct">$0.00</span></div>
+<p class="payline" id="paycart"></p>
+<button class="wa" id="cwsend">💬 Enviar pedido por WhatsApp</button>
 <p style="font-size:.72rem;color:#6b7280;margin-top:8px;text-align:center">Envío por MRW (costo aparte). Te confirmamos disponibilidad y pago por WhatsApp.</p></div></aside>
 <div class="toast" id="toast"></div>
 <a class="fwa" id="fwa" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
@@ -177,6 +185,11 @@ footer h4{color:#fff;margin-bottom:12px}footer li{list-style:none;margin:7px 0}f
 <div class="ben"><span class="i">🇨🇴</span><div><b>Compramos por ti</b>En tiendas de Colombia</div></div>
 <div class="ben"><span class="i">💬</span><div><b>Atención por WhatsApp</b>Te acompañamos en todo</div></div>
 </div>
+<section class="paysec" id="formas-pago" aria-label="Formas de pago">
+<div class="sh"><h2>Formas de <em>pago</em></h2></div>
+<div class="pay" id="paybens"></div>
+<p class="paynote">Te pasamos los datos por WhatsApp · Sin números de cuenta en la web</p>
+</section>
 <div id="home">
 <section class="sec"><div class="sh"><h2>🔥 Lo más <em>vendido</em></h2><button data-c="">Ver todo ›</button></div><div class="rail"><div class="track" id="best"></div></div></section>
 <section class="sec"><div class="sh"><h2>🏷️ <em>Ofertas</em> imperdibles</h2><button data-c="">Ver todo ›</button></div><div class="rail"><div class="track" id="deals"></div></div></section>
@@ -191,7 +204,7 @@ footer h4{color:#fff;margin-bottom:12px}footer li{list-style:none;margin:7px 0}f
 <div class="grid" id="grid"></div><div class="more"><button id="more" hidden>Ver más productos</button></div><div id="sent"></div></section>
 <section class="how" id="como"><h2>¿Cómo funciona?</h2><div class="steps">
 <div class="step"><b>1</b>Elige tu producto o pídenos cualquiera de Colombia</div>
-<div class="step"><b>2</b>Paga en USDT, Bolívares o Pesos colombianos</div>
+<div class="step"><b>2</b>Paga con Zelle, USDT, efectivo $, Bs, Bancolombia o Nequi</div>
 <div class="step"><b>3</b>Lo compramos y despachamos desde Cúcuta</div>
 <div class="step"><b>4</b>Recíbelo por MRW en tu ciudad</div></div></section>
 <section class="sec" id="cotiza"><div class="calc"><div>
@@ -205,11 +218,19 @@ footer h4{color:#fff;margin-bottom:12px}footer li{list-style:none;margin:7px 0}f
 <div><img class="flogo" src="logo.png" alt="TRANSAFRONTERA VE"><p>Compramos por ti en tiendas de Colombia. Hacemos envíos por MRW a toda Venezuela (costo aparte). Precios del producto en dólares.</p></div>
 <div><h4>Ayuda</h4><ul><li><a href="#como">Cómo funciona</a></li><li><a href="#cotiza">Cotiza un producto</a></li><li><a class="fwl" target="_blank" rel="noopener">Escríbenos por WhatsApp</a></li><li>Envío por MRW (costo aparte)</li></ul></div>
 <div><h4>Categorías</h4><ul id="fcats"></ul></div>
-<div><h4>Medios de pago</h4><div class="pay"><span>₮ USDT</span><span>Bs Bolívares</span><span>$ Pesos colombianos</span></div><p style="margin-top:14px">📍 Cúcuta – Venezuela</p></div>
+<div><h4>Formas de pago</h4><div class="pay" id="payfoot"></div><p style="margin-top:14px">📍 Cúcuta – Venezuela</p></div>
 </div><div class="fbot">© 2026 TRANSAFRONTERA VE · Todos los derechos reservados · Precios en USD sujetos a la tasa del día</div></footer>
 <script>
 // ===== CONFIGURACIÓN (editar) =====
-const CFG={tasaCOPporUSD:3174.67,fuente:"binance",margen:0.20,whatsapp:"584120886940",mrwCOPporKg:30000};
+const CFG={tasaCOPporUSD:3174.67,fuente:"binance",margen:0.20,whatsapp:"584120886940",mrwCOPporKg:30000,
+pagos:[
+{id:"zelle",label:"Zelle",short:"Zelle",icon:"💜"},
+{id:"usdt",label:"USDT (Binance)",short:"USDT",icon:"₮"},
+{id:"cash",label:"Efectivo en dólares",short:"efectivo $",icon:"💵"},
+{id:"bs",label:"Bolívares (Bs)",short:"Bs",icon:"🇻🇪",hint:"Pago móvil / transferencia a tasa del día"},
+{id:"bancolombia",label:"Bancolombia",short:"Bancolombia",icon:"🏦"},
+{id:"nequi",label:"Nequi",short:"Nequi",icon:"📱"}
+]};
 // ===== PRODUCTOS: se cargan desde productos.json (generado por scripts/catalogo.py) =====
 let P=[],BYID={};
 const usd=cop=>(cop*(1+CFG.margen))/CFG.tasaCOPporUSD;
@@ -260,9 +281,12 @@ const save=()=>{localStorage.setItem("tfcart2",JSON.stringify(C));drawCart()};
 function drawCart(){const ids=Object.keys(C).filter(i=>BYID[i]&&C[i]>0);let tot=0,n=0;
 $("ci").innerHTML=ids.length?ids.map(i=>{const p=BYID[i],v=usd(p.cop);tot+=v*C[i];n+=C[i];return `<div class="ci"><span class="e">${p.img?`<img src="${p.img}" alt="" onerror="this.outerHTML='${p.e}'">`:p.e}</span><div class="d">${esc(p.n)}<b>$${(v*C[i]).toFixed(2)}</b></div><div class="qty"><button data-q="${i}" data-d="-1">−</button>${C[i]}<button data-q="${i}" data-d="1">+</button></div></div>`}).join(""):`<div class="empty">Tu carrito está vacío 🛒</div>`;
 $("ct").textContent="$"+tot.toFixed(2);$("cc").textContent=n;}
+function pagosLine(){return"Formas de pago: "+CFG.pagos.map(p=>p.short).join(", ")}
+function badgePagos(){return CFG.pagos.map(p=>`<span title="${esc(p.hint||p.label)}"><span aria-hidden="true">${p.icon}</span> ${esc(p.label)}</span>`).join("")}
+function renderPagos(){const b=badgePagos();["paybens","payfoot"].forEach(id=>{const el=$(id);if(el)el.innerHTML=b});const c=$("paycart");if(c)c.textContent=pagosLine()}
 function sendCart(){const ids=Object.keys(C).filter(i=>BYID[i]&&C[i]>0);if(!ids.length)return toast("Agrega productos primero");let tot=0;
 const lines=ids.map(i=>{const p=BYID[i],v=usd(p.cop);tot+=v*C[i];return `• ${C[i]} x ${p.n} — $${(v*C[i]).toFixed(2)}`});
-window.open(wa("Hola TRANSAFRONTERA VE, quiero hacer este pedido:\n"+lines.join("\n")+"\nTotal productos: $"+tot.toFixed(2)+" USD\n(Envío por MRW se paga aparte)"),"_blank");}
+window.open(wa("Hola TRANSAFRONTERA VE, quiero hacer este pedido:\n"+lines.join("\n")+"\nTotal productos: $"+tot.toFixed(2)+" USD\n(Envío por MRW se paga aparte)\n"+pagosLine()),"_blank");}
 let tt;function toast(m){$("toast").textContent=m;$("toast").classList.add("on");clearTimeout(tt);tt=setTimeout(()=>$("toast").classList.remove("on"),1800)}
 function closeAll(){["ov","side","cart"].forEach(i=>$(i).classList.remove("on"))}
 document.addEventListener("click",e=>{const t=e.target.closest("[data-add],[data-c],[data-go],[data-q]");if(!t)return;
@@ -272,7 +296,7 @@ else if(t.dataset.go){closeAll();$(t.dataset.go).scrollIntoView({behavior:"smoot
 else{e.preventDefault();setCat(t.dataset.c)}});
 $("mb").onclick=()=>{$("side").classList.add("on");$("ov").classList.add("on")};
 $("cb").onclick=()=>{$("cart").classList.add("on");$("ov").classList.add("on")};
-["ov","sx","cx"].forEach(i=>$(i).onclick=closeAll);$("cwsend").onclick=sendCart;
+["ov","sx","cx"].forEach(i=>$(i).onclick=closeAll);$("cwsend").onclick=sendCart;renderPagos();
 $("sf").onsubmit=e=>{e.preventDefault();render();$("catalogo").scrollIntoView({behavior:"smooth"})};
 ["hwa","fwa"].forEach(i=>$(i).href=wa("Hola TRANSAFRONTERA VE, necesito ayuda con una compra"));document.querySelectorAll(".fwl").forEach(a=>a.href=$("hwa").href);
 // hero
@@ -282,7 +306,7 @@ const D=[...$("dots").children];function go(i){si=(i+S.length)%S.length;S.forEac
 D.forEach((d,i)=>d.onclick=()=>go(i));$("hl").onclick=()=>go(si-1);$("hr").onclick=()=>go(si+1);go(0);
 ["q","cat","sort","pmax","onlyoff"].forEach(i=>$(i).oninput=render);$("more").onclick=more;
 new IntersectionObserver(es=>{if(es[0].isIntersecting&&shown&&shown<L.length&&shown<PAGE*4)more()},{rootMargin:"400px"}).observe($("sent"));["cp","cw"].forEach(i=>$(i).oninput=calc);
-function all(){if(P.length){renderHome();render()}calc();drawCart()}
+function all(){if(P.length){renderHome();render()}calc();drawCart();renderPagos()}
 function deep(){const h=new URLSearchParams(location.hash.slice(1)),u=new URLSearchParams(location.search);const p=BYID[h.get("p")||u.get("p")],q=p?p.n:(h.get("q")||u.get("q"));if(!q)return;$("cat").value="";$("q").value=q;render();setTimeout(()=>$("catalogo").scrollIntoView({behavior:"smooth"}),300)}
 window.addEventListener("hashchange",deep);
 fetch("productos.json").then(r=>r.json()).then(d=>{P=d.productos||d;P.forEach(p=>{BYID[p.id]=p;p._s=norm(p.n+" "+p.c)});setupCats();all();deep()}).catch(()=>{$("grid").innerHTML='<div class="empty">No se pudo cargar el catálogo. Recarga la página.</div>'});calc();
