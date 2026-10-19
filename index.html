@@ -283,7 +283,9 @@ D.forEach((d,i)=>d.onclick=()=>go(i));$("hl").onclick=()=>go(si-1);$("hr").oncli
 ["q","cat","sort","pmax","onlyoff"].forEach(i=>$(i).oninput=render);$("more").onclick=more;
 new IntersectionObserver(es=>{if(es[0].isIntersecting&&shown&&shown<L.length&&shown<PAGE*4)more()},{rootMargin:"400px"}).observe($("sent"));["cp","cw"].forEach(i=>$(i).oninput=calc);
 function all(){if(P.length){renderHome();render()}calc();drawCart()}
-fetch("productos.json").then(r=>r.json()).then(d=>{P=d.productos||d;P.forEach(p=>{BYID[p.id]=p;p._s=norm(p.n+" "+p.c)});setupCats();all()}).catch(()=>{$("grid").innerHTML='<div class="empty">No se pudo cargar el catálogo. Recarga la página.</div>'});calc();
+function deep(){const h=new URLSearchParams(location.hash.slice(1)),u=new URLSearchParams(location.search);const p=BYID[h.get("p")||u.get("p")],q=p?p.n:(h.get("q")||u.get("q"));if(!q)return;$("cat").value="";$("q").value=q;render();setTimeout(()=>$("catalogo").scrollIntoView({behavior:"smooth"}),300)}
+window.addEventListener("hashchange",deep);
+fetch("productos.json").then(r=>r.json()).then(d=>{P=d.productos||d;P.forEach(p=>{BYID[p.id]=p;p._s=norm(p.n+" "+p.c)});setupCats();all();deep()}).catch(()=>{$("grid").innerHTML='<div class="empty">No se pudo cargar el catálogo. Recarga la página.</div>'});calc();
 let T={};function showTRM(){$("trm").textContent="💱 Tasa usada: $"+CFG.tasaCOPporUSD.toLocaleString("es-CO")+" COP/USD ("+(CFG.fuente=="binance"&&T.usdt_venta?"USDT Binance P2P":"TRM")+")"+(T.trm?" · TRM $"+T.trm.toLocaleString("es-CO"):"")+(T.usdt_compra?" · USDT compra $"+T.usdt_compra.toLocaleString("es-CO")+" / venta $"+T.usdt_venta.toLocaleString("es-CO"):"")+(T.actualizado?" · "+T.actualizado:"")}showTRM();
 fetch("tasas.json?"+Date.now()).then(r=>r.json()).then(d=>{T=d;const v=CFG.fuente=="binance"&&d.usdt_venta?d.usdt_venta:d.trm;if(v>1000){CFG.tasaCOPporUSD=v}all();showTRM()}).catch(()=>{});
 </script></body></html>

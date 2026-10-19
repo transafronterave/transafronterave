@@ -9,6 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 scripts/tasas.py
+      - run: python3 scripts/feed_meta.py
       - run: |
           git config user.name "tasas-bot"; git config user.email "transafronterave@gmail.com"
-          git add tasas.json; git diff --cached --quiet || (git commit -m "Tasas $(date -u +%H:%M)" && git push)
+          git add tasas.json catalogo_meta.csv; git diff --cached --quiet || (git commit -m "Tasas $(date -u +%H:%M)" && git pull --rebase && git push)
