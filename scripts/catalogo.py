@@ -6,6 +6,8 @@ Los datos internos (tienda/URL de origen) se guardan en scripts/data/ (no public
 import json, re, os, sys, time, math, hashlib, io, urllib.parse, argparse, html
 import requests
 from PIL import Image
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import envio  # reglas de envío (bloqueo / consultar / máx. 6 unidades)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "scripts", "data")
@@ -31,7 +33,8 @@ def get(url, delay=None, **kw):
 # (categoría, consulta, kg estimado, emoji). Se toman los más vendidos/relevantes.
 Q = {
  "Tecnología": [("audifonos bluetooth",.25,"🎧"),("parlante bluetooth",.6,"🔊"),("mouse inalambrico",.2,"🖱️"),("teclado",.6,"⌨️"),("smartwatch",.2,"⌚"),("cargador",.2,"🔌"),("memoria usb",.05,"💾"),("power bank",.35,"🔋"),("cable usb",.1,"🔌")],
- "Celulares": [("celular",.4,"📱"),("tablet",.7,"📱")],
+ "Celulares": [(q,.4,"📱") for q in ("celular samsung","samsung galaxy","xiaomi","redmi","poco","motorola","iphone","honor","oppo","realme","tecno","infinix","zte","celular")],
+ "Tablets": [(q,.7,"📲") for q in ("tablet samsung","tablet lenovo","ipad","tablet xiaomi","tablet")],
  "Hogar": [("organizador",.6,"🏠"),("linterna",.3,"🔦"),("termo",.5,"🥤"),("sarten",1.2,"🍳"),("juego de cubiertos",.8,"🍴"),("toalla",.6,"🛁"),("lampara led",.5,"💡")],
  "Electrodomésticos": [("licuadora",2.5,"🥤"),("sanduchera",1.5,"🥪"),("batidora",1.5,"🍰"),("freidora de aire",4.5,"🍟"),("cafetera",2,"☕"),("plancha de ropa",1.2,"👕"),("ventilador",3,"🌀"),("hervidor",1.2,"🫖")],
  "Herramientas": [("taladro",2,"🔩"),("destornillador",.3,"🪛"),("juego de llaves",1.5,"🔧"),("brocas",.4,"🔩"),("pulidora",2.5,"⚙️"),("alicate",.4,"🔧"),("metro cinta",.3,"📏"),("caja de herramientas",2,"🧰")],
@@ -67,7 +70,38 @@ RXBLOCK = re.compile(r"f[oó]rmula m[eé]dica|venta bajo|prescripci|antibi[oó]t
 
 EXCL = re.compile(r"televisor|\btv\b|nevera|refrigerador|congelador|lavadora|secadora de ropa|estufa|horno(?! tostador)|microondas|aire acondicionado|sof[aá]|colch[oó]n|cama\b|base cama|mueble|escritorio|silla|comedor|closet|(?<!para )(?<!de )(?<!la )bicicleta|maleta (ejecutiva )?de viaje|equipaje|trolley|patineta el[eé]ctrica|scooter|caminadora|el[ií]ptica|gimnasio|monitor|computador de escritorio|all in one|impresora|compresor|generador|hidrolavadora|escalera|carretilla|piscina|parrilla|asador|cilindro|tanque|repuesto|pin |licencia|tarjeta regalo|bono|recarga|garant[ií]a|servicio|instalaci[oó]n|kit escolar x|lavavajilla|torre de sonido|barra de sonido|minicomponente|consola", re.I)
 PER_CAT = int(os.environ.get("PER_CAT", "22"))
-MINCOP, MAXCOP, MAXKG = 8000, 2500000, 8.0
+PER_CAT_OVR = {"Celulares": 80, "Tablets": 30}  # tope por tienda y categoría (las demás usan PER_CAT)
+def per_cat(c): return PER_CAT_OVR.get(c, PER_CAT)
+NOSKIP = {"Celulares", "Tablets"}  # se consultan en todas las tiendas del perfil general aunque la config tenga "skip"
+MINCOP = 1000  # sin topes de precio/peso/tamaño: el envío se cotiza aparte por WhatsApp
+# Solo se excluye lo que no es un producto físico enviable.
+NONPHYS = re.compile(r"tarjeta (de )?regalo|gift ?card|\bbono\b|garant[ií]a extendida|\bgarant[ií]a\b|\bservicio\b|instalaci[oó]n|\brecarga\b|licencia|\bpin\b|suscripci[oó]n|membres[ií]a|\bseguro\b", re.I)
+# Celulares / Tablets: solo equipos (sin accesorios, juguetes ni medicamentos en tabletas).
+PHONE = re.compile(r"\b(celular|smartphone|tel[eé]fono (m[oó]vil|celular)|iphone)\b", re.I)
+PBRAND = re.compile(r"\b(samsung|galaxy|xiaomi|redmi|poco|motorola|moto|apple|honor|oppo|realme|tecno|infinix|zte|nubia|vivo|huawei|nokia|alcatel|kalley|google pixel|oneplus)\b", re.I)
+SPEC = re.compile(r"\d+\s*gb|\b[45]g\b|\bram\b|pulgadas|\d\"|wi-?fi|\blte\b|android|iphone|ipad", re.I)
+ACC1 = re.compile(r"^(forro|funda|vidrio|protector|cargador|cable|soporte|estuche|l[aá]mina|case|mica|hidrogel|adaptador|aud[ií]fonos?|aro|tr[ií]pode|selfie|holder|base|l[aá]piz|stylus|teclado|mouse|parlante|reloj|smartwatch|morral|malet[ií]n|bolso|cover|repuesto|bater[ií]a|memoria|micr[oó]fono|lente|gimbal|kit|anillo|power|cargadores|correa|pulso|manos libres|combo accesorios|accesorio)", re.I)
+ACCX = re.compile(r"\bpara (tu |el |la )?(celular|tel[eé]fono|smartphone|tablet|tableta|iphone|ipad|samsung|xiaomi|motorola|galaxy)|\b(forro|funda|estuche|vidrio templado|protector de pantalla|l[aá]mina|hidrogel)\b", re.I)
+NOTPHONE = re.compile(r"\b(tab|pad|tablet|tableta|watch\w*|buds|band|router|diadema|transmisor|reloj|smartwatch|port[aá]til|laptop|book|tv|televisor|nevera|monitor|usb|disco|ssd|micro ?sd|tarjeta|aspiradora|parlante|barra de sonido|lavadora|aire)\b", re.I)
+TABK = re.compile(r"\b(tablet|tableta|ipad|galaxy tab|redmi pad|xiaomi pad|poco pad|matepad|honor pad|idea ?tab|lenovo tab|tab [a-z]?\d+)", re.I)
+TOY = re.compile(r"juguete|did[aá]ctic|magic pad|para ni[ñn]os de \d|beb[eé]", re.I)
+MED = re.compile(r"\b(tabletas?|pastillas?|c[aá]psulas?|grageas?)\b.*\b(gripa|dolor|\d+\s*mg|masticables?|efervescentes?|vitamina|und|recubiertas?)\b|dolex|acetaminof|ibuprof|naproxeno|loratadina|chocolate|jab[oó]n|lavavajilla|cloro", re.I)
+TABNO = re.compile(r"digitalizadora|gr[aá]fica|dibujo|wacom|\blcd\b|escritura|magn[eé]tica|pizarra", re.I)
+
+def device_ok(p):
+    n = p["n"]
+    if ACC1.search(n.strip()) or TOY.search(n) or MED.search(n) or RXBLOCK.search(n): return False
+    if p["c"] == "Celulares":
+        if ACCX.search(re.split(r"\s\+\s|\bcon\b|\bincluye\b", n)[0]): return False
+        head = re.split(r"\s\+\s", n)[0]
+        if NOTPHONE.search(head) and not re.match(r"\s*(celular|smartphone)\b", n, re.I): return False
+        if re.match(r"\s*((apple|nuevo|nueva)\s+)?(celular|smartphone|tel[eé]fono (m[oó]vil|celular)|iphone)\b", n, re.I): return True
+        return bool(re.match(r"\s*" + PBRAND.pattern, n, re.I) and re.search(r"\d+\s*gb", n, re.I))
+    if p["c"] == "Tablets":
+        if ACCX.search(re.split(r"\s\+\s|\bcon\b|\bincluye\b", n)[0]) or TABNO.search(n): return False
+        if re.match(r"\s*(celular|smartphone|iphone)\b", n, re.I): return False  # combo celular + tablet: va en Celulares
+        return bool(re.match(r"\s*((apple|samsung|lenovo|xiaomi|nueva?)\s+)?(tablet|tableta|ipad)", n, re.I) and SPEC.search(n))
+    return True
 
 def kg_from(text):
     if not text: return None
@@ -266,18 +300,17 @@ def ok(p):
     # moda: el nombre debe empezar por el tipo de prenda ("Vestido con falda..." no es una falda)
     if p.get("perfil") == "moda" and not nrm(p["n"]).split()[0].startswith(nrm(p["q"].split()[0])[:4]): return False
     if p["c"] in Q_FARMA and RXBLOCK.search(p["n"]): return False
-    wk = kg_from(p["n"])  # p.ej. "Mancuernas 40 Kg"
-    if wk and wk > MAXKG and not re.search(r"capacidad|soporta|hasta", p["n"], re.I): return False
-    if BULKY.search(p["n"]) and p["c"] != "Celulares": return False
-    return (MINCOP <= p["cop"] <= MAXCOP and p["kg"] <= MAXKG and p["src_img"] and not EXCL.search(p["n"]))
+    if not device_ok(p) or envio.bloqueado(p["n"], p["c"]): return False
+    return bool(MINCOP <= p["cop"] and p["src_img"] and not NONPHYS.search(p["n"]))
 
-def collect(solo=None, seen=None):
+def collect(solo=None, seen=None, cats=None):
     allp, seen, fails = [], seen or set(), []
     for key, t in load_cfg().items():
         if solo and key not in solo: continue
         st = t["nombre"]; fn = lambda q, c, k, e, t=t: ADAPT[t["tipo"]](t, q, c, k, e)
         for cat, qs in PERFIL.get(t.get("perfil"), Q).items():
-            if cat in t.get("skip", []): continue
+            if cat in t.get("skip", []) and cat not in NOSKIP: continue
+            if cats and cat not in cats: continue
             got = []
             for q, kg, emo in list(qs) + [tuple(x) for x in t.get("extra", {}).get(cat, [])]:  # "extra": consultas propias de la tienda
                 try: res = fn(q, cat, kg, emo)
@@ -292,11 +325,11 @@ def collect(solo=None, seen=None):
                 got.append([p for p in res if ok(p)])
             # intercalar consultas para variedad
             picked, i = [], 0
-            while len(picked) < PER_CAT and any(i < len(g) for g in got):
+            while len(picked) < per_cat(cat) and any(i < len(g) for g in got):
                 for g in got:
                     if i < len(g):
                         p = g[i]; key = (p["store"], p["sid"]); nk = p["n"].lower()[:40]
-                        if key not in seen and nk not in seen and len(picked) < PER_CAT:
+                        if key not in seen and nk not in seen and len(picked) < per_cat(cat):
                             seen.add(key); seen.add(nk); picked.append(p)
                 i += 1
             print(f"{st:13} {cat:18} {len(picked)}", file=sys.stderr)
@@ -317,7 +350,9 @@ def save_img(src, dest):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--no-img", action="store_true")
     ap.add_argument("--solo", help="claves de tienda separadas por coma; conserva el resto tal cual está publicado en productos.json")
+    ap.add_argument("--cats", help="con --solo: solo rehace estas categorías (coma); las demás categorías de esas tiendas se conservan")
     a = ap.parse_args()
+    cats = set(a.cats.split(",")) if a.cats else None
     os.makedirs(DATA, exist_ok=True); os.makedirs(IMG, exist_ok=True)
     pub, priv, used, added = [], [], set(), []
     if a.solo:
@@ -325,15 +360,18 @@ def main():
         old = json.load(open(os.path.join(DATA, "fuentes.json"), encoding="utf-8"))["productos"]
         # La acción semanal publica productos.json pero no guarda fuentes.json (privado), así que fuentes.json puede
         # estar desfasado: se conserva tal cual lo publicado de las demás tiendas y solo se reemplaza lo de --solo.
-        drop = {p["id"] for p in old if p["store"] in names}
-        byid = {p["id"]: p for p in old if p["store"] not in names}
+        insc = lambda c: cats is None or c in cats
+        drop = {p["id"] for p in old if p["store"] in names and insc(p["c"])}
+        byid = {p["id"]: p for p in old if p["id"] not in drop}
         pubold = json.load(open(os.path.join(ROOT, "productos.json"), encoding="utf-8"))["productos"]
+        known = {p["id"] for p in old}
         for o in pubold:
             if o["id"] in drop or not os.path.exists(os.path.join(ROOT, o["img"])): continue
+            if cats and o["c"] in cats and o["id"] not in known: continue  # publicado desfasado (sin fuente): se rehace
             pub.append(o); used.add(os.path.basename(o["img"]))
             if o["id"] in byid: priv.append(byid[o["id"]])
         seen = {(p["store"], p["sid"]) for p in priv} | {o["n"].lower()[:40] for o in pub}
-        prods, fails = collect(solo, seen)
+        prods, fails = collect(solo, seen, cats)
     else:
         prods, fails = collect()
     for p in prods:
@@ -347,6 +385,8 @@ def main():
         o.update(kg=p["kg"], e=p["e"], img=fn)
         if p["rank"] < 3: o["top"] = 1
         pub.append(o); priv.append({**p, "id": h, "img": fn}); added.append(p)
+    pub, envres = envio.aplicar(pub); keep = {o["id"] for o in pub}; priv = [p for p in priv if p["id"] in keep]
+    used = {os.path.basename(o["img"]) for o in pub}
     if not pub: sys.exit("sin productos; no se sobrescribe nada")
     with open(os.path.join(ROOT, "productos.json"), "w", encoding="utf-8") as f:
         json.dump({"actualizado": time.strftime("%Y-%m-%d"), "productos": pub}, f, ensure_ascii=False, separators=(",", ":"))
@@ -358,6 +398,7 @@ def main():
     from collections import Counter
     print(json.dumps({"total": len(pub), "nuevos_por_tienda_categoria": Counter(f'{p["store"]} / {p["c"]}' for p in added),
                       "por_categoria": Counter(o["c"] for o in pub),
+                      "envio": {k: dict(v) for k, v in envres.items()},
                       "fallos": len(fails)}, ensure_ascii=False, indent=1))
 
 if __name__ == "__main__": main()
