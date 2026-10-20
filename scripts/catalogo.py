@@ -3,7 +3,7 @@
 Uso: python3 scripts/catalogo.py [--no-img] [--max N]
 Los datos internos (tienda/URL de origen) se guardan en scripts/data/ (no publicado, .gitignore).
 """
-import json, re, os, sys, time, math, hashlib, io, urllib.parse, argparse
+import json, re, os, sys, time, math, hashlib, io, urllib.parse, argparse, html
 import requests
 from PIL import Image
 
@@ -14,13 +14,15 @@ UA = "Mozilla/5.0 (X11; Linux x86_64) TransafronteraCatalog/1.0 (+catalogo seman
 S = requests.Session(); S.headers["User-Agent"] = UA
 DELAY = 0.8
 
-def get(url, **kw):
+def get(url, delay=None, **kw):
     for i in range(3):
         try:
-            time.sleep(DELAY)
+            time.sleep(delay or DELAY)
             r = S.get(url, timeout=30, **kw)
             if r.status_code in (200, 206): return r
-            if r.status_code in (429, 503): time.sleep(5 * (i + 1)); continue
+            print(f"  {r.status_code} {url[:90]}", file=sys.stderr)
+            if r.status_code in (429, 503):
+                ra = str(r.headers.get("Retry-After") or ""); time.sleep(min(int(ra), 60) if ra.isdigit() else 5 * (i + 1)); continue
             return r
         except requests.RequestException as e:
             print("  err", e, file=sys.stderr); time.sleep(3)
@@ -45,11 +47,25 @@ Q_FARMA = {
  "Cuidado personal": [("desodorante",.2,"🧴"),("crema dental",.2,"🪥"),("cepillo dental",.08,"🪥"),("enjuague bucal",.6,"🫧"),("jabon liquido",.5,"🧼"),("crema corporal",.45,"🧴"),("toallas higienicas",.2,"🌸"),("maquina de afeitar",.1,"🪒")],
  "Vitaminas y venta libre": [("vitamina c",.15,"💊"),("multivitaminico",.2,"💊"),("omega 3",.2,"🐟"),("colageno",.4,"💊"),("magnesio",.2,"💊"),("acetaminofen",.05,"💊"),("ibuprofeno",.05,"💊"),("antiacido",.15,"💊"),("curitas",.05,"🩹"),("gasa",.08,"🩹"),("alcohol antiseptico",.4,"🩹"),("suero oral",.5,"💧")],
 }
-PERFIL = {"farmacia": Q_FARMA, "juguetes": {"Juguetes": Q["Juguetes"]}}
+# Tiendas de deporte: sin bicicletas, máquinas ni muebles (ver EXCL); accesorios de ciclismo sí.
+Q_DEPORTES = {
+ "Calzado deportivo": [("tenis running",.9,"👟"),("tenis trail",.9,"👟"),("tenis caminar",.8,"👟"),("tenis entrenamiento",.8,"👟"),("zapatos senderismo",1.1,"🥾"),("tenis senderismo",1.1,"🥾"),("botas senderismo",1.4,"🥾"),("zapatos acuaticos",.4,"🩴"),("tenis baloncesto",1,"🏀")],
+ "Ropa deportiva": [("camiseta running",.2,"👕"),("camiseta running mujer",.2,"👕"),("leggings",.25,"🩱"),("pantaloneta",.25,"🩳"),("top deportivo",.15,"👙"),("chaqueta running",.4,"🧥"),("chaqueta impermeable",.5,"🧥"),("medias deportivas",.1,"🧦"),("jersey ciclismo",.25,"🚴"),("vestido de baño",.25,"🩱"),("gorra deportiva",.1,"🧢"),("camiseta senderismo",.2,"👕")],
+ "Deportes": [("balon futbol",.5,"⚽"),("balon baloncesto",.65,"🏀"),("balon voleibol",.3,"🏐"),("mancuernas",3,"🏋️"),("pesa rusa",4,"🏋️"),("mat de yoga",1.2,"🧘"),("bloque yoga",.4,"🧘"),("banda elastica",.2,"🏋️"),("lazo para saltar",.3,"🤸"),("gafas de natacion",.1,"🥽"),("gorro de natacion",.08,"🏊"),("aletas",.7,"🏊"),("casco ciclismo",.4,"🚴"),("casco mtb",.4,"🚴"),("luz bicicleta",.15,"🚲"),("guantes ciclismo",.1,"🧤"),("candado",.6,"🔒"),("caramañola",.15,"🥤"),("botella running",.15,"🥤"),("guantes de boxeo",.7,"🥊"),("pelotas de padel",.3,"🎾"),("maleta deportiva",.7,"🎒")],
+ "Camping": [("carpa",3,"⛺"),("carpa camping",3.5,"⛺"),("sleeping bag",1.2,"🛌"),("linterna",.25,"🔦"),("lampara",.3,"🏮"),("almohada",.3,"🛌"),("taza camping",.3,"☕"),("morral senderismo",.8,"🎒"),("morral 30 litros",1.2,"🎒"),("binoculares",.5,"🔭"),("toalla microfibra",.3,"🏖️")],
+}
+# Moda: ropa, calzado, bolsos/marroquinería y relojes (sin maletas de viaje grandes).
+Q_MODA = {
+ "Ropa": [("camiseta",.25,"👕"),("blusa",.25,"👚"),("jean",.6,"👖"),("pantalon",.5,"👖"),("vestido",.4,"👗"),("falda",.3,"👗"),("chaqueta",.8,"🧥"),("buzo",.5,"🧥"),("camisa",.3,"👔")],
+ "Calzado": [("tenis",1,"👟"),("zapatos",1,"👞"),("sandalias",.6,"👡"),("botas",1.5,"👢"),("botines",1.3,"👢"),("baletas",.6,"🥿"),("mocasines",.9,"👞")],
+ "Bolsos y accesorios": [("bolso",.7,"👜"),("manos libres",.5,"👜"),("maletin",1,"💼"),("tote",.7,"👜"),("morral",.8,"🎒"),("billetera",.15,"👛"),("cinturon",.25,"🪢"),("riñonera",.3,"👝"),("gafas de sol",.15,"🕶️"),("gorra",.15,"🧢"),("aretes",.05,"💍")],
+ "Relojes": [("reloj",.3,"⌚"),("reloj hombre",.3,"⌚"),("reloj mujer",.3,"⌚"),("reloj digital",.3,"⌚"),("reloj inteligente",.3,"⌚"),("reloj casio",.3,"⌚")],
+}
+PERFIL = {"farmacia": Q_FARMA, "juguetes": {"Juguetes": Q["Juguetes"]}, "deportes": Q_DEPORTES, "moda": Q_MODA}
 # Solo venta libre: se descartan medicamentos con fórmula, antibióticos, controlados, inyectables y cadena de frío.
 RXBLOCK = re.compile(r"f[oó]rmula m[eé]dica|venta bajo|prescripci|antibi[oó]tic|antiinfeccios|controlad|inyect|ampolla|jeringa|aguja|insulina|vacuna|refrigera|cadena de fr[ií]o|\b2\s*°?\s*c?\s*(a|-)\s*8\s*°|amoxi|azitro|cefal|ciproflox|claritro|doxicicl|metronid|clindami|penicil|tramadol|code[ií]na|morfina|oxicod|clonazep|alpraz|diazep|lorazep|zolpidem|fentan|pregabal|gabapent|anticoncept|levonorg|hormon|testoster|estradi|cortico|prednis|dexameta|betameta|sildenaf|tadalaf|metformin|losart|enalapr|atorvast|omepraz|esomepraz|isotretin|finaster|minoxidil oral|clopidog|warfar|tretino|antidepres|sertral|fluoxet|quetiap|risperid|ketorolac|diclofenac.*(ampolla|inyect)|n[aá]proxeno s[oó]dico 550|metocarbam|tizanid|orfenadr|carisoprod|\b800\s*mg|\b\d{2,3}\.?000\s*u\.?i", re.I)
 
-EXCL = re.compile(r"televisor|\btv\b|nevera|refrigerador|congelador|lavadora|secadora de ropa|estufa|horno(?! tostador)|microondas|aire acondicionado|sof[aá]|colch[oó]n|cama\b|base cama|mueble|escritorio|silla|comedor|closet|bicicleta|patineta el[eé]ctrica|scooter|caminadora|el[ií]ptica|gimnasio|monitor|computador de escritorio|all in one|impresora|compresor|generador|hidrolavadora|escalera|carretilla|piscina|parrilla|asador|cilindro|tanque|repuesto|pin |licencia|tarjeta regalo|bono|recarga|garant[ií]a|servicio|instalaci[oó]n|kit escolar x|lavavajilla|torre de sonido|barra de sonido|minicomponente|consola", re.I)
+EXCL = re.compile(r"televisor|\btv\b|nevera|refrigerador|congelador|lavadora|secadora de ropa|estufa|horno(?! tostador)|microondas|aire acondicionado|sof[aá]|colch[oó]n|cama\b|base cama|mueble|escritorio|silla|comedor|closet|(?<!para )(?<!de )(?<!la )bicicleta|maleta (ejecutiva )?de viaje|equipaje|trolley|patineta el[eé]ctrica|scooter|caminadora|el[ií]ptica|gimnasio|monitor|computador de escritorio|all in one|impresora|compresor|generador|hidrolavadora|escalera|carretilla|piscina|parrilla|asador|cilindro|tanque|repuesto|pin |licencia|tarjeta regalo|bono|recarga|garant[ií]a|servicio|instalaci[oó]n|kit escolar x|lavavajilla|torre de sonido|barra de sonido|minicomponente|consola", re.I)
 PER_CAT = int(os.environ.get("PER_CAT", "22"))
 MINCOP, MAXCOP, MAXKG = 8000, 2500000, 8.0
 
@@ -189,17 +205,66 @@ def sfcc(t, q, cat, kg, emo, n=24):
                         pr.get("price-list-col"), kg, emo, img, None, rk))
     return out
 
-ADAPT = {"sfcc": sfcc, "vtex": vtex, "algolia": algolia, "soco": soco}
+# Tiendas sin API de búsqueda pública (o con la búsqueda vetada en robots.txt): se leen sus páginas de
+# listado de categoría, que sí son públicas e indexables. La config mapea cada consulta a una ruta ("plp").
+def _cop(x): return float(re.sub(r"[^\d]", "", x) or 0)
+
+def plp(t, q, cat, kg, emo, n=40):
+    path = (t.get("plp") or {}).get(q)
+    if not path: return []
+    for i in range(3):  # el antibots a veces responde 403 un rato: esperar y reintentar con calma
+        r = get(t["home"] + path, delay=t.get("delay"))
+        if r is not None and r.status_code == 200: break
+        time.sleep(20 * (i + 1))
+    else: return []
+    out = []
+    for rk, a in enumerate(re.findall(r'<article class="product-card.*?</article>', r.text, re.S)[:n]):
+        try:
+            a = re.sub(r"<svg.*?</svg>", "", a, flags=re.S)
+            if re.search(r">\s*Agotado\s*<", a): continue
+            m = re.search(r'<h2><a aria-label="([^"]+)" href="(/p/[^"]+)"', a)
+            pr = re.search(r'Precio actual</span>(?:\s|<!-- -->)*([^<]+)<', a)
+            im = re.search(r'src="(https://[^"?]+)', a)
+            if not (m and pr and im): continue
+            old = re.search(r'Precio anterior</span>(?:\s|<!-- -->)*([^<]+)<', a)
+            name = html.unescape(m.group(1)).rstrip(". ")
+            sid = "/".join(m.group(2).split("/")[-2:])
+            out.append(item(t["nombre"], sid, t["home"] + m.group(2), name, cat, _cop(pr.group(1)),
+                            _cop(old.group(1)) if old else None, kg, emo, im.group(1) + "?format=auto&f=800x0", None, rk))
+        except (AttributeError, ValueError, IndexError): pass
+    return out
+
+# Plataforma de moda con búsqueda HTML (/catalog/?q=): cada tarjeta trae JSON con precios y stock por talla.
+def bob(t, q, cat, kg, emo, n=40):
+    r = get(f"{t['api']}?q={urllib.parse.quote(q)}")
+    if not r or r.status_code != 200: return []
+    out = []
+    for rk, c in enumerate(re.split(r'<li\s+id="(?=[A-Z0-9]{10,}")', r.text)[1:n + 1]):
+        try:
+            d = json.loads(html.unescape(re.search(r'data-default-card="(\{.*?\})"\s*\n', c).group(1)))
+            sm = re.search(r"data-simples\s*=\s*'(\{.*?\})'\s*\n", c)
+            if sm and not any(int(float(v["meta"].get("quantity") or 0)) > 0 for v in json.loads(html.unescape(sm.group(1))).values()): continue
+            url = re.search(r'href="(https?://[^"]+\.html)"', c).group(1)
+            img = re.search(r'data-src-default="([^"]+)"', c).group(1)
+            name = html.unescape(d["name"])
+            cop = float(d.get("special_price") or d.get("price") or 0)
+            out.append(item(t["nombre"], d["sku"], url, name, cat, cop, float(d.get("price") or 0), kg, emo, img, None, rk))
+        except (AttributeError, ValueError, KeyError, TypeError): pass
+    return out
+
+ADAPT = {"sfcc": sfcc, "vtex": vtex, "algolia": algolia, "soco": soco, "plp": plp, "bob": bob}
 
 import unicodedata
 def nrm(t): return "".join(ch for ch in unicodedata.normalize("NFD", t.lower()) if unicodedata.category(ch) != "Mn")
-BULKY = re.compile(r"partybox|party box|torre|bafle|karaoke|\b(1[5-9]|[2-9]\d)\s*(\"|pulgadas)|set de \d+ ollas|bater[ií]a de cocina", re.I)
+BULKY = re.compile(r"carpa.*\b([4-9]|1\d)\s*personas|carpa familiar|2 seconds|partybox|party box|torre|bafle|karaoke|\b(1[5-9]|[2-9]\d)\s*(\"|pulgadas)|set de \d+ ollas|bater[ií]a de cocina", re.I)
 
-def root_miss(q, n): return nrm(q.split()[0])[:5] not in nrm(n)
+def root_miss(q, n): return re.sub(r"(?<=..)s$", "", nrm(q.split()[0]))[:5] not in nrm(n)  # "botas" ~ "Bota"
 
 def ok(p):
     # relevancia: el nombre debe contener la raíz de la palabra principal de la consulta
     if root_miss(p["q"], p["n"]): return False
+    # moda: el nombre debe empezar por el tipo de prenda ("Vestido con falda..." no es una falda)
+    if p.get("perfil") == "moda" and not nrm(p["n"]).split()[0].startswith(nrm(p["q"].split()[0])[:4]): return False
     if p["c"] in Q_FARMA and RXBLOCK.search(p["n"]): return False
     wk = kg_from(p["n"])  # p.ej. "Mancuernas 40 Kg"
     if wk and wk > MAXKG and not re.search(r"capacidad|soporta|hasta", p["n"], re.I): return False
@@ -214,10 +279,15 @@ def collect(solo=None, seen=None):
         for cat, qs in PERFIL.get(t.get("perfil"), Q).items():
             if cat in t.get("skip", []): continue
             got = []
-            for q, kg, emo in qs:
+            for q, kg, emo in list(qs) + [tuple(x) for x in t.get("extra", {}).get(cat, [])]:  # "extra": consultas propias de la tienda
                 try: res = fn(q, cat, kg, emo)
                 except Exception as e: res = []; fails.append(f"{st}/{q}: {e}")
-                for p in res: p["q"] = q
+                for p in res:
+                    p["q"], p["perfil"] = q, t.get("perfil")
+                    if t.get("quitar"): p["n"] = re.sub(r"\s+", " ", re.sub(t["quitar"], "", p["n"], flags=re.I)).strip(" -,.")
+                    p["n"] = re.sub(r"^(.{15,}?) \1\b", r"\1", p["n"])  # "Bolso X Bolso X Negro" -> "Bolso X Negro"
+                    wk = kg_from(p["n"]) if re.search(r"mancuerna|pesa|kettlebell|disco", p["n"], re.I) else None
+                    if wk and p["kgsrc"] == "est": p["kg"], p["kgsrc"] = round(wk * (2 if re.search(r"\bpar\b", p["n"], re.I) else 1) + .2, 2), "nombre"
                 if not res: fails.append(f"{st}/{q}: 0 resultados")
                 got.append([p for p in res if ok(p)])
             # intercalar consultas para variedad
@@ -246,18 +316,26 @@ def save_img(src, dest):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--no-img", action="store_true")
-    ap.add_argument("--solo", help="claves de tienda separadas por coma; conserva el resto desde scripts/data/fuentes.json")
+    ap.add_argument("--solo", help="claves de tienda separadas por coma; conserva el resto tal cual está publicado en productos.json")
     a = ap.parse_args()
     os.makedirs(DATA, exist_ok=True); os.makedirs(IMG, exist_ok=True)
-    keep = []
+    pub, priv, used, added = [], [], set(), []
     if a.solo:
         solo = set(a.solo.split(",")); cfg = load_cfg(); names = {cfg[k]["nombre"] for k in solo if k in cfg}
-        keep = [p for p in json.load(open(os.path.join(DATA, "fuentes.json"), encoding="utf-8"))["productos"] if p["store"] not in names]
-        seen = {(p["store"], p["sid"]) for p in keep} | {p["n"].lower()[:40] for p in keep}
-        prods, fails = collect(solo, seen); prods = keep + prods
+        old = json.load(open(os.path.join(DATA, "fuentes.json"), encoding="utf-8"))["productos"]
+        # La acción semanal publica productos.json pero no guarda fuentes.json (privado), así que fuentes.json puede
+        # estar desfasado: se conserva tal cual lo publicado de las demás tiendas y solo se reemplaza lo de --solo.
+        drop = {p["id"] for p in old if p["store"] in names}
+        byid = {p["id"]: p for p in old if p["store"] not in names}
+        pubold = json.load(open(os.path.join(ROOT, "productos.json"), encoding="utf-8"))["productos"]
+        for o in pubold:
+            if o["id"] in drop or not os.path.exists(os.path.join(ROOT, o["img"])): continue
+            pub.append(o); used.add(os.path.basename(o["img"]))
+            if o["id"] in byid: priv.append(byid[o["id"]])
+        seen = {(p["store"], p["sid"]) for p in priv} | {o["n"].lower()[:40] for o in pub}
+        prods, fails = collect(solo, seen)
     else:
         prods, fails = collect()
-    pub, priv, used = [], [], set()
     for p in prods:
         h = hashlib.sha1(f"{p['store']}:{p['sid']}".encode()).hexdigest()[:10]
         fn = f"img/p{h}.jpg"
@@ -268,7 +346,7 @@ def main():
         if p["antes"]: o["antes"] = p["antes"]
         o.update(kg=p["kg"], e=p["e"], img=fn)
         if p["rank"] < 3: o["top"] = 1
-        pub.append(o); priv.append({**p, "id": h, "img": fn})
+        pub.append(o); priv.append({**p, "id": h, "img": fn}); added.append(p)
     if not pub: sys.exit("sin productos; no se sobrescribe nada")
     with open(os.path.join(ROOT, "productos.json"), "w", encoding="utf-8") as f:
         json.dump({"actualizado": time.strftime("%Y-%m-%d"), "productos": pub}, f, ensure_ascii=False, separators=(",", ":"))
@@ -278,7 +356,8 @@ def main():
         for x in os.listdir(IMG):
             if x.startswith("p") and x.endswith(".jpg") and x not in used: os.remove(os.path.join(IMG, x))
     from collections import Counter
-    print(json.dumps({"total": len(pub), "por_tienda": Counter(p["store"] for p in priv), "por_categoria": Counter(p["c"] for p in priv),
+    print(json.dumps({"total": len(pub), "nuevos_por_tienda_categoria": Counter(f'{p["store"]} / {p["c"]}' for p in added),
+                      "por_categoria": Counter(o["c"] for o in pub),
                       "fallos": len(fails)}, ensure_ascii=False, indent=1))
 
 if __name__ == "__main__": main()
