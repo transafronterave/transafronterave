@@ -2,7 +2,7 @@
 """Genera catalogo_meta.csv (feed de catálogo Meta Commerce) desde productos.json y tasas.json."""
 import csv, json, os, hashlib, urllib.parse
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITE = "https://transafronterave.github.io/transafronterave/"
+SITE = "https://transafronterave.com/"
 BRAND = "TRANSAFRONTERA VE"
 MSG = "Compramos en Colombia y enviamos por MRW a toda Venezuela. Pedidos por WhatsApp."
 d = json.load(open(os.path.join(ROOT, "productos.json"), encoding="utf-8"))
