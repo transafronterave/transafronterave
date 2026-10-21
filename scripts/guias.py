@@ -27,7 +27,7 @@ Spec de una guía (JSON):
 }
 Formato en textos: **negrita**, [texto](url). Todo lo demás se escapa.
 """
-import html, json, os, re, sys, unicodedata, urllib.parse
+import hashlib, html, json, os, re, sys, unicodedata, urllib.parse
 from datetime import date
 from xml.sax.saxutils import escape as xesc
 
@@ -43,11 +43,13 @@ VALIDACION = "Envío sujeto a validación, consúltanos por WhatsApp"
 PAGOS = ["Zelle", "Binance USDT", "pago móvil", "efectivo USD", "Bancolombia", "Nequi"]
 
 # ---- Validación: frases prohibidas (comparación sin acentos, en minúsculas, por palabra) ----
-BANNED_PHRASES = ["envio incluido", "envio gratis", "envio gratuito", "mandamos", "[aliado]",
-                  "[aliado]"]
-# Cadenas comerciales colombianas que nunca deben aparecer (no implica que sean proveedores).
-# Si existe scripts/data/fuentes_config.json (local, en .gitignore) también se agregan sus nombres.
-BANNED_STORES = ["[tienda]"]
+BANNED_PHRASES = ["envio incluido", "envio gratis", "envio gratuito", "mandamos"]
+# Nombres de tiendas y del aliado interno: NUNCA en texto plano en el repo. Solo se guardan hashes SHA-256 de los
+# nombres normalizados (minúsculas, sin acentos, palabras separadas por un espacio) en scripts/guias_bloqueo.json,
+# con un nivel: "ambos" (texto de la guía y nombres de producto), "texto" (solo texto; palabra común en productos)
+# o "producto" (solo nombres de producto; palabra común en el texto). Si existe scripts/data/fuentes_config.json
+# (local, en .gitignore) sus nombres se suman con nivel "ambos" salvo que el hash ya tenga otro nivel.
+BLOQUEO = os.path.join(ROOT, "scripts", "guias_bloqueo.json")
 HEALTH_WARN = ["cura ", "curar", "previene", "prevenir enfermedades", "tratamiento de", "garantiza resultados",
                "elimina la", "100% efectivo", "milagro"]
 
@@ -57,26 +59,49 @@ def norm(s):
     return "".join(c for c in s if not unicodedata.combining(c))
 
 
-def store_names():
-    names = set(BANNED_STORES)
-    p = os.path.join(ROOT, "scripts", "data", "fuentes_config.json")
-    if os.path.exists(p):
-        try:
-            for v in json.load(open(p, encoding="utf-8")).values():
-                if isinstance(v, dict) and v.get("nombre"):
-                    names.add(norm(v["nombre"]))
-        except Exception:
-            pass
-    return sorted(names)
+def sha(s):
+    return hashlib.sha256(s.encode("utf-8")).hexdigest()
 
 
-def banned_hits(text):
-    t = " " + re.sub(r"\s+", " ", norm(text)) + " "
-    hits = []
-    for w in BANNED_PHRASES + store_names():
-        if re.search(r"(?<![a-z0-9])" + re.escape(w) + r"(?![a-z0-9])", t):
-            hits.append(w)
+_HASHES = None
+
+
+def blocked_hashes():
+    """{hash: nivel}"""
+    global _HASHES
+    if _HASHES is None:
+        h = {}
+        if os.path.exists(BLOQUEO):
+            h.update(json.load(open(BLOQUEO, encoding="utf-8")).get("sha256", {}))
+        p = os.path.join(ROOT, "scripts", "data", "fuentes_config.json")
+        if os.path.exists(p):
+            try:
+                for v in json.load(open(p, encoding="utf-8")).values():
+                    if isinstance(v, dict) and v.get("nombre"):
+                        h.setdefault(sha(" ".join(re.findall(r"[a-z0-9]+", norm(v["nombre"])))), "ambos")
+            except Exception:
+                pass
+        _HASHES = h
+    return _HASHES
+
+
+def blocked_names(text, where):
+    """Devuelve los fragmentos (1-3 palabras) del texto cuyo hash está bloqueado para `where` ("texto"/"producto")."""
+    words = re.findall(r"[a-z0-9]+", norm(text))
+    hs, hits = blocked_hashes(), []
+    for n in (1, 2, 3):
+        for i in range(len(words) - n + 1):
+            frag = " ".join(words[i:i + n])
+            lvl = hs.get(sha(frag))
+            if lvl and (lvl == "ambos" or lvl == where) and frag not in hits:
+                hits.append(frag)
     return hits
+
+
+def banned_hits(text, where="texto"):
+    t = " " + re.sub(r"\s+", " ", norm(text)) + " "
+    hits = [w for w in BANNED_PHRASES if re.search(r"(?<![a-z0-9])" + re.escape(w) + r"(?![a-z0-9])", t)]
+    return hits + blocked_names(text, where)
 
 
 # ---- Catálogo (mismos datos y fórmula que el sitio) ----
@@ -103,7 +128,6 @@ def select_products(flt, cat):
     inc = [norm(w) for w in flt.get("include", [])]
     exc = [norm(w) for w in flt.get("exclude", [])]
     mx, mn = flt.get("max_usd"), flt.get("min_usd", 0)
-    stores = store_names()
     pool = []
     for p in cat["p"]:
         nn = norm(p["n"])
@@ -113,7 +137,7 @@ def select_products(flt, cat):
         if p["validacion"] and not flt.get("allow_validacion"): continue
         if inc and not any(w in nn for w in inc): continue
         if any(w in nn for w in exc): continue
-        if any(re.search(r"(?<![a-z0-9])" + re.escape(s) + r"(?![a-z0-9])", nn) for s in stores): continue
+        if blocked_names(p["n"], "producto"): continue
         if not os.path.exists(os.path.join(ROOT, p["img"].lstrip("/"))): continue
         if p in out: continue
         pool.append(p)
@@ -223,8 +247,9 @@ footer{background:var(--n);color:#cfd6e6;margin-top:30px;font-size:.88rem}footer
 .fin{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between;padding:26px 16px}.fin ul{list-style:none}.fin li{margin:5px 0}
 .fbot{border-top:1px solid #ffffff1f;padding:14px 16px;text-align:center;font-size:.78rem}
 .fwa{position:fixed;right:18px;bottom:18px;width:56px;height:56px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.7rem;z-index:30;box-shadow:0 4px 14px #0004;text-decoration:none}
-@media(max-width:720px){.hrow{flex-wrap:wrap;gap:8px}.logo img{height:38px}.nav{margin-left:0;width:100%}.nav a{padding:6px 9px;font-size:.84rem}
-.art{padding:20px 16px;border-radius:14px}.art h1{font-size:1.55rem}.grid{grid-template-columns:repeat(2,1fr);gap:10px}.pimg{height:130px}}"""
+@media(max-width:720px){.hrow{gap:6px;padding:8px 10px}.logo img{height:34px}.logo span{font-size:.78rem}.logo span i{font-size:.56rem;letter-spacing:1.5px}.nav{gap:2px;flex-wrap:nowrap}.nav a{padding:6px 7px;font-size:.8rem;white-space:nowrap}.nav .x,.nav .t,.nav .em{display:none}.hrow{justify-content:space-between}.nav{margin-left:auto;min-width:0}
+.art{padding:20px 16px;border-radius:14px}.art h1{font-size:1.55rem}.grid{grid-template-columns:repeat(2,1fr);gap:10px}.pimg{height:130px}}
+@media(max-width:350px){.logo span{display:none}}"""
 
 
 def page(title, desc, canonical, body, jsonld, og_type="article", active="guias"):
@@ -247,7 +272,7 @@ def page(title, desc, canonical, body, jsonld, og_type="article", active="guias"
 <div class="promo">🚚 <b>{ENVIO}</b> · Compramos por ti en Colombia · Precios en USD</div>
 <header class="hdr"><div class="flag"></div><div class="hrow">
 <a class="logo" href="/"><img src="/logo-tf.png" alt="TRANSAFRONTERA VE"><span>TRANSAFRONTERA<i>VENEZUELA</i></span></a>
-<nav class="nav"><a href="/">🛍️ Tienda</a><a href="/guias/"{' class="on"' if active == "guias" else ""}>📘 Guías</a><a href="/#cotiza">Cotiza</a><a class="w" href="{wa_link("Hola TRANSAFRONTERA VE, quiero hacer una consulta.")}" target="_blank" rel="noopener">💬 WhatsApp</a></nav>
+<nav class="nav"><a href="/"><span class="em">🛍️ </span>Tienda</a><a href="/guias/"{' class="on"' if active == "guias" else ""}><span class="em">📘 </span>Guías</a><a class="x" href="/#cotiza">Cotiza</a><a class="w" href="{wa_link("Hola TRANSAFRONTERA VE, quiero hacer una consulta.")}" target="_blank" rel="noopener" aria-label="WhatsApp">💬<span class="t"> WhatsApp</span></a></nav>
 </div></header>
 <main class="wrap">
 {body}
@@ -406,7 +431,10 @@ def validate(specs, cat, rendered_ids):
         text = re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[^>]*>.*?</\1>", " ", h, flags=re.S))
         text = html.unescape(text)
         for w in banned_hits(text + " " + " ".join(re.findall(r'content="([^"]*)"', h))):
-            errs.append("%s: frase/tienda prohibida «%s»" % (name, w))
+            errs.append("%s: frase/nombre prohibido «%s»" % (name, w))
+        for pn in re.findall(r'class="pn">([^<]*)<', h):
+            for w in blocked_names(html.unescape(pn), "producto"):
+                errs.append("%s: nombre de producto con nombre bloqueado «%s»" % (name, w))
         for pid in re.findall(r'href="/#p=([0-9a-f]+)"', h):
             if pid not in cat["by"]: errs.append("%s: producto inexistente %s" % (name, pid))
             elif not os.path.exists(os.path.join(ROOT, "img", "p%s.jpg" % pid)): errs.append("%s: falta imagen de %s" % (name, pid))

@@ -20,8 +20,8 @@ el precio actual en USD (nunca el precio de referencia de la tienda). Los enlace
    de Venezuela, cálido y práctico. Reglas obligatorias:
    - Envío: decir siempre «Enviamos por MRW a toda Venezuela (costo aparte)»; costos y tiempos «se cotizan por
      WhatsApp». Nunca inventar plazos ni costos. Nunca «envío incluido»/«envío gratis».
-   - Usar «enviamos», nunca «mandamos». Nunca nombrar tiendas de origen ni sus precios (ojo: tampoco usar la
-     palabra «[tienda]», el validador la bloquea). Nunca mencionar al aliado de Cúcuta.
+   - Usar «enviamos», nunca «mandamos». Nunca nombrar tiendas de origen ni sus precios. Nunca mencionar al aliado
+     interno de Cúcuta.
    - Pagos: Zelle, Binance USDT, pago móvil, efectivo USD, Bancolombia, Nequi (sin números de cuenta).
    - Medicamentos/vitaminas: solo venta libre, sin afirmaciones de salud, «máx. 6 unidades».
    - Artículos en lista de validación MRW: «Envío sujeto a validación, consúltanos por WhatsApp»
@@ -33,13 +33,20 @@ el precio actual en USD (nunca el precio de referencia de la tienda). Los enlace
 5. **Validar:** el mismo comando (o `python3 scripts/guias.py --check`) sale con código 1 si:
    falta algún HTML o etiqueta SEO (title, description, canonical, og, JSON-LD, H1/H2), falta «costo aparte» o el CTA
    de WhatsApp, un enlace `/#p=<id>` no existe en `data/idx.json` o no tiene imagen, un enlace a otra guía no existe,
-   o aparece una frase prohibida («envío incluido», «mandamos», «[aliado]», tiendas como [tienda], [tienda],
-   [tienda], [tienda], etc.; se suman los nombres de `scripts/data/fuentes_config.json` si existe).
+   aparece una frase prohibida («envío incluido», «envío gratis», «mandamos») o un nombre bloqueado (tiendas o
+   aliado interno). Los nombres bloqueados **no están en texto plano en el repo**: `scripts/guias_bloqueo.json` guarda
+   solo hashes SHA-256 del nombre normalizado (minúsculas, sin acentos, palabras separadas por un espacio) y el
+   validador compara el hash de cada palabra y de cada grupo de 2–3 palabras del texto y de los nombres de producto.
+   Cada hash tiene un nivel: `ambos`, `texto` (palabras comunes en productos, p. ej. medidas) o `producto` (palabras
+   comunes en el texto, que solo se bloquean en nombres de producto). Si existe `scripts/data/fuentes_config.json`
+   (local, en `.gitignore`) sus nombres se suman. Para agregar un nombre:
+   `python3 -c "import hashlib;print(hashlib.sha256('nombre normalizado'.encode()).hexdigest())"` y añadir el hash
+   con su nivel al JSON. Nunca escribir el nombre en un archivo versionado ni en un mensaje de commit.
    Los `AVISO` (pocas palabras, posibles afirmaciones de salud) se revisan a mano. Si hay errores: corregir la spec y
    repetir; no publicar.
 6. **Publicar:**
    ```
-   git add guias data/guias data/guias_temas.json sitemap.xml robots.txt
+   git add guias data/guias data/guias_temas.json sitemap.xml robots.txt scripts/guias_bloqueo.json
    git commit -m "Guía: <título>"
    for i in 1 2 3; do git pull --rebase && git push && break; sleep 5; done
    ```
