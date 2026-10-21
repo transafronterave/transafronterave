@@ -1,0 +1,549 @@
+{
+ "descripcion": "Backlog de guías SEO (orden = prioridad). estado: pending | published. 'productos' = filtro para scripts/guias.py (spec.products). Ver docs/GUIAS.md.",
+ "temas": [
+  {
+   "orden": 1,
+   "slug": "como-comprar-en-colombia-y-recibir-en-venezuela",
+   "titulo": "Cómo comprar en Colombia y recibir en Venezuela",
+   "tipo": "confianza",
+   "productos": null,
+   "estado": "published",
+   "publicado": "2026-10-21"
+  },
+  {
+   "orden": 2,
+   "slug": "que-se-puede-y-que-no-se-puede-enviar-por-mrw",
+   "titulo": "Qué se puede y qué no se puede enviar por MRW a Venezuela",
+   "tipo": "confianza",
+   "productos": null,
+   "estado": "pending"
+  },
+  {
+   "orden": 3,
+   "slug": "como-pagar-zelle-binance-pago-movil",
+   "titulo": "Cómo pagar tu pedido: Zelle, Binance USDT, pago móvil, efectivo, Bancolombia y Nequi",
+   "tipo": "confianza",
+   "productos": null,
+   "estado": "pending"
+  },
+  {
+   "orden": 4,
+   "slug": "mejores-celulares-por-menos-de-200-en-venezuela",
+   "titulo": "Mejores celulares por menos de $200 para Venezuela",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Celulares"
+    ],
+    "max_usd": 200,
+    "count": 12,
+    "sort": "top"
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 5,
+   "slug": "cuanto-tarda-un-envio-de-colombia-a-venezuela",
+   "titulo": "Cuánto tarda un envío de Colombia a Venezuela y de qué depende",
+   "tipo": "confianza",
+   "productos": null,
+   "estado": "pending"
+  },
+  {
+   "orden": 6,
+   "slug": "regalos-de-navidad-por-menos-de-50",
+   "titulo": "Regalos de Navidad por menos de $50",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Juguetes",
+     "Belleza",
+     "Tecnología",
+     "Hogar",
+     "Relojes",
+     "Bolsos y accesorios"
+    ],
+    "max_usd": 50,
+    "min_usd": 10,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 7,
+   "slug": "juguetes-para-navidad-2026",
+   "titulo": "Juguetes para Navidad 2026: ideas por edad",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Juguetes"
+    ],
+    "max_usd": 80,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 8,
+   "slug": "preguntas-frecuentes-comprar-en-colombia",
+   "titulo": "Preguntas frecuentes sobre comprar en Colombia desde Venezuela",
+   "tipo": "confianza",
+   "productos": null,
+   "estado": "pending"
+  },
+  {
+   "orden": 9,
+   "slug": "tablets-para-estudiar",
+   "titulo": "Tablets para estudiar: cuál elegir según tu presupuesto",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Tablets"
+    ],
+    "max_usd": 350,
+    "count": 10,
+    "sort": "precio_asc"
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 10,
+   "slug": "electrodomesticos-pequenos-para-la-casa",
+   "titulo": "Electrodomésticos pequeños que más piden los venezolanos",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Electrodomésticos"
+    ],
+    "max_usd": 120,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 11,
+   "slug": "maquillaje-y-belleza-de-colombia",
+   "titulo": "Maquillaje y belleza de Colombia: favoritos con precio en USD",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Maquillaje",
+     "Belleza"
+    ],
+    "max_usd": 40,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 12,
+   "slug": "vitaminas-de-venta-libre",
+   "titulo": "Vitaminas y suplementos de venta libre: cómo pedirlos (máx. 6 unidades)",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Vitaminas y venta libre"
+    ],
+    "max_usd": 40,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 13,
+   "slug": "cotizar-producto-que-no-esta-en-el-catalogo",
+   "titulo": "Cómo cotizar un producto de Colombia que no está en el catálogo",
+   "tipo": "confianza",
+   "productos": null,
+   "estado": "pending"
+  },
+  {
+   "orden": 14,
+   "slug": "laptops-para-estudiantes-y-trabajo",
+   "titulo": "Laptops para estudiantes y trabajo remoto",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Computadores"
+    ],
+    "max_usd": 700,
+    "include": [
+     "portatil",
+     "laptop"
+    ],
+    "count": 10
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 15,
+   "slug": "audifonos-y-parlantes-bluetooth",
+   "titulo": "Audífonos y parlantes Bluetooth económicos",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Tecnología"
+    ],
+    "max_usd": 60,
+    "include": [
+     "audifono",
+     "parlante",
+     "audífono"
+    ],
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 16,
+   "slug": "regalos-para-mama",
+   "titulo": "Regalos para mamá: belleza, hogar y cocina",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Belleza",
+     "Cocina",
+     "Hogar",
+     "Bolsos y accesorios"
+    ],
+    "max_usd": 80,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 17,
+   "slug": "articulos-de-cocina-utiles",
+   "titulo": "Artículos de cocina útiles por menos de $50",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Cocina"
+    ],
+    "max_usd": 50,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 18,
+   "slug": "utiles-escolares-y-papeleria",
+   "titulo": "Útiles escolares y papelería desde Colombia",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Papelería"
+    ],
+    "max_usd": 25,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 19,
+   "slug": "televisores-smart-tv",
+   "titulo": "Smart TV: cómo elegir tamaño y qué revisar antes de pedir",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "TV y video"
+    ],
+    "max_usd": 500,
+    "include": [
+     "tv",
+     "televisor"
+    ],
+    "count": 10
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 20,
+   "slug": "videojuegos-y-consolas",
+   "titulo": "Videojuegos, controles y accesorios gamer",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Videojuegos"
+    ],
+    "max_usd": 150,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 21,
+   "slug": "herramientas-para-el-hogar-y-taller",
+   "titulo": "Herramientas para el hogar y el taller",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Herramientas"
+    ],
+    "max_usd": 100,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 22,
+   "slug": "cuidado-personal-secadores-y-planchas",
+   "titulo": "Secadores, planchas de cabello y cuidado personal",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Cuidado personal"
+    ],
+    "max_usd": 80,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 23,
+   "slug": "relojes-y-smartwatch",
+   "titulo": "Relojes y smartwatch para regalar",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Relojes"
+    ],
+    "max_usd": 150,
+    "count": 10
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 24,
+   "slug": "comprar-al-mayor-para-emprendedores",
+   "titulo": "Compras al mayor para emprendedores en Venezuela: cómo cotizar",
+   "tipo": "confianza",
+   "productos": null,
+   "estado": "pending"
+  },
+  {
+   "orden": 25,
+   "slug": "pago-movil-tasa-del-dia",
+   "titulo": "Pagar en bolívares con pago móvil: cómo se calcula a la tasa del día",
+   "tipo": "confianza",
+   "productos": null,
+   "estado": "pending"
+  },
+  {
+   "orden": 26,
+   "slug": "electrodomesticos-grandes-como-pedir",
+   "titulo": "Neveras, lavadoras y electrodomésticos grandes: qué tener en cuenta",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Grandes electrodomésticos"
+    ],
+    "max_usd": 900,
+    "count": 8,
+    "allow_validacion": false
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 27,
+   "slug": "ropa-y-calzado-tallas-colombia",
+   "titulo": "Ropa y calzado de Colombia: cómo acertar con la talla",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Ropa",
+     "Calzado"
+    ],
+    "max_usd": 60,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 28,
+   "slug": "tenis-y-ropa-deportiva",
+   "titulo": "Tenis y ropa deportiva por menos de $100",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Calzado deportivo",
+     "Ropa deportiva"
+    ],
+    "max_usd": 100,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 29,
+   "slug": "bicicletas-y-accesorios",
+   "titulo": "Bicicletas y accesorios: cómo pedir una bici desde Colombia",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Bicicletas"
+    ],
+    "max_usd": 450,
+    "count": 10
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 30,
+   "slug": "productos-con-bateria-envio-validacion",
+   "titulo": "Productos con batería, líquidos y aerosoles: cuándo el envío requiere validación",
+   "tipo": "confianza",
+   "productos": null,
+   "estado": "pending"
+  },
+  {
+   "orden": 31,
+   "slug": "hogar-y-decoracion",
+   "titulo": "Hogar y decoración: ideas para renovar tu casa",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Hogar",
+     "Iluminación"
+    ],
+    "max_usd": 60,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 32,
+   "slug": "muebles-y-organizacion",
+   "titulo": "Muebles y organización: qué conviene pedir",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Muebles"
+    ],
+    "max_usd": 200,
+    "count": 10
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 33,
+   "slug": "bano-accesorios",
+   "titulo": "Accesorios de baño prácticos y económicos",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Baño"
+    ],
+    "max_usd": 50,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 34,
+   "slug": "camping-y-aire-libre",
+   "titulo": "Camping y aire libre: carpas, linternas y más",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Camping"
+    ],
+    "max_usd": 100,
+    "count": 10
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 35,
+   "slug": "jardin-y-plantas",
+   "titulo": "Jardín: herramientas y accesorios",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Jardín"
+    ],
+    "max_usd": 60,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 36,
+   "slug": "bolsos-y-morrales",
+   "titulo": "Bolsos, morrales y accesorios",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Bolsos y accesorios"
+    ],
+    "max_usd": 60,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 37,
+   "slug": "regalos-para-papa",
+   "titulo": "Regalos para papá: herramientas, tecnología y relojes",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Herramientas",
+     "Tecnología",
+     "Relojes"
+    ],
+    "max_usd": 100,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 38,
+   "slug": "accesorios-para-celular",
+   "titulo": "Cargadores, cables y accesorios para celular",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Tecnología",
+     "Celulares"
+    ],
+    "max_usd": 30,
+    "include": [
+     "cargador",
+     "cable",
+     "forro",
+     "protector",
+     "adaptador",
+     "estuche"
+    ],
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 39,
+   "slug": "regreso-a-clases-2027",
+   "titulo": "Regreso a clases 2027: lista de compras desde Colombia",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Papelería",
+     "Tablets",
+     "Computadores",
+     "Bolsos y accesorios"
+    ],
+    "max_usd": 300,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 40,
+   "slug": "enviar-regalo-a-familia-en-venezuela",
+   "titulo": "Cómo enviar un regalo a tu familia en Venezuela si vives fuera",
+   "tipo": "confianza",
+   "productos": null,
+   "estado": "pending"
+  }
+ ]
+}
