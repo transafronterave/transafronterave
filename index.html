@@ -200,7 +200,7 @@ footer .pay span{background:#fff}
 <p class="rate" id="trm"></p>
 <div class="fbar"><select id="cat" aria-label="Categoría"><option value="">Todas las categorías</option></select>
 <select id="sort" aria-label="Ordenar"><option value="">Más relevantes</option><option value="pa">Menor precio</option><option value="pd">Mayor precio</option><option value="dd">Mayor descuento</option></select>
-<select id="pmax" aria-label="Precio"><option value="">Cualquier precio</option><option value="15">Hasta $15</option><option value="30">Hasta $30</option><option value="60">Hasta $60</option><option value="120">Hasta $120</option></select>
+<select id="pmax" aria-label="Precio"><option value="">Cualquier precio</option><option value="15">Hasta $15</option><option value="30">Hasta $30</option><option value="60">Hasta $60</option><option value="120">Hasta $120</option><option value="300">Hasta $300</option><option value="1000">Hasta $1000</option></select>
 <label class="chk"><input type="checkbox" id="onlyoff"> Solo ofertas</label><span id="cnt" class="fcnt"></span></div>
 <div class="grid" id="grid"></div><div class="more"><button id="more" hidden>Ver más productos</button></div><div id="sent"></div></section>
 <section class="how" id="como"><h2>¿Cómo funciona?</h2><div class="steps">
@@ -232,15 +232,15 @@ pagos:[
 {id:"bancolombia",label:"Bancolombia",short:"Bancolombia",icon:"🏦"},
 {id:"nequi",label:"Nequi",short:"Nequi",icon:"📱"}
 ]};
-// ===== PRODUCTOS: se cargan desde productos.json (generado por scripts/catalogo.py) =====
+// ===== PRODUCTOS: se cargan desde data/idx.json (generado por scripts/catalogo.py) =====
 let P=[],BYID={};
 const usd=cop=>(cop*(1+CFG.margen))/CFG.tasaCOPporUSD;
 const mrwEst=kg=>Math.max(1,Math.ceil(kg||1))*CFG.mrwCOPporKg/CFG.tasaCOPporUSD;
 const $=id=>document.getElementById(id);
 const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 let CATS=[];
-const ICO={"Tecnología":"🎧","Celulares":"📱","Tablets":"📲","Papelería":"✏️","Juguetes":"🧸","Belleza":"💄","Electrodomésticos":"🔌","Herramientas":"🛠️","Hogar":"🏠","Deportes":"⚽","Maquillaje":"💋","Cuidado personal":"🧴","Vitaminas y venta libre":"💊","Calzado deportivo":"👟","Ropa deportiva":"🎽","Camping":"⛺","Ropa":"👗","Calzado":"👠","Bolsos y accesorios":"👜","Relojes":"⌚"};
-const BG={"Tecnología":"#e6ecff","Celulares":"#e8f0ff","Tablets":"#e6f3ff","Papelería":"#fff4cc","Juguetes":"#ffe6ea","Belleza":"#fde8f3","Electrodomésticos":"#e5f6f1","Herramientas":"#fff0dc","Hogar":"#eaf3ff","Deportes":"#e9f8e6","Maquillaje":"#fde6ee","Cuidado personal":"#e6f4fb","Vitaminas y venta libre":"#e8f7ee","Calzado deportivo":"#e3f2fd","Ropa deportiva":"#e8f5e9","Camping":"#f1f8e9","Ropa":"#fce4ec","Calzado":"#f3e5f5","Bolsos y accesorios":"#fff3e0","Relojes":"#eceff1"};
+const ICO={"Tecnología":"🎧","Celulares":"📱","Tablets":"📲","Computadores":"💻","TV y video":"📺","Videojuegos":"🎮","Grandes electrodomésticos":"🧊","Cocina":"🍲","Muebles":"🛋️","Baño":"🚿","Iluminación":"💡","Jardín":"🌿","Bicicletas":"🚲","Papelería":"✏️","Juguetes":"🧸","Belleza":"💄","Electrodomésticos":"🔌","Herramientas":"🛠️","Hogar":"🏠","Deportes":"⚽","Maquillaje":"💋","Cuidado personal":"🧴","Vitaminas y venta libre":"💊","Calzado deportivo":"👟","Ropa deportiva":"🎽","Camping":"⛺","Ropa":"👗","Calzado":"👠","Bolsos y accesorios":"👜","Relojes":"⌚"};
+const BG={"Tecnología":"#e6ecff","Celulares":"#e8f0ff","Tablets":"#e6f3ff","Computadores":"#e8eefc","TV y video":"#e9e7fb","Videojuegos":"#efe6ff","Grandes electrodomésticos":"#e3f4f8","Cocina":"#fff1e6","Muebles":"#f5ede4","Baño":"#e4f3fa","Iluminación":"#fffbe0","Jardín":"#e8f6e3","Bicicletas":"#e6f6ef","Papelería":"#fff4cc","Juguetes":"#ffe6ea","Belleza":"#fde8f3","Electrodomésticos":"#e5f6f1","Herramientas":"#fff0dc","Hogar":"#eaf3ff","Deportes":"#e9f8e6","Maquillaje":"#fde6ee","Cuidado personal":"#e6f4fb","Vitaminas y venta libre":"#e8f7ee","Calzado deportivo":"#e3f2fd","Ropa deportiva":"#e8f5e9","Camping":"#f1f8e9","Ropa":"#fce4ec","Calzado":"#f3e5f5","Bolsos y accesorios":"#fff3e0","Relojes":"#eceff1"};
 const wa=t=>`https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent(t)}`;
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 function setupCats(){CATS=[...new Set(P.map(p=>p.c))];
@@ -272,7 +272,7 @@ $("ctitle").textContent=raw?`Resultados para “${raw}”`:(c||"Todos los produc
 shown=0;$("grid").innerHTML=L.length?"":`<div class="empty" style="grid-column:1/-1">No encontramos “${esc(raw)}”. ¡Cotízalo abajo y te lo traemos! 👇</div>`;more();
 document.querySelectorAll(".cnav button[data-c]").forEach(b=>b.classList.toggle("on",b.dataset.c==c));}
 function more(){const n=L.slice(shown,shown+PAGE);$("grid").insertAdjacentHTML("beforeend",n.map(card).join(""));shown+=n.length;$("more").hidden=shown>=L.length;}
-function setCat(c){$("cat").value=c;$("q").value="";$("onlyoff").checked=false;render();closeAll();$("catalogo").scrollIntoView({behavior:"smooth"});}
+function setCat(c){loadCat(c);$("cat").value=c;$("q").value="";$("onlyoff").checked=false;render();closeAll();$("catalogo").scrollIntoView({behavior:"smooth"});}
 function calc(){const cop=+$("cp").value,kg=+$("cw").value;const v=usd(cop).toFixed(2);const ship=mrwEst(kg).toFixed(2);
 $("cres").innerHTML="$"+v+" USD<div style=\"font-size:.72rem;color:#6b7280;margin-top:8px;font-weight:600\">Estimado envío MRW (costo aparte): $"+ship+" USD</div>";
 $("cwa").href=wa("Hola, quiero cotizar un producto de "+cop+" COP ($"+v+" USD). Peso aprox. "+kg+" kg. Envío por MRW se paga aparte (estimado ~$"+ship+" USD).")}
@@ -310,7 +310,12 @@ new IntersectionObserver(es=>{if(es[0].isIntersecting&&shown&&shown<L.length&&sh
 function all(){if(P.length){renderHome();render()}calc();drawCart();renderPagos()}
 function deep(){const h=new URLSearchParams(location.hash.slice(1)),u=new URLSearchParams(location.search);const p=BYID[h.get("p")||u.get("p")],q=p?p.n:(h.get("q")||u.get("q"));if(!q)return;$("cat").value="";$("q").value=q;render();setTimeout(()=>$("catalogo").scrollIntoView({behavior:"smooth"}),300)}
 window.addEventListener("hashchange",deep);
-fetch("productos.json").then(r=>r.json()).then(d=>{P=d.productos||d;P.forEach(p=>{BYID[p.id]=p;p._s=norm(p.n+" "+p.c)});setupCats();all();deep()}).catch(()=>{$("grid").innerHTML='<div class="empty">No se pudo cargar el catálogo. Recarga la página.</div>'});calc();
+// índice liviano (búsqueda y tarjetas); el detalle completo de cada categoría se carga al abrirla (data/c/<cat>.json)
+let SLUG={},LOADED={};
+function loadCat(c){if(!c||LOADED[c]||!SLUG[c])return;LOADED[c]=1;fetch("data/c/"+SLUG[c]+".json").then(r=>r.json()).then(d=>{(d.productos||[]).forEach(o=>{const p=BYID[o.id];if(p)Object.assign(p,{e:o.e,kg:o.kg})})}).catch(()=>{LOADED[c]=0})}
+fetch("data/idx.json").then(r=>r.json()).then(d=>{const cs=d.cats.map(x=>x[0]);d.cats.forEach(x=>SLUG[x[0]]=x[1]);
+P=d.p.map(([id,n,ci,cop,antes,f])=>{const c=cs[ci],p={id,n,c,cop,img:"img/p"+id+".jpg",e:ICO[c]||"📦"};if(antes)p.antes=antes;if(f&1)p.top=1;if(f&2)p.envio="consultar";if(f&4)p.max_qty=6;if(f&8)p.nota="Máx. 6 unidades por pedido";return p});
+P.forEach(p=>{BYID[p.id]=p;p._s=norm(p.n+" "+p.c)});setupCats();all();deep()}).catch(()=>{$("grid").innerHTML='<div class="empty">No se pudo cargar el catálogo. Recarga la página.</div>'});calc();
 let T={};function showTRM(){$("trm").textContent="💱 Tasa usada: $"+CFG.tasaCOPporUSD.toLocaleString("es-CO")+" COP/USD ("+(CFG.fuente=="binance"&&T.usdt_venta?"USDT Binance P2P":"TRM")+")"+(T.trm?" · TRM $"+T.trm.toLocaleString("es-CO"):"")+(T.usdt_compra?" · USDT compra $"+T.usdt_compra.toLocaleString("es-CO")+" / venta $"+T.usdt_venta.toLocaleString("es-CO"):"")+(T.actualizado?" · "+T.actualizado:"")}showTRM();
 fetch("tasas.json?"+Date.now()).then(r=>r.json()).then(d=>{T=d;const v=CFG.fuente=="binance"&&d.usdt_venta?d.usdt_venta:d.trm;if(v>1000){CFG.tasaCOPporUSD=v}all();showTRM()}).catch(()=>{});
 </script></body></html>

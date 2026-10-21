@@ -15,9 +15,9 @@ ENVIO_STRICT_EXCLUIR = os.environ.get("ENVIO_STRICT_EXCLUIR", "0") == "1"  # un 
 # Patrones sobre el nombre normalizado (minúsculas, sin tildes).
 MRW_BLOCK = {
  "armas blancas": r"\bmachetes?\b|\bnavajas?\b(?! de afeitar)|cuchill[oa]s? (tactic|de caza|de supervivencia|militar|plegable|de combate|mariposa)|^(cuchillas?|bisturi)\b(?!.*(afeitar|rasur|depil|licuadora|procesador|picahielo|batidora|extractor))|\bpu[nñ]al\b|\bdaga\b",
- "gases comprimidos": r"\bbombonas?\b|\b(tanque|cilindro|bala) de (oxigeno|nitrogeno|gas)\b|oxigeno medicinal|\bnitrogeno\b|\bcilindros?\b|gas propano|gas butano|cartuchos? de gas",
+ "gases comprimidos": r"\bbombonas?\b|\b(tanque|cilindro|bala) de (oxigeno|nitrogeno|gas)\b|oxigeno medicinal|\bnitrogeno\b|cilindros? (de )?(gas|co2|oxigeno|helio|propano|sellado)|tanque de helio|gas propano|gas butano|cartuchos? de gas",
  "erotico": r"erotic|pornogr|sex ?shop|juguetes? (sexual|para adultos)|vibrador|consolador|\bdildo",
- "militar": r"\bmilitar(es)?\b|chaleco (tactico|antibalas)|\bantibalas\b",
+ "militar": r"(?<!verde )(?<!estilo )(?<!tipo )(?<!look )\bmilitar(es)?\b(?! (verde|green))|chaleco (tactico|antibalas)|\bantibalas\b",
  "medicina refrigerada/institucional/control": r"insulina|vacunas?\b|refrigerad|cadena de frio|uso (institucional|hospitalario)|control especial|medicamento controlado",
  "ampollas": r"\bampollas?\b(?!.*(capilar|cabello|pelo|facial|keratina|hidrat|reparad|tratamiento|serum|rostro|piel|bioplasti|nutri))|\bampolletas?\b",
  "velas/glicerina": r"\bvelas?\b|\bvelon(es)?\b|glicerina",
@@ -29,7 +29,7 @@ MRW_BLOCK = {
  "vapers": r"\bvape(r|rs)?\b|vapeador|pod desechable|cigarrillo electronico",
  "semillas": r"\bsemillas?\b(?!.*(aceite|serum|crema|exfolia|shampoo|jabon|uva))",
  "venenos/insecticidas": r"veneno|insecticida|raticida|plaguicida|pesticida|herbicida|fungicida|matamaleza|cucarachicida|mata ?(cucarachas|ratas|hormigas|moscas|zancudos)|\braid\b|baygon",
- "cenizas": r"\bcenizas?\b",
+ "cenizas": r"^cenizas?\b|urna (para|de) cenizas",
  "pinturas": r"^(pinturas?|vinilos?|esmaltes?|anticorrosivo|laca|barniz|imprimante|thinner)\b(?!.*(u[nñ]as|nail|tempera|acuarela|dactilar|ni[nñ]os|facial|corporal|faber|pelikan|kit|set|oleo|x \d+|\d+ colores|tela|artistic|acrilica \d+ ?ml))|pintura (en aerosol|aerosol|de pared|para pared|anticorrosiva|para (madera|metal|piso|techo|exterior|interior))|(spray|aerosol) de pintura|\bgal(on|ones)\b.*\bpintura|pintura.*\bgal(on|ones)\b|\bkoraza\b|viniltex|pintuco",
  "oro/piedras preciosas": r"\boro (solido|macizo|puro|de \d\d|\d\dk)|\b(10|14|18|24) ?k(ilates)? (de )?oro|oro (10|14|18|24) ?k|piedras? preciosas?|\blingotes?\b|diamantes? (natural|real)|esmeraldas? (natural|colombiana)",
  "cannabis/coca": r"\bcbd\b|cannab|marihuana|hoja de coca|\bhemp\b|canamo",

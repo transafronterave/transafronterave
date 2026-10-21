@@ -5,7 +5,7 @@ import csv, json, os, re, hashlib, urllib.parse
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://transafronterave.com/"
 BRAND = "TRANSAFRONTERA VE"
-MSG = "Compramos en Colombia y enviamos por MRW a toda Venezuela (costo aparte). Pedidos por WhatsApp."
+MSG = "Enviamos por MRW a toda Venezuela (costo aparte). Compramos en Colombia; pedidos por WhatsApp."
 d = json.load(open(os.path.join(ROOT, "productos.json"), encoding="utf-8"))
 prods = d.get("productos", d) if isinstance(d, dict) else d
 rate = float(json.load(open(os.path.join(ROOT, "tasas.json")))["usdt_venta"])
