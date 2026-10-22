@@ -238,6 +238,20 @@ const usd=cop=>(cop*(1+CFG.margen))/CFG.tasaCOPporUSD;
 const mrwEst=kg=>Math.max(1,Math.ceil(kg||1))*CFG.mrwCOPporKg/CFG.tasaCOPporUSD;
 const $=id=>document.getElementById(id);
 const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+// ===== Búsqueda: índice normalizado (sin acentos/mayúsculas) de nombre + categoría + descripción, sinónimos y tolerancia a errores (1 letra) =====
+const tok=s=>norm(s||"").split(/[^a-z0-9]+/).filter(Boolean);
+const SYN=[["Computadores","laptop laptops portatil portatiles computador computadores notebook"],["Celulares","celular celulares telefono telefonos smartphone smartphones movil"],["TV y video","televisor televisores tv television"],["Tecnología","audifonos auriculares headset cascos"],["Videojuegos","consola consolas videoconsola"],["Tecnología","smartwatch smartwatches"],["Tablets","tablet tablets tableta tabletas"],["Celulares","iphone"],["Celulares","galaxy"],["Celulares","pixel"],["Tablets","ipad"],["Computadores","macbook"],["Videojuegos","playstation"],["Videojuegos","ps5"],["Videojuegos","xbox"],["Videojuegos","nintendo"]].map(([c,w])=>({c,w:w.split(" ")}));
+const ACC=new Set("adaptador cable cables cargador funda forro estuche protector vidrio mica soporte base microfono correa manilla carcasa lamina".split(" "));const VOC=new Map(),QC=new Map(),FW=[.4,1,.6];// peso: 1 nombre, .6 nombre después de «para/compatible» (accesorios), .4 categoría/descripción
+function buildIdx(){VOC.clear();QC.clear();P.forEach((p,i)=>{const seen=new Set(),add=(t,f)=>{if(seen.has(t))return;seen.add(t);let l=VOC.get(t);if(!l)VOC.set(t,l=[]);l.push(i*4+f)};
+const tn=tok(p.n);let f=1;tn.forEach((t,j)=>{if(j==1&&ACC.has(tn[0]))f=2;if(t=="para"||t.startsWith("compatible"))f=2;add(t,f)});tok(p.c+" "+(p.d||"")).forEach(t=>add(t,0))})}
+function ed1(a,b){let la=a.length,lb=b.length;if(Math.abs(la-lb)>1)return false;if(la>lb){[a,b]=[b,a];[la,lb]=[lb,la]}let i=0;while(i<la&&a[i]===b[i])i++;if(i===la)return true;
+if(la===lb)return a.slice(i+1)===b.slice(i+1)||(a[i]===b[i+1]&&a[i+1]===b[i]&&a.slice(i+2)===b.slice(i+2));return a.slice(i)===b.slice(i+1)}
+function wtoks(w){if(QC.has(w))return QC.get(w);const vs=new Set(),cs=new Set();SYN.forEach(g=>{if(g.w.includes(w)){cs.add(g.c);g.w.forEach(x=>x!==w&&vs.add(x))}});
+const fz=w.length>=4&&!/\d/.test(w),fs=VOC.has(w)?4:9,m=[];// sin coincidencia exacta («tuff») la corrección («tuf») va primero
+for(const [t,l] of VOC){let s=0;if(t===w)s=10;else if(t.startsWith(w))s=7;else if(t.includes(w))s=5;else{for(const v of vs)if(t===v||(v.length>=4&&t.startsWith(v))){s=9;break}if(!s&&fz&&t.length>=3&&ed1(t,w))s=fs-(w.startsWith(t)||t.startsWith(w)?0:2)}if(s)m.push([s,l])}
+const r={m,cs};QC.set(w,r);return r}
+function srch(q){let R=null;for(const w of q){const S=new Map(),{m,cs}=wtoks(w);for(const [s,l] of m)for(const k of l){const p=P[k>>2],v=s*FW[k&3]+(cs.has(p.c)?3:0);if(!(S.get(p)>=v))S.set(p,v)}
+if(R){const N=new Map();for(const [p,v] of R){const x=S.get(p);if(x)N.set(p,v+x)}R=N}else R=S;if(!R.size)break}return R}
 let CATS=[];
 const ICO={"Tecnología":"🎧","Celulares":"📱","Tablets":"📲","Computadores":"💻","TV y video":"📺","Videojuegos":"🎮","Grandes electrodomésticos":"🧊","Cocina":"🍲","Muebles":"🛋️","Baño":"🚿","Iluminación":"💡","Jardín":"🌿","Bicicletas":"🚲","Papelería":"✏️","Juguetes":"🧸","Belleza":"💄","Electrodomésticos":"🔌","Herramientas":"🛠️","Hogar":"🏠","Deportes":"⚽","Maquillaje":"💋","Cuidado personal":"🧴","Vitaminas y venta libre":"💊","Calzado deportivo":"👟","Ropa deportiva":"🎽","Camping":"⛺","Ropa":"👗","Calzado":"👠","Bolsos y accesorios":"👜","Relojes":"⌚"};
 const BG={"Tecnología":"#e6ecff","Celulares":"#e8f0ff","Tablets":"#e6f3ff","Computadores":"#e8eefc","TV y video":"#e9e7fb","Videojuegos":"#efe6ff","Grandes electrodomésticos":"#e3f4f8","Cocina":"#fff1e6","Muebles":"#f5ede4","Baño":"#e4f3fa","Iluminación":"#fffbe0","Jardín":"#e8f6e3","Bicicletas":"#e6f6ef","Papelería":"#fff4cc","Juguetes":"#ffe6ea","Belleza":"#fde8f3","Electrodomésticos":"#e5f6f1","Herramientas":"#fff0dc","Hogar":"#eaf3ff","Deportes":"#e9f8e6","Maquillaje":"#fde6ee","Cuidado personal":"#e6f4fb","Vitaminas y venta libre":"#e8f7ee","Calzado deportivo":"#e3f2fd","Ropa deportiva":"#e8f5e9","Camping":"#f1f8e9","Ropa":"#fce4ec","Calzado":"#f3e5f5","Bolsos y accesorios":"#fff3e0","Relojes":"#eceff1"};
@@ -266,8 +280,8 @@ r.insertAdjacentHTML("beforeend",`<button class="arr l" aria-label="Anterior">�
 r.querySelector(".arr.l").onclick=()=>t.scrollBy({left:-t.clientWidth*.8,behavior:"smooth"});r.querySelector(".arr.r").onclick=()=>t.scrollBy({left:t.clientWidth*.8,behavior:"smooth"});});}
 const PAGE=24;let L=[],shown=0;
 function render(){const raw=$("q").value.trim(),q=norm(raw).split(/\s+/).filter(Boolean),c=$("cat").value,so=$("sort").value,pm=+$("pmax").value||0,off=$("onlyoff").checked;
-L=P.filter(p=>(!c||p.c==c)&&(!off||disc(p)>.05)&&q.every(w=>p._s.includes(w))&&(!pm||usd(p.cop)<=pm));
-if(so=="pa")L.sort((a,b)=>usd(a.cop)-usd(b.cop));else if(so=="pd")L.sort((a,b)=>usd(b.cop)-usd(a.cop));else if(so=="dd")L.sort((a,b)=>disc(b)-disc(a));
+const SC=q.length?srch(q):null;L=P.filter(p=>(!c||p.c==c)&&(!off||disc(p)>.05)&&(!SC||SC.has(p))&&(!pm||usd(p.cop)<=pm));
+if(so=="pa")L.sort((a,b)=>usd(a.cop)-usd(b.cop));else if(so=="pd")L.sort((a,b)=>usd(b.cop)-usd(a.cop));else if(so=="dd")L.sort((a,b)=>disc(b)-disc(a));else if(SC)L.sort((a,b)=>SC.get(b)-SC.get(a));
 $("ctitle").textContent=raw?`Resultados para “${raw}”`:(c||"Todos los productos");$("cnt").textContent=L.length+" productos";
 shown=0;$("grid").innerHTML=L.length?"":`<div class="empty" style="grid-column:1/-1">No encontramos “${esc(raw)}”. ¡Cotízalo abajo y te lo traemos! 👇</div>`;more();
 document.querySelectorAll(".cnav button[data-c]").forEach(b=>b.classList.toggle("on",b.dataset.c==c));}
@@ -306,7 +320,7 @@ $("dots").innerHTML=S.map((_,i)=>`<button aria-label="Slide ${i+1}" class="${i?"
 const D=[...$("dots").children];function go(i){si=(i+S.length)%S.length;S.forEach((s,k)=>s.classList.toggle("on",k==si));D.forEach((d,k)=>d.classList.toggle("on",k==si));clearInterval(ht);ht=setInterval(()=>go(si+1),5000)}
 D.forEach((d,i)=>d.onclick=()=>go(i));$("hl").onclick=()=>go(si-1);$("hr").onclick=()=>go(si+1);go(0);
 ["q","cat","sort","pmax","onlyoff"].forEach(i=>$(i).oninput=render);$("more").onclick=more;
-new IntersectionObserver(es=>{if(es[0].isIntersecting&&shown&&shown<L.length&&shown<PAGE*4)more()},{rootMargin:"400px"}).observe($("sent"));["cp","cw"].forEach(i=>$(i).oninput=calc);
+new IntersectionObserver(es=>{if(es[0].isIntersecting&&shown&&shown<L.length)more()},{rootMargin:"400px"}).observe($("sent"));["cp","cw"].forEach(i=>$(i).oninput=calc);
 function all(){if(P.length){renderHome();render()}calc();drawCart();renderPagos()}
 function deep(){const h=new URLSearchParams(location.hash.slice(1)),u=new URLSearchParams(location.search);const p=BYID[h.get("p")||u.get("p")],q=p?p.n:(h.get("q")||u.get("q"));if(!q)return;$("cat").value="";$("q").value=q;render();setTimeout(()=>$("catalogo").scrollIntoView({behavior:"smooth"}),300)}
 window.addEventListener("hashchange",deep);
@@ -315,7 +329,7 @@ let SLUG={},LOADED={};
 function loadCat(c){if(!c||LOADED[c]||!SLUG[c])return;LOADED[c]=1;fetch("data/c/"+SLUG[c]+".json").then(r=>r.json()).then(d=>{(d.productos||[]).forEach(o=>{const p=BYID[o.id];if(p)Object.assign(p,{e:o.e,kg:o.kg})})}).catch(()=>{LOADED[c]=0})}
 fetch("data/idx.json").then(r=>r.json()).then(d=>{const cs=d.cats.map(x=>x[0]);d.cats.forEach(x=>SLUG[x[0]]=x[1]);
 P=d.p.map(([id,n,ci,cop,antes,f])=>{const c=cs[ci],p={id,n,c,cop,img:"img/p"+id+".jpg",e:ICO[c]||"📦"};if(antes)p.antes=antes;if(f&1)p.top=1;if(f&2)p.envio="consultar";if(f&4)p.max_qty=6;if(f&8)p.nota="Máx. 6 unidades por pedido";return p});
-P.forEach(p=>{BYID[p.id]=p;p._s=norm(p.n+" "+p.c)});setupCats();all();deep()}).catch(()=>{$("grid").innerHTML='<div class="empty">No se pudo cargar el catálogo. Recarga la página.</div>'});calc();
+P.forEach(p=>{BYID[p.id]=p;p._s=norm(p.n+" "+p.c)});buildIdx();setupCats();all();deep()}).catch(()=>{$("grid").innerHTML='<div class="empty">No se pudo cargar el catálogo. Recarga la página.</div>'});calc();
 let T={};function showTRM(){$("trm").textContent="💱 Tasa usada: $"+CFG.tasaCOPporUSD.toLocaleString("es-CO")+" COP/USD ("+(CFG.fuente=="binance"&&T.usdt_venta?"USDT Binance P2P":"TRM")+")"+(T.trm?" · TRM $"+T.trm.toLocaleString("es-CO"):"")+(T.usdt_compra?" · USDT compra $"+T.usdt_compra.toLocaleString("es-CO")+" / venta $"+T.usdt_venta.toLocaleString("es-CO"):"")+(T.actualizado?" · "+T.actualizado:"")}showTRM();
 fetch("tasas.json?"+Date.now()).then(r=>r.json()).then(d=>{T=d;const v=CFG.fuente=="binance"&&d.usdt_venta?d.usdt_venta:d.trm;if(v>1000){CFG.tasaCOPporUSD=v}all();showTRM()}).catch(()=>{});
 </script></body></html>
