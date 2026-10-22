@@ -2,6 +2,10 @@
 <title>TRANSAFRONTERA VE | Tienda online: compras en Colombia con envío a toda Venezuela</title>
 <meta name="description" content="Compramos por ti en Colombia. Hacemos envíos por MRW a toda Venezuela. Precios en USD; envío por MRW (costo aparte).">
 <link rel="icon" href="logo-tf.png">
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0D214F">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="TRANSAFRONTERA">
+<script src="/pwa.js" defer></script>
 <style>
 :root{--y:#FFCC00;--b:#00247D;--r:#CF142B;--n:#0D214F;--g:#f2f3f7;--t:#1b2333;--m:#6b7280}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -26,6 +30,7 @@ a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer;border:0
 .hact{display:flex;align-items:center;gap:6px}
 .hact a,.hact button{display:flex;flex-direction:column;align-items:center;font-size:.7rem;color:var(--n);font-weight:600;padding:4px 8px;border-radius:10px;position:relative}
 .hact .ic{font-size:1.4rem;line-height:1.2}
+#inst[hidden]{display:none}#inst .lbl{color:var(--n)}
 .cnt{position:absolute;top:-2px;right:2px;background:var(--r);color:#fff;font-size:.68rem;min-width:19px;height:19px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;border:2px solid #fff}
 .cnav{border-top:1px solid #eceef3;overflow-x:auto;scrollbar-width:none}.cnav::-webkit-scrollbar{display:none}
 .cnav .wrap{display:flex;gap:4px;white-space:nowrap}
@@ -138,7 +143,7 @@ footer .pay span{background:#fff}
 @media(max-width:1000px){.track{grid-auto-columns:calc((100% - 32px)/3)}.bens{grid-template-columns:repeat(2,1fr)}.fgrid{grid-template-columns:1fr 1fr}}
 @media(max-width:720px){
 .hrow{flex-wrap:wrap;gap:8px 10px;padding:10px 12px}.logo img{height:38px}.logo span{font-size:.9rem}
-.menu-btn{order:-1;padding:6px}.menu-btn .lbl{display:none}.hact{margin-left:auto}.hact .lbl{display:none}
+.menu-btn{order:-1;padding:6px}.menu-btn .lbl{display:none}.hact{margin-left:auto}.hact .lbl{display:none}#inst{background:var(--y);border-radius:999px;padding:4px 9px}
 .search{order:5;flex-basis:100%}
 .hero{height:250px;border-radius:14px}.slide{padding:0 22px}.slide h2{font-size:1.6rem}.slide p{font-size:.88rem}.slide .art{font-size:3.6rem;position:absolute;right:14px;bottom:30px;opacity:.9}.slide .tx{max-width:72%}.arr{display:none}.rail .arr{display:none}
 .track{grid-auto-columns:calc((100% - 12px)/2);gap:12px}.grid{grid-template-columns:repeat(2,1fr);gap:10px}
@@ -160,7 +165,7 @@ footer .pay span{background:#fff}
 <a class="logo" href="#"><img src="logo-tf.png" alt="TF"><span>TRANSAFRONTERA<i>VENEZUELA</i></span></a>
 <form class="search" id="sf" role="search"><input id="q" type="search" placeholder="¿Qué buscas hoy? Audífonos, taladro, secador..." autocomplete="off"><button aria-label="Buscar">🔍</button></form>
 <div class="hact"><a href="/guias/"><span class="ic">📘</span><span class="lbl">Guías</span></a><a id="hwa" target="_blank" rel="noopener"><span class="ic">💬</span><span class="lbl">Ayuda</span></a>
-<button id="cb" aria-label="Carrito"><span class="ic">🛒</span><span class="lbl">Carrito</span><span class="cnt" id="cc">0</span></button></div>
+<button id="inst" type="button" hidden aria-label="Instalar app"><span class="ic">📲</span><span class="lbl">Instalar app</span></button><button id="cb" aria-label="Carrito"><span class="ic">🛒</span><span class="lbl">Carrito</span><span class="cnt" id="cc">0</span></button></div>
 </div>
 <nav class="cnav"><div class="wrap" id="cnav"></div></nav>
 </header>

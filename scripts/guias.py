@@ -278,6 +278,10 @@ def page(title, desc, canonical, body, jsonld, og_type="article", active="guias"
 <meta property="og:image" content="{SITE}/logo-tf.png"><meta property="og:image:width" content="1000"><meta property="og:image:height" content="1000">
 <meta name="twitter:card" content="summary"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}"><meta name="twitter:image" content="{SITE}/logo-tf.png">
 <link rel="icon" href="/logo-tf.png">
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0D214F">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="TRANSAFRONTERA">
+<script src="/pwa.js" defer></script>
 {ld}
 <style>{CSS}</style></head><body>
 <div class="promo">🚚 <b>{ENVIO}</b> · Compramos por ti en Colombia · Precios en USD</div>

@@ -1,0 +1,23 @@
+{
+  "id": "/",
+  "name": "TRANSAFRONTERA VE",
+  "short_name": "TRANSAFRONTERA",
+  "description": "Compramos por ti en Colombia. Enviamos por MRW a toda Venezuela (costo aparte). Precios en USD.",
+  "lang": "es-VE",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0D214F",
+  "background_color": "#FFFFFF",
+  "categories": ["shopping"],
+  "icons": [
+    {"src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "shortcuts": [
+    {"name": "Guías de compra", "url": "/guias/", "icons": [{"src": "/icons/icon-192.png", "sizes": "192x192"}]}
+  ]
+}
