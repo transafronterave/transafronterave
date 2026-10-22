@@ -33,7 +33,15 @@ from xml.sax.saxutils import escape as xesc
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://transafronterave.com"
-WA = "584120886940"
+def _wa():
+    """Número de WhatsApp desde data/sitio/config.json (editable en el panel /admin/)."""
+    try:
+        n = re.sub(r"\D", "", json.load(open(os.path.join(ROOT, "data", "sitio", "config.json"), encoding="utf-8")).get("whatsapp") or "")
+        if len(n) >= 10: return n
+    except Exception:
+        pass
+    return "584120886940"
+WA = _wa()
 SPECS = os.path.join(ROOT, "data", "guias")
 BACKLOG = os.path.join(ROOT, "data", "guias_temas.json")
 OUT = os.path.join(ROOT, "guias")
@@ -111,10 +119,13 @@ def load_catalog():
     rate = float(t.get("usdt_venta") or t.get("trm"))
     cats = [c[0] for c in d["cats"]]
     prods = []
-    for pid, n, ci, cop, antes, f in d["p"]:
+    for pid, n, ci, cop, antes, f, *x in d["p"]:
+        x = x[0] if x else {}  # ajustes del panel (scripts/ajustes.py): u = precio USD fijo, img = imagen propia
+        img = x.get("img", "/img/p%s.jpg" % pid)
+        if not img: continue  # producto manual sin foto: no va en guías
         prods.append({"id": pid, "n": n, "c": cats[ci], "cop": cop, "antes": antes, "top": bool(f & 1),
                       "validacion": bool(f & 2), "max6": bool(f & 4 or f & 8),
-                      "usd": round(cop * (1 + MARGEN) / rate, 2), "img": "/img/p%s.jpg" % pid})
+                      "usd": x["u"] if x.get("u") else round(cop * (1 + MARGEN) / rate, 2), "img": "/" + img.lstrip("/")})
     return {"p": prods, "by": {p["id"]: p for p in prods}, "cats": cats, "rate": rate,
             "tasa_fecha": t.get("actualizado", ""), "actualizado": d.get("actualizado", "")}
 

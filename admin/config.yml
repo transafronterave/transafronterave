@@ -1,0 +1,270 @@
+# Panel de administración de TRANSAFRONTERA VE (Sveltia CMS) — https://transafronterave.com/admin/
+# Guía para el dueño: docs/PANEL.md. Cada «Guardar» crea un commit en main; el workflow «Panel» publica.
+backend:
+  name: github
+  repo: transafronterave/transafronterave
+  branch: main
+  # Para entrar con «Iniciar sesión con GitHub» (OAuth) en vez de token, desplegar sveltia-cms-auth
+  # y descomentar (ver docs/PANEL.md):
+  # base_url: https://sveltia-cms-auth.<tu-subdominio>.workers.dev
+  commit_messages:
+    create: "Panel: crear {{collection}} «{{slug}}»"
+    update: "Panel: actualizar {{collection}} «{{slug}}»"
+    delete: "Panel: borrar {{collection}} «{{slug}}»"
+    uploadMedia: "Panel: subir imagen «{{path}}»"
+    deleteMedia: "Panel: borrar imagen «{{path}}»"
+
+publish_mode: simple
+media_folder: img/subidas
+public_folder: /img/subidas
+site_url: https://transafronterave.com
+display_url: https://transafronterave.com
+app_title: Panel TRANSAFRONTERA VE
+logo:
+  src: /logo-tf.png
+
+media_libraries:
+  default:
+    config:
+      max_file_size: 2500000
+      slugify_filename: true
+
+collections:
+  # ---------------------------------------------------------------- Ajustes de productos
+  - name: ajustes
+    label: Ajustes de productos
+    label_singular: ajuste de producto
+    description: >-
+      Cambia precio, nombre, descripción o foto de un producto del catálogo, ocúltalo o márcalo
+      como destacado / oferta. Para volver al original, borra el ajuste. Los cambios se publican
+      en 2–4 minutos.
+    file: /data/ajustes_productos.json
+    identifier_field: ref
+    summary: "{{ref | default('⏳ nombre pendiente (se completa al publicar)')}}{{oculto | ternary(' · OCULTO', '')}}{{destacado | ternary(' · ⭐', '')}}{{oferta | ternary(' · 🔥', '')}}"
+    sortable_fields: [ref]
+    fields:
+      - name: id
+        label: Producto
+        hint: Escribe parte del nombre para buscarlo en el catálogo.
+        widget: relation
+        collection: catalogo
+        value_field: "{{id}}"
+        search_fields: [n, id]
+        display_fields: ["{{n}} · {{c}}"]
+        dropdown_threshold: 0
+      - name: ref
+        label: Nombre original (lo completa el sistema)
+        required: false
+        readonly: true
+        hint: Se llena solo al publicar.
+      - { name: oculto, label: "Ocultar de la tienda", widget: boolean, default: false, required: false }
+      - name: precio_usd
+        label: Precio fijo en USD
+        hint: Déjalo vacío para usar el precio automático (se actualiza con la tasa del día).
+        widget: number
+        value_type: float
+        min: 0.5
+        step: 0.01
+        required: false
+      - name: precio_antes_usd
+        label: Precio «antes» en USD (tachado)
+        hint: Opcional. Solo se muestra si es mayor que el precio fijo.
+        widget: number
+        value_type: float
+        min: 0
+        step: 0.01
+        required: false
+      - { name: destacado, label: "Destacado (sale primero en «Lo más vendido»)", widget: boolean, default: false, required: false }
+      - { name: oferta, label: "Oferta (sale en «Ofertas del día»)", widget: boolean, default: false, required: false }
+      - { name: titulo, label: "Nombre a mostrar", hint: "Vacío = nombre original.", required: false }
+      - { name: descripcion, label: "Descripción corta", widget: text, required: false, hint: "Se ve debajo del nombre (2 líneas)." }
+      - { name: imagen, label: "Foto propia", widget: image, required: false, hint: "Vacío = foto original. JPG/PNG/WebP, máx. 2,5 MB." }
+      - { name: nota, label: "Nota interna (no se publica)", widget: text, required: false }
+
+  # ---------------------------------------------------------------- Productos manuales
+  - name: manuales
+    label: Productos propios
+    label_singular: producto propio
+    description: Productos que no están en el catálogo automático. Tienen precio fijo en USD.
+    file: /data/productos_manuales.json
+    identifier_field: nombre
+    summary: "{{nombre}} · ${{precio_usd}}{{activo | ternary('', ' · INACTIVO')}}"
+    fields:
+      - { name: activo, label: "Visible en la tienda", widget: boolean, default: true }
+      - { name: nombre, label: "Nombre", hint: "Ej.: Silla gamer reclinable negra" }
+      - name: codigo
+        label: Código (opcional)
+        hint: Solo minúsculas, números y guiones. Si lo cambias, el producto cuenta como nuevo (se vacían los carritos que lo tenían).
+        required: false
+        pattern: ["^[a-z0-9-]*$", "Solo minúsculas, números y guiones"]
+      - name: categoria
+        label: Categoría
+        widget: select
+        options:
+              - "Tecnología"
+              - "Hogar"
+              - "Electrodomésticos"
+              - "Herramientas"
+              - "Juguetes"
+              - "Belleza"
+              - "Deportes"
+              - "Maquillaje"
+              - "Cuidado personal"
+              - "Vitaminas y venta libre"
+              - "Ropa"
+              - "Calzado"
+              - "Bolsos y accesorios"
+              - "Relojes"
+              - "Calzado deportivo"
+              - "Ropa deportiva"
+              - "Celulares"
+              - "Tablets"
+              - "Computadores"
+              - "TV y video"
+              - "Videojuegos"
+              - "Grandes electrodomésticos"
+              - "Cocina"
+              - "Muebles"
+              - "Baño"
+              - "Iluminación"
+              - "Jardín"
+              - "Bicicletas"
+              - "Papelería"
+              - "Camping"
+      - { name: precio_usd, label: "Precio en USD", widget: number, value_type: float, min: 0.5, step: 0.01 }
+      - { name: precio_antes_usd, label: "Precio «antes» en USD (tachado)", widget: number, value_type: float, min: 0, step: 0.01, required: false }
+      - { name: imagen, label: "Foto", widget: image, required: false, hint: "Recomendado: cuadrada, fondo claro. Máx. 2,5 MB." }
+      - { name: descripcion, label: "Descripción corta", widget: text, required: false }
+      - name: peso_kg
+        label: Peso aproximado (kg)
+        hint: Para calcular el envío por MRW. Vacío = se consulta por WhatsApp.
+        widget: number
+        value_type: float
+        min: 0
+        step: 0.1
+        required: false
+      - { name: destacado, label: "Destacado", widget: boolean, default: false, required: false }
+      - { name: oferta, label: "Oferta", widget: boolean, default: false, required: false }
+
+  # ---------------------------------------------------------------- Catálogo (solo lectura, para buscar)
+  - name: catalogo
+    label: Catálogo (solo consulta)
+    file: /data/panel/catalogo.json
+    identifier_field: n
+    hide: true
+    create: false
+    delete: false
+    fields:
+      - { name: id, label: Código }
+      - { name: n, label: Nombre }
+      - { name: c, label: Categoría }
+
+singletons:
+  # ---------------------------------------------------------------- Página de inicio
+  - name: inicio
+    label: Página de inicio
+    file: /data/sitio/inicio.json
+    format: json
+    fields:
+      - { name: anuncio_activo, label: "Mostrar barra de anuncio", widget: boolean, default: true }
+      - name: anuncio
+        label: Barra de anuncio (arriba)
+        hint: "Usa **texto** para negrita. Recuerda: «Enviamos por MRW a toda Venezuela (costo aparte)»."
+        required: false
+      - name: slides
+        label: Carrusel principal
+        label_singular: diapositiva
+        widget: list
+        min: 1
+        max: 6
+        summary: "{{titulo}}"
+        fields:
+          - { name: etiqueta, label: "Etiqueta pequeña", required: false, hint: "Ej.: 🎁 Temporada de regalos" }
+          - { name: titulo, label: "Título" }
+          - { name: subtitulo, label: "Subtítulo", widget: text, required: false }
+          - { name: boton_texto, label: "Texto del botón", required: false }
+          - name: boton_categoria
+            label: El botón abre la categoría…
+            widget: select
+            required: false
+            options:
+                  - "Tecnología"
+                  - "Hogar"
+                  - "Electrodomésticos"
+                  - "Herramientas"
+                  - "Juguetes"
+                  - "Belleza"
+                  - "Deportes"
+                  - "Maquillaje"
+                  - "Cuidado personal"
+                  - "Vitaminas y venta libre"
+                  - "Ropa"
+                  - "Calzado"
+                  - "Bolsos y accesorios"
+                  - "Relojes"
+                  - "Calzado deportivo"
+                  - "Ropa deportiva"
+                  - "Celulares"
+                  - "Tablets"
+                  - "Computadores"
+                  - "TV y video"
+                  - "Videojuegos"
+                  - "Grandes electrodomésticos"
+                  - "Cocina"
+                  - "Muebles"
+                  - "Baño"
+                  - "Iluminación"
+                  - "Jardín"
+                  - "Bicicletas"
+                  - "Papelería"
+                  - "Camping"
+          - { name: boton_enlace, label: "…o este enlace (tiene prioridad)", required: false, hint: "Ej.: /guias/ o https://wa.me/58…" }
+          - { name: emojis, label: "Emojis grandes (si no hay imagen)", required: false }
+          - { name: imagen, label: "Imagen (reemplaza los emojis)", widget: image, required: false, hint: "PNG con fondo transparente se ve mejor. Máx. 2,5 MB." }
+          - name: estilo
+            label: Color de fondo
+            widget: select
+            default: azul
+            options:
+              - { label: Rojo, value: rojo }
+              - { label: Azul, value: azul }
+              - { label: Amarillo, value: amarillo }
+      - name: banner
+        label: Banner debajo del carrusel
+        widget: object
+        collapsed: true
+        fields:
+          - { name: activo, label: "Mostrar banner", widget: boolean, default: false }
+          - { name: imagen, label: "Imagen del banner", widget: image, required: false, hint: "Horizontal, ej. 1600×400. Máx. 2,5 MB." }
+          - { name: enlace, label: "Enlace al tocarlo", required: false, hint: "Ej.: /#c=Hogar, /guias/ o vacío" }
+          - { name: texto_alt, label: "Descripción de la imagen (accesibilidad)", required: false }
+      - name: ofertas_destacadas
+        label: Ofertas del día (en este orden)
+        hint: Productos que salen primero en «Ofertas del día». Arrastra para ordenar.
+        widget: relation
+        collection: catalogo
+        value_field: "{{id}}"
+        search_fields: [n, id]
+        display_fields: ["{{n}} · {{c}}"]
+        multiple: true
+        required: false
+        dropdown_threshold: 0
+      - { name: completar_ofertas, label: "Completar «Ofertas del día» con descuentos automáticos", widget: boolean, default: true }
+
+  # ---------------------------------------------------------------- Contacto
+  - name: contacto
+    label: WhatsApp y contacto
+    file: /data/sitio/config.json
+    format: json
+    fields:
+      - name: whatsapp
+        label: Número de WhatsApp
+        hint: "Formato internacional sin + ni espacios. Ej.: 584121234567"
+        pattern: ["^58\\d{10}$", "Debe empezar por 58 y tener 12 dígitos"]
+      - { name: mensaje_ayuda, label: "Mensaje inicial del botón «Ayuda»", required: false }
+      - { name: ubicacion, label: "Ubicación (pie de página)", required: false }
+      - { name: correo, label: "Correo", required: false }
+      - { name: instagram, label: "Instagram (enlace)", required: false }
+      - { name: facebook, label: "Facebook (enlace)", required: false }
+      - { name: tiktok, label: "TikTok (enlace)", required: false }
+      - { name: horario, label: "Horario de atención", required: false }

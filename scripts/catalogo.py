@@ -426,26 +426,15 @@ def limpia_nombres(pub, cfg):
 def slug(c): return re.sub(r"[^a-z0-9]+", "-", nrm(c)).strip("-")
 
 def write_site(pub):
-    """productos.json (completo, para el feed y las publicaciones) + data/idx.json (liviano, búsqueda y tarjetas)
-    + data/c/<categoría>.json (completo por categoría, se carga al abrir la categoría)."""
+    """productos.json (catálogo base completo, sin ajustes del panel) + data/idx.json (liviano, búsqueda y tarjetas)
+    + data/c/<categoría>.json (completo por categoría). idx/c se escriben con los ajustes del panel aplicados
+    (data/ajustes_productos.json, data/productos_manuales.json; ver scripts/ajustes.py)."""
+    import ajustes
     hoy = time.strftime("%Y-%m-%d")
     with open(os.path.join(ROOT, "productos.json"), "w", encoding="utf-8") as f:
         json.dump({"actualizado": hoy, "productos": pub}, f, ensure_ascii=False, separators=(",", ":"))
-    cats = list(dict.fromkeys(o["c"] for o in pub)); ci = {c: i for i, c in enumerate(cats)}
-    os.makedirs(os.path.join(ROOT, "data", "c"), exist_ok=True)
-    rows = []
-    for o in pub:
-        fl = (1 if o.get("top") else 0) | (2 if o.get("envio") == "consultar" else 0) | (4 if o.get("max_qty") else 0) | (8 if o.get("nota") else 0)
-        rows.append([o["id"], o["n"], ci[o["c"]], o["cop"], o.get("antes") or 0, fl])
-    with open(os.path.join(ROOT, "data", "idx.json"), "w", encoding="utf-8") as f:
-        json.dump({"actualizado": hoy, "cats": [[c, slug(c)] for c in cats], "p": rows}, f, ensure_ascii=False, separators=(",", ":"))
-    keep = set()
-    for c in cats:
-        fn = slug(c) + ".json"; keep.add(fn)
-        with open(os.path.join(ROOT, "data", "c", fn), "w", encoding="utf-8") as f:
-            json.dump({"c": c, "productos": [o for o in pub if o["c"] == c]}, f, ensure_ascii=False, separators=(",", ":"))
-    for x in os.listdir(os.path.join(ROOT, "data", "c")):
-        if x.endswith(".json") and x not in keep: os.remove(os.path.join(ROOT, "data", "c", x))
+    ajustes.escribir(pub, hoy)
+    for e in ajustes.ERRORES: print("AVISO panel:", e, file=sys.stderr)
 
 ESTADO = os.path.join(ROOT, "data", "estado.json")  # clave de tienda -> fecha + ids (sin nombres ni URLs)
 

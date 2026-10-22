@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Genera catalogo_meta.csv (feed de catálogo Meta Commerce / WhatsApp) desde productos.json y tasas.json.
-Una colección por categoría: product_type y custom_label_0 = categoría del sitio; custom_label_1 = 'oferta' si hay precio anterior."""
-import csv, json, os, re, hashlib, urllib.parse
+Una colección por categoría: product_type y custom_label_0 = categoría del sitio; custom_label_1 = 'oferta' si hay precio anterior.
+Aplica los ajustes del panel (scripts/ajustes.py): ocultos fuera, precio_usd/título/descripción/imagen, productos manuales."""
+import csv, json, os, re, sys, hashlib, urllib.parse
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ajustes
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://transafronterave.com/"
 BRAND = "TRANSAFRONTERA VE"
@@ -10,6 +13,7 @@ d = json.load(open(os.path.join(ROOT, "productos.json"), encoding="utf-8"))
 prods = d.get("productos", d) if isinstance(d, dict) else d
 rate = float(json.load(open(os.path.join(ROOT, "tasas.json")))["usdt_venta"])
 usd = lambda cop: round(cop * 1.20 / rate, 2)
+prods = ajustes.aplicar(prods, rate)
 cols = ["id", "title", "description", "availability", "condition", "price", "sale_price", "link", "image_link", "brand",
         "product_type", "custom_label_0", "custom_label_1"]
 rows, seen = [], set()
@@ -23,15 +27,18 @@ for p in prods:
     cat = p.get("c") or p.get("category") or ""
     cur, antes = usd(cop), p.get("antes")
     reg = usd(antes) if antes and antes > cop else None
+    if "u" in p:  # precio personalizado del panel (USD); el anterior solo si se puso en el panel
+        cur, reg = p["u"], (p.get("au") or None)
+        antes = reg if reg and reg > cur else None
     oferta = bool(reg and reg > cur)
     extra = (" Envío sujeto a validación, consúltanos por WhatsApp." if p.get("envio") == "consultar" else "") + \
             (" Máximo 6 unidades por pedido." if p.get("max_qty") else "")
-    rows.append({"id": pid, "title": name[:150], "description": f"{name}. {MSG}{extra}"[:9999],
+    rows.append({"id": pid, "title": name[:150], "description": (f"{name}. {p['d'].rstrip('. ')}. {MSG}{extra}" if p.get("d") else f"{name}. {MSG}{extra}")[:9999],
         "availability": "in stock", "condition": "refurbished" if re.search(r"reacondicionad", name, re.I) else "new",
         "price": f"{(reg if oferta else cur):.2f} USD",
         "sale_price": f"{cur:.2f} USD" if oferta else "",
         "link": SITE + "#p=" + urllib.parse.quote(pid), "image_link": urllib.parse.urljoin(SITE, p["img"]),
-        "brand": BRAND, "product_type": cat, "custom_label_0": cat, "custom_label_1": "oferta" if antes else ""})
+        "brand": BRAND, "product_type": cat, "custom_label_0": cat, "custom_label_1": "oferta" if antes or p.get("of") else ""})
 with open(os.path.join(ROOT, "catalogo_meta.csv"), "w", newline="", encoding="utf-8") as f:
     w = csv.DictWriter(f, fieldnames=cols); w.writeheader(); w.writerows(rows)
 print(f"catalogo_meta.csv: {len(rows)} filas (tasa {rate})")

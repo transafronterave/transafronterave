@@ -1,0 +1,38 @@
+name: Panel (publicar cambios)
+# Se ejecuta cuando el dueño guarda algo en https://transafronterave.com/admin/
+on:
+  push:
+    branches: [main]
+    paths:
+      - data/ajustes_productos.json
+      - data/productos_manuales.json
+      - data/sitio/**
+      - img/subidas/**
+  workflow_dispatch:
+permissions: {contents: write}
+concurrency: {group: panel, cancel-in-progress: false}
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aplicar ajustes del panel (catálogo, inicio, feed, guías)
+        run: |
+          git config user.name "panel-bot"; git config user.email "transafronterave@gmail.com"
+          rc=0
+          for i in 1 2 3 4; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            rc=0; python3 scripts/panel.py || rc=$?
+            python3 scripts/guias.py || git checkout -- guias sitemap.xml robots.txt
+            git add index.html data catalogo_meta.csv guias sitemap.xml
+            if git diff --cached --quiet; then echo "Sin cambios que publicar"; break; fi
+            git commit -q -m "Panel: publicar cambios" && git push -q origin HEAD:main && break
+            echo "Reintento $i"; sleep $((i*5))
+          done
+          echo "rc=$rc" >> "$GITHUB_ENV"
+      - name: Revisar errores
+        run: |
+          if [ "$rc" != "0" ]; then
+            echo "::error::Algunos cambios del panel no se publicaron (texto no permitido, imagen faltante o dato inválido). Revisa el paso anterior: las líneas que empiezan con ERROR dicen qué corregir."
+            exit 1
+          fi

@@ -1,0 +1,47 @@
+{
+ "anuncio_activo": true,
+ "anuncio": "🚚 **Hacemos envíos por MRW a toda Venezuela** · Compramos por ti en Colombia · Precios en USD (envío aparte)",
+ "slides": [
+  {
+   "etiqueta": "🎁 Temporada de regalos",
+   "titulo": "Regala lo mejor de Colombia",
+   "subtitulo": "Juguetes, belleza y más. Hacemos envíos por MRW a toda Venezuela.",
+   "boton_texto": "Ver regalos",
+   "boton_categoria": "Juguetes",
+   "boton_enlace": "",
+   "emojis": "🎁🧸",
+   "imagen": "",
+   "estilo": "rojo"
+  },
+  {
+   "etiqueta": "⚡ Tecnología",
+   "titulo": "Audífonos y gadgets hasta -50%",
+   "subtitulo": "Precios de oferta de tiendas colombianas, en dólares. Envío por MRW aparte.",
+   "boton_texto": "Comprar tecnología",
+   "boton_categoria": "Tecnología",
+   "boton_enlace": "",
+   "emojis": "🎧📱",
+   "imagen": "",
+   "estilo": "azul"
+  },
+  {
+   "etiqueta": "🛠️ Herramientas",
+   "titulo": "Equipa tu taller desde $10",
+   "subtitulo": "Taladros, destornilladores y kits para el hogar y el trabajo.",
+   "boton_texto": "Ver herramientas",
+   "boton_categoria": "Herramientas",
+   "boton_enlace": "",
+   "emojis": "🔩🪛",
+   "imagen": "",
+   "estilo": "amarillo"
+  }
+ ],
+ "banner": {
+  "activo": false,
+  "imagen": "",
+  "enlace": "",
+  "texto_alt": ""
+ },
+ "ofertas_destacadas": [],
+ "completar_ofertas": true
+}
