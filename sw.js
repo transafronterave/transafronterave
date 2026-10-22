@@ -2,7 +2,7 @@
    - HTML y datos (JSON/CSV/XML): primero la red (precios siempre al día); sin conexión, la última copia guardada.
    - Imágenes y archivos estáticos: primero la copia guardada, con límite de cantidad.
    - /admin/ queda fuera: nunca se intercepta ni se guarda. */
-const V = "tf-v1", BASE = V + "-base", PAGES = V + "-paginas", ASSETS = V + "-estaticos", MAX_ASSETS = 400, MAX_PAGES = 60;
+const V = "tf-v2", BASE = V + "-base", PAGES = V + "-paginas", ASSETS = V + "-estaticos", MAX_ASSETS = 400, MAX_PAGES = 60;
 const PRECACHE = ["/offline.html", "/logo-tf.png", "/icons/icon-192.png", "/manifest.webmanifest"];
 
 self.addEventListener("install", e => {

@@ -205,6 +205,7 @@ footer .pay span{background:#fff}
 <div id="home">
 <section class="sec"><div class="sh"><h2>🔥 Lo más <em>vendido</em></h2><button data-c="">Ver todo ›</button></div><div class="rail"><div class="track" id="best"></div></div></section>
 <section class="sec"><div class="sh"><h2>🏷️ <em>Ofertas</em> imperdibles</h2><button data-c="">Ver todo ›</button></div><div class="rail"><div class="track" id="deals"></div></div></section>
+<section class="sec" id="agsec" hidden><div class="sh"><h2>💎 Tecnología de <em>alta gama</em></h2><button data-c="__ag">Ver todo ›</button></div><div class="rail"><div class="track" id="ag"></div></div></section>
 <div id="catsecs"></div>
 </div>
 <section class="sec" id="catalogo"><div class="sh"><h2 id="ctitle">Todos los productos</h2><button id="clr" data-c="">Limpiar filtros</button></div>
@@ -268,6 +269,16 @@ for(const [t,l] of VOC){let s=0;if(t===w)s=10;else if(t.startsWith(w))s=7;else i
 const r={m,cs};QC.set(w,r);return r}
 function srch(q){let R=null;for(const w of q){const S=new Map(),{m,cs}=wtoks(w);for(const [s,l] of m)for(const k of l){const p=P[k>>2],v=s*FW[k&3]+(cs.has(p.c)?3:0);if(!(S.get(p)>=v))S.set(p,v)}
 if(R){const N=new Map();for(const [p,v] of R){const x=S.get(p);if(x)N.set(p,v+x)}R=N}else R=S;if(!R.size)break}return R}
+// ===== Tecnología de alta gama: equipos premium de las categorías de tecnología (marca/línea + precio mínimo en USD) =====
+const AG="__ag",AGT="Tecnología de alta gama",AGR={
+"Computadores":[/\b(gamer|gaming|tuf|rog|strix|zephyrus|scar|legion|loq|omen|victus|alienware|predator|nitro|helios|msi|katana|macbook|imac|mac ?mini|mac ?studio|zenbook|proart|xps|spectre|envy|thinkpad|yoga|galaxy book|surface|rtx|core ?i[79]|ultra ?[79]|ryzen ?[79]|apple m\d|chip m\d)\b/,500],
+"Celulares":[/\b(iphone|galaxy (s|z)\s?\d*|fold|flip|pixel|xiaomi (1[3-9]|[2-9]\d)|ultra|pro max|honor magic|edge|razr|find x|nothing phone)\b/,400],
+"Tablets":[/\b(ipad|galaxy tab s\d*|xiaomi pad|tab p\d+|matepad pro|surface)\b/,250],
+"Videojuegos":[/\b(playstation 5|ps5|xbox series|nintendo switch|switch 2|rog ally|steam deck|legion go|meta quest|playstation vr)\b/,250],
+"TV y video":[/\b(oled|qled|qned|neo qled|mini ?led|nanocell|8k|(6[5-9]|[7-9]\d|1\d\d) ?(\"|pulgadas|”|in\b)|proyector.*4k)/,450],
+"Tecnología":[/\b(apple watch|galaxy watch|pixel watch|garmin|airpods|bose|sony wh|sony wf|galaxy buds|beats|gopro|dji|insta360|canon eos|nikon|sony alpha|fujifilm|mirrorless|reflex|partybox|boombox|jbl (charge|xtreme|flip)|marshall|sonos|kindle)\b/,150]};
+function markAG(){for(const p of P){const r=AGR[p.c];if(r&&pu(p)>=r[1]&&r[0].test(norm(p.n)))p.ag=1;else delete p.ag}}
+const agList=()=>P.filter(p=>p.ag).sort((a,b)=>(b.dest||0)-(a.dest||0)||(b.top||0)-(a.top||0)||pu(b)-pu(a));
 let CATS=[];
 const ICO={"Tecnología":"🎧","Celulares":"📱","Tablets":"📲","Computadores":"💻","TV y video":"📺","Videojuegos":"🎮","Grandes electrodomésticos":"🧊","Cocina":"🍲","Muebles":"🛋️","Baño":"🚿","Iluminación":"💡","Jardín":"🌿","Bicicletas":"🚲","Papelería":"✏️","Juguetes":"🧸","Belleza":"💄","Electrodomésticos":"🔌","Herramientas":"🛠️","Hogar":"🏠","Deportes":"⚽","Maquillaje":"💋","Cuidado personal":"🧴","Vitaminas y venta libre":"💊","Calzado deportivo":"👟","Ropa deportiva":"🎽","Camping":"⛺","Ropa":"👗","Calzado":"👠","Bolsos y accesorios":"👜","Relojes":"⌚"};
 const BG={"Tecnología":"#e6ecff","Celulares":"#e8f0ff","Tablets":"#e6f3ff","Computadores":"#e8eefc","TV y video":"#e9e7fb","Videojuegos":"#efe6ff","Grandes electrodomésticos":"#e3f4f8","Cocina":"#fff1e6","Muebles":"#f5ede4","Baño":"#e4f3fa","Iluminación":"#fffbe0","Jardín":"#e8f6e3","Bicicletas":"#e6f6ef","Papelería":"#fff4cc","Juguetes":"#ffe6ea","Belleza":"#fde8f3","Electrodomésticos":"#e5f6f1","Herramientas":"#fff0dc","Hogar":"#eaf3ff","Deportes":"#e9f8e6","Maquillaje":"#fde6ee","Cuidado personal":"#e6f4fb","Vitaminas y venta libre":"#e8f7ee","Calzado deportivo":"#e3f2fd","Ropa deportiva":"#e8f5e9","Camping":"#f1f8e9","Ropa":"#fce4ec","Calzado":"#f3e5f5","Bolsos y accesorios":"#fff3e0","Relojes":"#eceff1"};
@@ -275,10 +286,11 @@ const wa=t=>`https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent(t)}`;
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 function setupCats(){CATS=[...new Set(P.map(p=>p.c))];
 const n=c=>P.filter(p=>p.c==c).length;
-$("cat").innerHTML=`<option value="">Todas las categorías (${P.length})</option>`+CATS.map(c=>`<option value="${c}">${c} (${n(c)})</option>`).join("");
-$("cnav").innerHTML=`<button data-c="" class="on">Todo</button>`+CATS.map(c=>`<button data-c="${c}">${c}</button>`).join("")+`<button data-go="cotiza">Cotiza tu producto</button><button data-go="como">Cómo funciona</button>`;
+markAG();const nag=P.filter(p=>p.ag).length;
+$("cat").innerHTML=`<option value="">Todas las categorías (${P.length})</option>`+(nag?`<option value="${AG}">💎 ${AGT} (${nag})</option>`:"")+CATS.map(c=>`<option value="${c}">${c} (${n(c)})</option>`).join("");
+$("cnav").innerHTML=`<button data-c="" class="on">Todo</button>`+(nag?`<button data-c="${AG}">💎 Alta gama</button>`:"")+CATS.map(c=>`<button data-c="${c}">${c}</button>`).join("")+`<button data-go="cotiza">Cotiza tu producto</button><button data-go="como">Cómo funciona</button>`;
 $("slst").innerHTML=`<button data-c="">🛍️ Ver todo</button>`+CATS.map(c=>`<button data-c="${c}">${ICO[c]||"📦"} ${c} <small style="color:#9ca3af">${n(c)}</small></button>`).join("");
-$("rcats").innerHTML=CATS.map(c=>`<button data-c="${c}"><span class="cir" style="background:${BG[c]||"#fff"}">${ICO[c]||"📦"}</span>${c}</button>`).join("")+`<button data-go="cotiza"><span class="cir">🧾</span>Cotiza</button>`;
+$("rcats").innerHTML=(nag?`<button data-c="${AG}"><span class="cir" style="background:#fff4cc">💎</span>Alta gama</button>`:"")+CATS.map(c=>`<button data-c="${c}"><span class="cir" style="background:${BG[c]||"#fff"}">${ICO[c]||"📦"}</span>${c}</button>`).join("")+`<button data-go="cotiza"><span class="cir">🧾</span>Cotiza</button>`;
 $("fcats").innerHTML=CATS.map(c=>`<li><a href="#catalogo" data-c="${c}">${c}</a></li>`).join("");}
 function card(p){const v=pu(p);const a=pa(p);const pct=a?Math.round((1-v/a)*100):0;
 return `<article class="card">${pct>0?`<span class="badge">-${pct}%</span>`:""}<div class="pimg" style="background:${BG[p.c]||"#eef1f7"}">${p.img?`<img src="${p.img}" alt="${esc(p.n)}" loading="lazy" decoding="async" width="300" height="300" onerror="this.outerHTML='<span>${p.e}</span>'">`:`<span>${p.e}</span>`}</div>
@@ -292,15 +304,16 @@ function renderHome(){
 rail("best",P.filter(p=>p.dest).concat(mix(P.filter(p=>p.top&&!p.dest),18)).slice(0,18));
 const fo=(PANEL.ofertas||[]).map(i=>BYID[i]).filter(Boolean),fs=new Set(fo);P.forEach(p=>{if(p.of&&!fs.has(p)){fo.push(p);fs.add(p)}});
 rail("deals",fo.concat(PANEL.completar===false?[]:P.filter(p=>!fs.has(p)&&disc(p)>.05).sort((a,b)=>disc(b)-disc(a))).slice(0,18));
+markAG();const ag=agList();$("agsec").hidden=ag.length<3;rail("ag",mix(ag,18));
 $("catsecs").innerHTML=CATS.filter(c=>P.filter(p=>p.c==c).length>=3).map(c=>`<section class="sec"><div class="sh"><h2>${ICO[c]||""} ${c}</h2><button data-c="${c}">Ver todo ›</button></div><div class="rail"><div class="track">${P.filter(p=>p.c==c).slice(0,12).map(card).join("")}</div></div></section>`).join("");
 document.querySelectorAll(".rail").forEach(r=>{if(r.querySelector(".arr"))return;const t=r.querySelector(".track");
 r.insertAdjacentHTML("beforeend",`<button class="arr l" aria-label="Anterior">‹</button><button class="arr r" aria-label="Siguiente">›</button>`);
 r.querySelector(".arr.l").onclick=()=>t.scrollBy({left:-t.clientWidth*.8,behavior:"smooth"});r.querySelector(".arr.r").onclick=()=>t.scrollBy({left:t.clientWidth*.8,behavior:"smooth"});});}
 const PAGE=24;let L=[],shown=0;
 function render(){const raw=$("q").value.trim(),q=norm(raw).split(/\s+/).filter(Boolean),c=$("cat").value,so=$("sort").value,pm=+$("pmax").value||0,off=$("onlyoff").checked;
-const SC=q.length?srch(q):null;L=P.filter(p=>(!c||p.c==c)&&(!off||disc(p)>.05)&&(!SC||SC.has(p))&&(!pm||pu(p)<=pm));
-if(so=="pa")L.sort((a,b)=>pu(a)-pu(b));else if(so=="pd")L.sort((a,b)=>pu(b)-pu(a));else if(so=="dd")L.sort((a,b)=>disc(b)-disc(a));else if(SC)L.sort((a,b)=>SC.get(b)-SC.get(a));
-$("ctitle").textContent=raw?`Resultados para “${raw}”`:(c||"Todos los productos");$("cnt").textContent=L.length+" productos";
+const SC=q.length?srch(q):null;L=P.filter(p=>(!c||(c==AG?p.ag:p.c==c))&&(!off||disc(p)>.05)&&(!SC||SC.has(p))&&(!pm||pu(p)<=pm));
+if(so=="pa")L.sort((a,b)=>pu(a)-pu(b));else if(so=="pd")L.sort((a,b)=>pu(b)-pu(a));else if(so=="dd")L.sort((a,b)=>disc(b)-disc(a));else if(SC)L.sort((a,b)=>SC.get(b)-SC.get(a));else if(c==AG)L=agList().filter(p=>L.includes(p));
+$("ctitle").textContent=raw?`Resultados para “${raw}”`:(c==AG?"💎 "+AGT:c||"Todos los productos");$("cnt").textContent=L.length+" productos";
 shown=0;$("grid").innerHTML=L.length?"":`<div class="empty" style="grid-column:1/-1">No encontramos “${esc(raw)}”. ¡Cotízalo abajo y te lo traemos! 👇</div>`;more();
 document.querySelectorAll(".cnav button[data-c]").forEach(b=>b.classList.toggle("on",b.dataset.c==c));}
 function more(){const n=L.slice(shown,shown+PAGE);$("grid").insertAdjacentHTML("beforeend",n.map(card).join(""));shown+=n.length;$("more").hidden=shown>=L.length;}

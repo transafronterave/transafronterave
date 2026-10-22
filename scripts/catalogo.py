@@ -86,18 +86,32 @@ Q_MODA = {
  "Bolsos y accesorios": _q(.3,"👜","cartera","bolso cruzado","bolso de mano","collar","pulsera","anillo","bufanda","sombrero","maleta","mochila","neceser","llavero","cosmetiquera") + [("bolso",.7,"👜"),("manos libres",.5,"👜"),("maletin",1,"💼"),("tote",.7,"👜"),("morral",.8,"🎒"),("billetera",.15,"👛"),("cinturon",.25,"🪢"),("riñonera",.3,"👝"),("gafas de sol",.15,"🕶️"),("gorra",.15,"🧢"),("aretes",.05,"💍")],
  "Relojes": [("reloj",.3,"⌚"),("reloj hombre",.3,"⌚"),("reloj mujer",.3,"⌚"),("reloj digital",.3,"⌚"),("reloj inteligente",.3,"⌚"),("reloj casio",.3,"⌚")],
 }
+# Tecnología y alta gama: portátiles por marca/línea, celulares y tablets premium, consolas, TV, audio, cámaras y relojes.
+Q["Computadores"] += _q(2.5,"💻","portatil asus","asus tuf","asus rog","asus vivobook","asus zenbook","portatil lenovo","lenovo legion","lenovo loq","lenovo ideapad","lenovo thinkpad","lenovo yoga",
+    "portatil hp","hp omen","hp victus","hp pavilion","hp envy","portatil dell","dell inspiron","dell xps","alienware","portatil acer","acer nitro","acer predator","acer aspire",
+    "portatil msi","galaxy book","macbook air","macbook pro","huawei matebook","portatil gamer rtx","chromebook") + _q(5,"🖥️","imac","mac mini","computador gamer","monitor gamer","pc gamer") \
+    + _q(.5,"🧩","tarjeta de video","memoria ram","procesador")
+Q["Celulares"] += [(q,.4,"📱") for q in ("iphone 17","iphone 16","iphone 15","iphone pro max","samsung galaxy s","galaxy s25","galaxy z fold","galaxy z flip","galaxy a",
+    "google pixel","xiaomi 15","xiaomi 14","redmi note","poco x","motorola edge","motorola razr","honor magic","oppo reno")]
+Q["Tablets"] += [(q,.7,"📲") for q in ("ipad pro","ipad air","ipad mini","galaxy tab s","xiaomi pad","lenovo tab","honor pad")]
+Q["Videojuegos"] += _q(3,"🎮","playstation 5","ps5","nintendo switch 2","nintendo switch","xbox series","rog ally","control ps5","juego ps5","juego nintendo switch","volante gamer","meta quest")
+Q["TV y video"] += _q(14,"📺","televisor samsung","televisor lg","televisor sony","televisor tcl","televisor hisense","televisor oled","televisor qled","televisor 65","televisor 75",
+    "tv samsung","tv lg","tv oled","tv qled","tv 65","tv 75","tv 85")
+Q["Tecnología"] += _q(.2,"⌚","apple watch","galaxy watch","garmin","amazfit","huawei watch") + _q(.25,"🎧","airpods","galaxy buds","audifonos sony","audifonos jbl","audifonos bose","audifonos gamer") \
+    + _q(.8,"🔊","parlante jbl","parlante sony","parlante marshall") + _q(.7,"📷","camara digital","camara canon","camara sony","camara nikon","gopro","camara instantanea","dji") \
+    + _q(.4,"⌨️","teclado gamer","mouse gamer","kindle")
 PERFIL = {"farmacia": Q_FARMA, "juguetes": {"Juguetes": Q["Juguetes"]}, "deportes": Q_DEPORTES, "moda": Q_MODA}
 # Solo venta libre: se descartan medicamentos con fórmula, antibióticos, controlados, inyectables y cadena de frío.
 RXBLOCK = re.compile(r"f[oó]rmula m[eé]dica|venta bajo|prescripci|antibi[oó]tic|antiinfeccios|controlad|inyect|ampolla|jeringa|aguja|insulina|vacuna|refrigera|cadena de fr[ií]o|\b2\s*°?\s*c?\s*(a|-)\s*8\s*°|amoxi|azitro|cefal|ciproflox|claritro|doxicicl|metronid|clindami|penicil|tramadol|code[ií]na|morfina|oxicod|clonazep|alpraz|diazep|lorazep|zolpidem|fentan|pregabal|gabapent|anticoncept|levonorg|hormon|testoster|estradi|cortico|prednis|dexameta|betameta|sildenaf|tadalaf|metformin|losart|enalapr|atorvast|omepraz|esomepraz|isotretin|finaster|minoxidil oral|clopidog|warfar|tretino|antidepres|sertral|fluoxet|quetiap|risperid|ketorolac|diclofenac.*(ampolla|inyect)|n[aá]proxeno s[oó]dico 550|metocarbam|tizanid|orfenadr|carisoprod|\b800\s*mg|\b\d{2,3}\.?000\s*u\.?i", re.I)
 
 PER_CAT = int(os.environ.get("PER_CAT", "150"))
-PER_CAT_OVR = {"Celulares": 120, "Tablets": 60}  # tope por tienda y categoría (las demás usan PER_CAT)
+PER_CAT_OVR = {"Celulares": 200, "Tablets": 100, "Computadores": 300, "Tecnología": 300, "Videojuegos": 200, "TV y video": 200}  # tope por tienda y categoría (las demás usan PER_CAT)
 def per_cat(c): return PER_CAT_OVR.get(c, PER_CAT)
 NOSKIP = {"Celulares", "Tablets"}
 SKIP_EXTRA = {"T2": ["Grandes electrodomésticos", "Muebles", "Bicicletas", "Jardín", "Baño", "Iluminación", "Cocina"]}  # por clave de tienda  # se consultan en todas las tiendas del perfil general aunque la config tenga "skip"
 MINCOP = 1000  # sin topes de precio/peso/tamaño: el envío se cotiza aparte por WhatsApp
 # Solo se excluye lo que no es un producto físico enviable.
-NONPHYS = re.compile(r"tarjeta (de )?regalo|gift ?card|\bbono\b|garant[ií]a extendida|\bgarant[ií]a\b|\bservicio\b|instalaci[oó]n|\brecarga\b|licencia|\bpin\b|suscripci[oó]n|membres[ií]a|\bseguro\b", re.I)
+NONPHYS = re.compile(r"tarjeta (de )?regalo|gift ?card|\bbono\b|garant[ií]a extendida|^\s*garant[ií]a\b|\bservicio\b|instalaci[oó]n|\brecarga\b|licencia|\bpin\b|suscripci[oó]n|membres[ií]a|\bseguro\b", re.I)
 # Celulares / Tablets: solo equipos (sin accesorios, juguetes ni medicamentos en tabletas).
 PHONE = re.compile(r"\b(celular|smartphone|tel[eé]fono (m[oó]vil|celular)|iphone)\b", re.I)
 PBRAND = re.compile(r"\b(samsung|galaxy|xiaomi|redmi|poco|motorola|moto|apple|honor|oppo|realme|tecno|infinix|zte|nubia|vivo|huawei|nokia|alcatel|kalley|google pixel|oneplus)\b", re.I)
@@ -128,6 +142,27 @@ def device_ok(p):
         return bool(re.match(r"\s*((apple|samsung|lenovo|xiaomi|nueva?)\s+)?(tablet|tableta|ipad)", n, re.I) and SPEC.search(n))
     return True
 
+# Reglas por categoría para que no se cuelen productos del hogar en tecnología (p. ej. "Estufa de empotrar vidrio
+# templado" por la consulta "vidrio templado", "Forro para sofá" por "forro" o "Consola decorativa" en Videojuegos).
+TECH_CTX = re.compile(r"celular|iphone|galaxy|samsung|xiaomi|redmi|poco|motorola|honor|oppo|realme|huawei|pixel|tablet|tableta|ipad|port[aá]til|laptop|macbook|notebook|computador|\bpc\b|airpods|buds|watch|reloj|pantalla|tel[eé]fono|smartphone|kindle|nintendo|switch|consola|control|gopro|c[aá]mara|disco|\d\s?(\"|”|pulg)|usb|magsafe|tipo c|teclado|mouse|parlante|aud[ií]fono|micr[oó]fono|gamer|monitor|\btv\b|televisor|cargador|power ?bank|bater[ií]a|cable|hdmi|bluetooth|inal[aá]mbric|al[aá]mbric|wi-?fi|router|\bled\b|tr[ií]pode|m[oó]vil|dji|ssd|memoria|\d\s?gb\b|lightning|targus|dispositivo|auricular|headset|est[eé]reo", re.I)
+TECH_HEAD = re.compile(r"^\s*(set de \d+ )?(forros?|fundas?|protector(es)?|vidrios? templados?|estuches?|soportes?|diademas?|aros? de luz|l[aá]mparas?)\b", re.I)
+CAT_BAD = {
+ "Tecnología": re.compile(r"estufa|\bollas?\b|sof[aá]\b|almohada|coj[ií]n|lavadora|nevera|halloween|veladora|farol|zapat[oó]n|mascota|asiento|tim[oó]n|ba[uú]l|\bhilos\b|cobija|colch[oó]n|s[aá]bana|\bsilla|cortina|orejas de|disfraz|pedestal", re.I),
+ "Computadores": re.compile(r"\bollas?\b|pa[ñn]alera|organizador|bolso|cepillo|calentador|hervidor|biber|edici[oó]n|edition|novela|cuento|\blibro|ducha|cuna|alimentos|picatodo|picadora|licuadora|batidora|horno|cafetera|estufa|nevera|lavadora|\bcama\b|freidora", re.I),
+ "Videojuegos": re.compile(r"\bmesa\b|mueble|aparador|decorativ|recibidor|espejo|sof[aá]|hierro|melamina|\bmdp\b|madera|m[aá]rmol|\d+\s?x\s?\d+\s?(x\s?\d+\s?)?cm|ensamblable|reclinable", re.I),
+ "TV y video": re.compile(r"did[aá]ctic|infantil|ni[ñn]os|juguete|canciones|cuento|cachorr|dinosaur|unicornio|sistema solar|espacial|historias|criaturas|dulces sue|para dormir|\blibro|novela", re.I),
+}
+CAT_NEED = {
+ "Computadores": re.compile(r"port[aá]til|laptop|notebook|computador|\bpc\b|macbook|imac|mac ?mini|chromebook|monitor|impresora|multifuncional|esc[aá]ner|tinta|t[oó]ner|cartucho|filamento|\b3d\b|\bram\b|ssd|disco|tarjeta (de )?video|gr[aá]fica|procesador|board|fuente de poder|gabinete|torre|all ?in ?one|todo en uno|gamer|epson|canon|brother|\bhp\b|lenovo|asus|acer|dell|msi|apple|intel|ryzen|core|r[oó]tulos|etiquet|instax|teclado|mouse|webcam|c[aá]mara web|\bups\b|regulador|rtx|geforce|radeon|\bgb\b|\d\s?gb|\btb\b", re.I),
+ "Videojuegos": re.compile(r"juego|playstation|\bps\s?[2-5]|xbox|nintendo|switch|control|joystick|gamepad|retro|arcade|port[aá]til|portable|steam|ally|legion go|dualsense|dualshock|gamer|gaming|volante|\bvr\b|quest|\d+\s?en\s?1|hdmi|wireless|inal[aá]mbric|\d\s?(tb|gb)|mando|amiibo|game|sega|atari|r36s|mp5|tarjeta", re.I),
+}
+def cat_ok(n, c):
+    """False si el nombre no corresponde a la categoría (reglas de arriba)."""
+    if c in CAT_BAD and CAT_BAD[c].search(n): return False
+    if c in CAT_NEED and not CAT_NEED[c].search(n): return False
+    if c == "Tecnología" and TECH_HEAD.search(n) and not TECH_CTX.search(TECH_HEAD.sub("", n, 1)): return False
+    return True
+
 def kg_from(text):
     if not text: return None
     m = re.search(r"(\d+(?:[.,]\d+)?)\s*(kg|kilo|gr|g)\b", str(text), re.I)
@@ -155,7 +190,20 @@ def load_cfg():
         fp = os.path.join(DATA, "fuentes_config.json")
         if os.path.exists(fp): raw = open(fp, encoding="utf-8").read()
     if not raw: sys.exit("Falta CATALOGO_FUENTES o scripts/data/fuentes_config.json")
-    return json.loads(raw)
+    cfg = json.loads(raw)
+    extra = os.environ.get("CATALOGO_FUENTES_EXTRA")  # segundo secreto opcional: tiendas agregadas después (mismo formato)
+    if extra and extra.strip(): cfg.update(json.loads(extra))
+    for t in cfg.values():  # "ca": certificado intermedio público (scripts/certs/<ca>.pem) para tiendas que no envían la cadena completa
+        if t.get("ca"): t["_verify"] = _bundle(t["ca"])
+    return cfg
+
+def _bundle(name):
+    import certifi
+    fp = os.path.join(DATA, f"_ca_{name}.pem")
+    if not os.path.exists(fp):
+        os.makedirs(DATA, exist_ok=True)
+        with open(fp, "w") as f: f.write(open(certifi.where()).read() + "\n" + open(os.path.join(ROOT, "scripts", "certs", name + ".pem")).read())
+    return fp
 
 def rx_vtex(p):
     sp = {k: " ".join(map(str, p.get(k) or [])) for k in p.get("allSpecifications", [])}
@@ -165,7 +213,7 @@ def rx_vtex(p):
 
 def vtex(t, q, cat, kg, emo, n=50):
     out = []
-    r = get(f"{t['api']}/catalog_system/pub/products/search?ft={urllib.parse.quote(q)}&O=OrderByTopSaleDESC&_from=0&_to={n-1}")
+    r = get(f"{t['api']}/catalog_system/pub/products/search?ft={urllib.parse.quote(q)}&O=OrderByTopSaleDESC&_from=0&_to={n-1}", **({"verify": t["_verify"]} if t.get("_verify") else {}))
     if not r: return out
     try: data = r.json()
     except Exception: return out
@@ -311,7 +359,29 @@ def bob(t, q, cat, kg, emo, n=60):
         except (AttributeError, ValueError, KeyError, TypeError): pass
     return out
 
-ADAPT = {"sfcc": sfcc, "vtex": vtex, "algolia": algolia, "soco": soco, "plp": plp, "bob": bob}
+# Búsqueda pública en HTML con los resultados embebidos en __NEXT_DATA__ (misma plataforma que "soco", sitio de catálogo general).
+# Precio: el de internet/evento (no el exclusivo de tarjeta de la tienda); "antes" = precio normal tachado.
+def nxt(t, q, cat, kg, emo, n=48):
+    r = get(f"{t['api']}?Ntt={urllib.parse.quote(q)}")
+    if not r or r.status_code != 200: return []
+    m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', r.text, re.S)
+    try: res = json.loads(m.group(1))["props"]["pageProps"].get("results") or []
+    except Exception: return []
+    out = []
+    for rk, p in enumerate(res[:n]):
+        try:
+            pr = {x["type"]: _cop(x["price"][0]) for x in p.get("prices", []) if x.get("price")}
+            cop = pr.get("internetPrice") or pr.get("eventPrice") or pr.get("normalPrice")
+            if not cop or not p.get("mediaUrls"): continue
+            name, br = p["displayName"], (p.get("brand") or "").strip()
+            if br and len(br) > 1 and nrm(br) not in nrm(name) and not (nrm(br) == "apple" and re.search(r"iphone|ipad|mac|airpods|apple", name, re.I)) and not (nrm(br) == "samsung" and re.search(r"galaxy", name, re.I)) and not re.search(r"gen[eé]ric|sin marca|otros?$", br, re.I):
+                name = f"{br.title() if br.isupper() and len(br) > 4 else br} {name}"  # la marca viene aparte: "ASUS Portátil Gamer TUF..."
+            out.append(item(t["nombre"], p["productId"], p.get("url") or f"{t['home']}{p['productId']}", name, cat, cop,
+                            pr.get("normalPrice"), kg, emo, p["mediaUrls"][0], None, rk))
+        except (KeyError, TypeError, IndexError, ValueError): pass
+    return out
+
+ADAPT = {"nxt": nxt, "sfcc": sfcc, "vtex": vtex, "algolia": algolia, "soco": soco, "plp": plp, "bob": bob}
 
 import unicodedata
 def nrm(t): return "".join(ch for ch in unicodedata.normalize("NFD", t.lower()) if unicodedata.category(ch) != "Mn")
@@ -339,6 +409,7 @@ def ok(p):
     if p.get("perfil") == "moda" and not nrm(p["n"]).split()[0].startswith(nrm(p["q"].split()[0])[:4]): return False
     if p["c"] in Q_FARMA and RXBLOCK.search(p["n"]): return False
     if not device_ok(p): return False
+    if not cat_ok(p["n"], p["c"]): return False
     b = envio.bloqueado(p["n"], p["c"])
     if b: BLOQ.setdefault(b, set()).add((p["store"], p["sid"])); return False
     return bool(MINCOP <= p["cop"] and p["src_img"] and not NONPHYS.search(p["n"]))
@@ -423,6 +494,23 @@ def limpia_nombres(pub, cfg):
     for o in pub: o["n"] = re.sub(r"\s{2,}", " ", rx.sub("", o["n"])).strip(" -,.")
     return [o for o in pub if not FOOD.search(o["n"])]
 
+CODE = re.compile(r"^(?=(?:.*[a-z]){3})(?=(?:.*\d){3})(?!(?:\d+(?:cm|mm|kg|lbs?|gr|ml|btu|ansi|dpi|mah|hz|gb|tb|w|v|l|m|x|p|k)?-?)+$)[a-z0-9-]{7,}$")
+CODE_NO = re.compile(r"^\d+(gb|tb|mah|hz|mm|cm|ml|lb|lbs|kg|gr|w|v|mp|k|cc|lt|lts)$|^\d+x\d+|^x\d+|^insta360|^(rtx|gtx|rx|ddr|pcie|usb|wifi|core|ryzen|ultra|snapdragon|dimensity|helio|exynos|tensor)")
+def dedupe(pub):
+    """Mismo producto en varias tiendas: se conserva el de menor precio. Coincide por nombre normalizado o por
+    código de modelo (p. ej. FX607VJB-RL143W) dentro de la misma categoría. Los productos con ajustes del panel se conservan."""
+    try: prot = {a.get("id") for a in json.load(open(os.path.join(ROOT, "data", "ajustes_productos.json"), encoding="utf-8")) if isinstance(a, dict)}
+    except Exception: prot = set()
+    seen, out = set(), []
+    for o in sorted(pub, key=lambda o: (o["id"] not in prot, o["cop"])):
+        t = nrm(o["n"]); ks = {"n:" + re.sub(r"[^a-z0-9]", "", t)}
+        sp = ",".join(sorted(set(re.findall(r"\d+\s?(?:gb|tb)\b", t))))  # misma referencia con otra memoria = otro producto
+        ks |= {f"c:{o['c']}:{w.strip('-')}:{sp}" for w in re.split(r"[^a-z0-9-]+", re.split(r"\s\+\s|\bcon\b|\bincluye\b|\bmas\b|\bgratis\b", t)[0]) if CODE.match(w.strip("-")) and not CODE_NO.match(w.strip("-"))}
+        if ks & seen and o["id"] not in prot: continue
+        seen |= ks; out.append(o)
+    orden = {o["id"]: i for i, o in enumerate(pub)}
+    return sorted(out, key=lambda o: orden[o["id"]]), len(pub) - len(out)
+
 def slug(c): return re.sub(r"[^a-z0-9]+", "-", nrm(c)).strip("-")
 
 def write_site(pub):
@@ -473,7 +561,7 @@ def main():
     pre = {}
     if a.par > 1 and not a.budget:  # consulta varias tiendas a la vez (hosts distintos)
         from concurrent.futures import ThreadPoolExecutor
-        sn0 = {o["n"].lower()[:40] for o in pubold if owner.get(o["id"]) not in order}
+        sn0 = set()  # los repetidos entre tiendas se resuelven al final (dedupe: menor precio)
         with ThreadPoolExecutor(a.par) as ex:
             futs = {k: ex.submit(collect_store, k, cfg[k], sn0, cats, fails) for k in order}
             pre = {k: f.result() for k, f in futs.items()}
@@ -481,7 +569,7 @@ def main():
         if a.budget and done and (time.time() - t0) / 60 > a.budget: break
         mine = lambda o: owner.get(o["id"]) == k or (o["id"] not in owner and privold.get(o["id"], {}).get("store") == cfg[k]["nombre"])
         # nombres de otras tiendas (aún no rehechas) para no duplicar el mismo producto
-        sn = seen | {o["n"].lower()[:40] for o in pubold if not (mine(o) and insc(o["c"])) and owner.get(o["id"]) not in done}
+        sn = set()  # los repetidos entre tiendas se resuelven al final (dedupe: menor precio)
         print(f"== {k} ({(time.time()-t0)/60:.1f} min)", file=sys.stderr, flush=True)
         prods = pre[k] if k in pre else collect_store(k, cfg[k], sn, cats, fails)
         if not prods: fails.append(f"{k}: 0 productos (se conserva lo publicado)"); continue
@@ -500,6 +588,8 @@ def main():
         pub.append(o)
     pub += newpub
     pub = limpia_nombres(pub, cfg)
+    n0 = len(pub); pub = [o for o in pub if cat_ok(o["n"], o["c"])]; fuera_cat = n0 - len(pub)
+    pub, ndup = dedupe(pub)
     pub, envres = envio.aplicar(pub); keep = {o["id"] for o in pub}
     for g, xs in BLOQ.items(): envres["excluidos"][g] += len(xs)
     if not pub: sys.exit("sin productos; no se sobrescribe nada")
@@ -517,6 +607,8 @@ def main():
     print(json.dumps({"total": len(pub), "tiendas_rehechas": done, "minutos": round((time.time() - t0) / 60, 1),
                       "nuevos_por_tienda_categoria": Counter(f'{p["store"]} / {p["c"]}' for p in newpriv if p["id"] in keep),
                       "por_categoria": Counter(o["c"] for o in pub),
+                      "por_tienda": {k: len(v.get("ids", [])) for k, v in sorted(est.items())},
+                      "fuera_de_categoria": fuera_cat, "duplicados_entre_tiendas": ndup,
                       "envio": {k: dict(v) for k, v in envres.items()},
                       "fallos": len(fails)}, ensure_ascii=False, indent=1))
 

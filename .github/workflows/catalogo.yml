@@ -15,7 +15,7 @@ jobs:
         with: {python-version: "3.12"}
       - run: pip install requests pillow
       - run: python3 scripts/catalogo.py --budget 40
-        env: {CATALOGO_FUENTES: "${{ secrets.CATALOGO_FUENTES }}"}
+        env: {CATALOGO_FUENTES: "${{ secrets.CATALOGO_FUENTES }}", CATALOGO_FUENTES_EXTRA: "${{ secrets.CATALOGO_FUENTES_EXTRA }}"}
       - run: python3 scripts/feed_meta.py
       - run: |
           git config user.name "transafronterave"; git config user.email "transafronterave@gmail.com"
