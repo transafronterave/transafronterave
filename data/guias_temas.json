@@ -25,7 +25,8 @@
    "titulo": "Cómo pagar tu pedido: Zelle, Binance USDT, pago móvil, efectivo, Bancolombia y Nequi",
    "tipo": "confianza",
    "productos": null,
-   "estado": "pending"
+   "estado": "published",
+   "publicado": "2026-10-22"
   },
   {
    "orden": 4,
