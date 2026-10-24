@@ -41,7 +41,8 @@
     "count": 12,
     "sort": "top"
    },
-   "estado": "pending"
+   "estado": "published",
+   "publicado": "2026-10-23"
   },
   {
    "orden": 5,
