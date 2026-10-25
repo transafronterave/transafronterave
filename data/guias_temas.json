@@ -50,7 +50,8 @@
    "titulo": "Cuánto tarda un envío de Colombia a Venezuela y de qué depende",
    "tipo": "confianza",
    "productos": null,
-   "estado": "pending"
+   "estado": "published",
+   "publicado": "2026-10-24"
   },
   {
    "orden": 6,
