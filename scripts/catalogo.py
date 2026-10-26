@@ -178,7 +178,7 @@ def item(store, src_id, url, name, cat, cop, antes, kg, emo, img, specs=None, ra
             k = kg_from(" ".join(val) if isinstance(val, list) else val) or k
             if k: break
     return dict(store=store, sid=str(src_id), url=url, n=re.sub(r"\s+", " ", name).strip(), c=cat, cop=int(round(cop)),
-                antes=int(round(antes)) if antes and antes > cop * 1.01 else None, kg=round(k or kg, 2),
+                antes=int(round(antes)) if antes and cop * 1.01 < antes <= cop * 10 else None, kg=round(k or kg, 2),
                 kgsrc="spec" if k else "est", e=emo, src_img=img, rank=rank)
 
 # ---------- Fuentes ----------
@@ -561,9 +561,10 @@ def main():
     pre = {}
     if a.par > 1 and not a.budget:  # consulta varias tiendas a la vez (hosts distintos)
         from concurrent.futures import ThreadPoolExecutor
-        sn0 = set()  # los repetidos entre tiendas se resuelven al final (dedupe: menor precio)
+        # un conjunto por tienda: los repetidos entre tiendas se resuelven al final (dedupe: menor precio),
+        # no según qué tienda terminó primero (con un conjunto compartido, p. ej. una tienda se quedaba sin Tablets)
         with ThreadPoolExecutor(a.par) as ex:
-            futs = {k: ex.submit(collect_store, k, cfg[k], sn0, cats, fails) for k in order}
+            futs = {k: ex.submit(collect_store, k, cfg[k], set(), cats, fails) for k in order}
             pre = {k: f.result() for k, f in futs.items()}
     for k in order:
         if a.budget and done and (time.time() - t0) / 60 > a.budget: break
