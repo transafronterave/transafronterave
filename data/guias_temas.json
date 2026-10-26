@@ -71,7 +71,8 @@
     "min_usd": 10,
     "count": 12
    },
-   "estado": "pending"
+   "estado": "published",
+   "publicado": "2026-10-25"
   },
   {
    "orden": 7,
