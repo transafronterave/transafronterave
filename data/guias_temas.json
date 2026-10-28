@@ -95,7 +95,8 @@
    "titulo": "Preguntas frecuentes sobre comprar en Colombia desde Venezuela",
    "tipo": "confianza",
    "productos": null,
-   "estado": "pending"
+   "estado": "published",
+   "publicado": "2026-10-27"
   },
   {
    "orden": 9,
