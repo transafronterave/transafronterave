@@ -111,7 +111,8 @@
     "count": 10,
     "sort": "precio_asc"
    },
-   "estado": "pending"
+   "estado": "published",
+   "publicado": "2026-10-28"
   },
   {
    "orden": 10,
