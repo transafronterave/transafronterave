@@ -166,7 +166,8 @@
    "titulo": "Cómo cotizar un producto de Colombia que no está en el catálogo",
    "tipo": "confianza",
    "productos": null,
-   "estado": "pending"
+   "estado": "published",
+   "publicado": "2026-11-01"
   },
   {
    "orden": 14,
