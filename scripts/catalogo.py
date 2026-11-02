@@ -492,7 +492,15 @@ def limpia_nombres(pub, cfg):
     """Quita de los nombres públicos el nombre de la tienda de origen (marcas propias) y 'marca propia'."""
     rx = re.compile(r"\b(" + "|".join(re.escape(t["nombre"]) for t in cfg.values() if t.get("perfil") not in ("deportes", "moda")) + r"|[EÉ]xito|marca propia)\b", re.I)
     for o in pub: o["n"] = re.sub(r"\s{2,}", " ", rx.sub("", o["n"])).strip(" -,.")
+    try:  # además, nombres bloqueados en productos (hashes de scripts/guias_bloqueo.json; p. ej. marcas que son tiendas de origen)
+        import guias
+        for o in pub:
+            for frag in guias.blocked_names(o["n"], "producto"):
+                pat = r"\b" + r"\W+".join("".join(f"[{ch}{ch.upper()}{''.join(a for a, b in ACC.items() if b == ch)}]" for ch in w) for w in frag.split()) + r"\b"
+                o["n"] = re.sub(r"\s{2,}", " ", re.sub(pat, "", o["n"], flags=re.I)).strip(" -,.")
+    except Exception as e: print("AVISO limpia_nombres:", e, file=sys.stderr)
     return [o for o in pub if not FOOD.search(o["n"])]
+ACC = {"á": "a", "é": "e", "í": "i", "ó": "o", "ú": "u", "ü": "u", "ñ": "n", "Á": "a", "É": "e", "Í": "i", "Ó": "o", "Ú": "u"}
 
 CODE = re.compile(r"^(?=(?:.*[a-z]){3})(?=(?:.*\d){3})(?!(?:\d+(?:cm|mm|kg|lbs?|gr|ml|btu|ansi|dpi|mah|hz|gb|tb|w|v|l|m|x|p|k)?-?)+$)[a-z0-9-]{7,}$")
 CODE_NO = re.compile(r"^\d+(gb|tb|mah|hz|mm|cm|ml|lb|lbs|kg|gr|w|v|mp|k|cc|lt|lts)$|^\d+x\d+|^x\d+|^insta360|^(rtx|gtx|rx|ddr|pcie|usb|wifi|core|ryzen|ultra|snapdragon|dimensity|helio|exynos|tensor)")
