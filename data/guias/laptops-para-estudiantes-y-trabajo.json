@@ -158,7 +158,12 @@
    "portatil",
    "laptop"
   ],
-  "count": 10
+  "count": 10,
+  "exclude": [
+   "cuello",
+   "ventilador",
+   "abanico"
+  ]
  },
  "wa_text": "Hola, vi la guía de laptops para estudiantes y trabajo remoto y quiero información sobre una laptop.",
  "related": [
