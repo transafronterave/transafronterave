@@ -205,7 +205,8 @@
     ],
     "count": 12
    },
-   "estado": "pending"
+   "estado": "published",
+   "publicado": "2026-11-03"
   },
   {
    "orden": 16,
