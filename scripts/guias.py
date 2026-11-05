@@ -287,14 +287,14 @@ def page(title, desc, canonical, body, jsonld, og_type="article", active="guias"
 <div class="promo">🚚 <b>{ENVIO}</b> · Compramos por ti en Colombia · Precios en USD</div>
 <header class="hdr"><div class="flag"></div><div class="hrow">
 <a class="logo" href="/"><img src="/logo-tf.png" alt="TRANSAFRONTERA VE"><span>TRANSAFRONTERA<i>VENEZUELA</i></span></a>
-<nav class="nav"><a href="/"><span class="em">🛍️ </span>Tienda</a><a href="/guias/"{' class="on"' if active == "guias" else ""}><span class="em">📘 </span>Guías</a><a class="x" href="/#cotiza">Cotiza</a><a class="w" href="{wa_link("Hola TRANSAFRONTERA VE, quiero hacer una consulta.")}" target="_blank" rel="noopener" aria-label="WhatsApp">💬<span class="t"> WhatsApp</span></a></nav>
+<nav class="nav"><a href="/"><span class="em">🛍️ </span>Tienda</a><a href="/guias/"{' class="on"' if active == "guias" else ""}><span class="em">📘 </span>Guías</a><a href="/herramientas/"><span class="em">🧮 </span>Herramientas</a><a class="x" href="/#cotiza">Cotiza</a><a class="w" href="{wa_link("Hola TRANSAFRONTERA VE, quiero hacer una consulta.")}" target="_blank" rel="noopener" aria-label="WhatsApp">💬<span class="t"> WhatsApp</span></a></nav>
 </div></header>
 <main class="wrap">
 {body}
 </main>
 <footer><div class="wrap fin">
 <div><b style="color:#fff">TRANSAFRONTERA VE</b><p>Compramos por ti en Colombia.<br>{ENVIO}.</p></div>
-<ul><li><a href="/">Tienda</a></li><li><a href="/guias/">Guías de compra</a></li><li><a href="/#como">Cómo funciona</a></li><li><a href="/#cotiza">Cotiza un producto</a></li></ul>
+<ul><li><a href="/">Tienda</a></li><li><a href="/guias/">Guías de compra</a></li><li><a href="/herramientas/">Herramientas gratis</a></li><li><a href="/#como">Cómo funciona</a></li><li><a href="/#cotiza">Cotiza un producto</a></li></ul>
 <div><b style="color:#fff">Formas de pago</b><p>{", ".join(PAGOS)}.<br>Te pasamos los datos por WhatsApp.</p></div>
 </div><div class="fbot">© {date.today().year} TRANSAFRONTERA VE · Precios en USD sujetos a la tasa del día</div></footer>
 <a class="fwa" href="{wa_link("Hola TRANSAFRONTERA VE, vengo de las guías y quiero hacer una consulta.")}" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>

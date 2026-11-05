@@ -16,6 +16,7 @@
       b.style.cssText = "font:inherit;font-size:.72rem;font-weight:700;color:#0D214F;background:#FFCC00;border:0;border-radius:999px;padding:6px 10px;cursor:pointer;white-space:nowrap";
       b.textContent = "📲 Instalar app";
       host.appendChild(b);
+      if (!host.classList.contains("hact")) host.style.flexWrap = "wrap";
     }
     return b;
   }
