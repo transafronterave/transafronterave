@@ -1,35 +1,35 @@
 window.TASAS = {
- "actualizado": "2026-11-09T09:30:33-05:00",
+ "actualizado": "2026-11-09T10:57:01-05:00",
  "zona": "hora de Bogotá, UTC-5",
  "bcv_usd": 897.5383,
  "trm": 3237.83,
- "co_p2p_buy": 3231.97,
- "co_p2p_sell": 3222.17,
- "ve_p2p_buy": 1040.0,
- "ve_p2p_sell": 1040.375,
+ "co_p2p_buy": 3259.5,
+ "co_p2p_sell": 3246.345,
+ "ve_p2p_buy": 1042.0,
+ "ve_p2p_sell": 1043.0025,
  "fuentes": {
   "bcv": {
    "label": "Banco Central de Venezuela (bcv.org.ve)",
    "url": "https://www.bcv.org.ve/",
-   "fetched_at": "2026-11-09T09:30:31-05:00",
+   "fetched_at": "2026-11-09T10:56:59-05:00",
    "ok": true
   },
   "trm": {
    "label": "TRM — Superintendencia Financiera (datos.gov.co, dataset 32sa-8pi3)",
    "url": "https://www.datos.gov.co/resource/32sa-8pi3.json",
-   "fetched_at": "2026-11-09T09:30:31-05:00",
+   "fetched_at": "2026-11-09T10:57:00-05:00",
    "ok": true
   },
   "p2p_cop": {
    "label": "Binance P2P USDT/COP (mediana de los primeros anuncios)",
    "url": "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search",
-   "fetched_at": "2026-11-09T09:30:32-05:00",
+   "fetched_at": "2026-11-09T10:57:00-05:00",
    "ok": true
   },
   "p2p_ves": {
    "label": "Binance P2P USDT/VES (mediana de los primeros anuncios)",
    "url": "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search",
-   "fetched_at": "2026-11-09T09:30:32-05:00",
+   "fetched_at": "2026-11-09T10:57:00-05:00",
    "ok": true
   }
  }
