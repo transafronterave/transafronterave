@@ -329,14 +329,20 @@ def plp(t, q, cat, kg, emo, n=40):
         try:
             a = re.sub(r"<svg.*?</svg>", "", a, flags=re.S)
             if re.search(r">\s*Agotado\s*<", a): continue
+            # Decathlon cambió el markup: el título ya no va en aria-label sino en el texto del <a>
             m = re.search(r'<h2><a aria-label="([^"]+)" href="(/p/[^"]+)"', a)
+            if m:
+                name, href = html.unescape(m.group(1)).rstrip(". "), m.group(2)
+            else:
+                m = re.search(r'<h2><a[^>]*href="(/p/[^"]+)"[^>]*>([^<]+)</a>', a)
+                if not m: continue
+                href, name = m.group(1), html.unescape(m.group(2)).rstrip(". ")
             pr = re.search(r'Precio actual</span>(?:\s|<!-- -->)*([^<]+)<', a)
             im = re.search(r'src="(https://[^"?]+)', a)
-            if not (m and pr and im): continue
+            if not (pr and im): continue
             old = re.search(r'Precio anterior</span>(?:\s|<!-- -->)*([^<]+)<', a)
-            name = html.unescape(m.group(1)).rstrip(". ")
-            sid = "/".join(m.group(2).split("/")[-2:])
-            out.append(item(t["nombre"], sid, t["home"] + m.group(2), name, cat, _cop(pr.group(1)),
+            sid = "/".join(href.split("/")[-2:])
+            out.append(item(t["nombre"], sid, t["home"] + href, name, cat, _cop(pr.group(1)),
                             _cop(old.group(1)) if old else None, kg, emo, im.group(1) + "?format=auto&f=800x0", None, rk))
         except (AttributeError, ValueError, IndexError): pass
     return out
