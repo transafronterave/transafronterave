@@ -341,7 +341,8 @@
    "titulo": "Compras al mayor para emprendedores en Venezuela: cómo cotizar",
    "tipo": "confianza",
    "productos": null,
-   "estado": "pending"
+   "estado": "published",
+   "publicado": "2026-11-15"
   },
   {
    "orden": 25,
