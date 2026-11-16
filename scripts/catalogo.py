@@ -566,10 +566,10 @@ def main():
     if a.solo: order = [k for k in a.solo.split(",") if k in cfg]
     else: order = sorted(cfg, key=lambda k: (est.get(k, {}).get("fecha", ""), k)) if a.budget else list(cfg)
     owner = {i: k for k, v in est.items() for i in v.get("ids", [])}
-    pubold = [] if full else json.load(open(os.path.join(ROOT, "productos.json"), encoding="utf-8"))["productos"]
+    pubold = json.load(open(os.path.join(ROOT, "productos.json"), encoding="utf-8"))["productos"]  # también en corrida completa: si una tienda falla (0 productos / antibots) se conserva lo publicado
     pubold = [o for o in pubold if os.path.exists(os.path.join(ROOT, o["img"]))]
     fp = os.path.join(DATA, "fuentes.json")
-    privold = {p["id"]: p for p in json.load(open(fp, encoding="utf-8"))["productos"]} if os.path.exists(fp) and not full else {}
+    privold = {p["id"]: p for p in json.load(open(fp, encoding="utf-8"))["productos"]} if os.path.exists(fp) else {}
     insc = lambda c: cats is None or c in cats
     done, newpub, newpriv, seen = [], [], [], set()
     pre = {}
@@ -599,7 +599,7 @@ def main():
         k = owner.get(o["id"]) or next((kk for kk in done if privold.get(o["id"], {}).get("store") == cfg[kk]["nombre"]), None)
         if o["id"] in newids: continue
         if k in done and insc(o["c"]): continue
-        if k is None and cats and o["c"] in cats: continue  # publicado desfasado (sin fuente) en una categoría rehecha
+        if k is None and (full or (cats and o["c"] in cats)): continue  # publicado desfasado (sin fuente) en una categoría rehecha
         pub.append(o)
     pub += newpub
     pub = limpia_nombres(pub, cfg)
@@ -611,7 +611,8 @@ def main():
     write_site(pub)
     for k in est: est[k]["ids"] = [i for i in est[k]["ids"] if i in keep]
     json.dump(est, open(ESTADO, "w", encoding="utf-8"), separators=(",", ":"))
-    priv = [p for i, p in privold.items() if i in keep and i not in newids] + [p for p in newpriv if p["id"] in keep]
+    dn = {cfg[k]["nombre"] for k in done}
+    priv = [p for i, p in privold.items() if i in keep and i not in newids and not (p.get("store") in dn and insc(p.get("c")))] + [p for p in newpriv if p["id"] in keep]
     with open(os.path.join(DATA, "fuentes.json"), "w", encoding="utf-8") as f:
         json.dump({"productos": priv, "fallos": fails}, f, ensure_ascii=False, indent=1)
     if not a.no_img:  # borrar imágenes huérfanas
