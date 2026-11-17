@@ -350,7 +350,8 @@
    "titulo": "Pagar en bolívares con pago móvil: cómo se calcula a la tasa del día",
    "tipo": "confianza",
    "productos": null,
-   "estado": "pending"
+   "estado": "published",
+   "publicado": "2026-11-16"
   },
   {
    "orden": 26,
