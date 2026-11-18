@@ -366,7 +366,8 @@
     "count": 8,
     "allow_validacion": false
    },
-   "estado": "pending"
+   "estado": "published",
+   "publicado": "2026-11-17"
   },
   {
    "orden": 27,
