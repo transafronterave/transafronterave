@@ -148,7 +148,7 @@ def select_products(flt, cat):
         if p["validacion"] and not flt.get("allow_validacion"): continue
         if inc and not any(w in nn for w in inc): continue
         if any(w in nn for w in exc): continue
-        if blocked_names(p["n"], "producto"): continue
+        if blocked_names(p["n"], "producto") or blocked_names(p["n"], "texto"): continue  # el validador revisa la página completa
         if not os.path.exists(os.path.join(ROOT, p["img"].lstrip("/"))): continue
         if p in out: continue
         pool.append(p)
