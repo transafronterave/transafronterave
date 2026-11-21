@@ -413,7 +413,8 @@
     "max_usd": 450,
     "count": 10
    },
-   "estado": "pending"
+   "estado": "published",
+   "publicado": "2026-11-20"
   },
   {
    "orden": 30,
