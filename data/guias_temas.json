@@ -422,7 +422,8 @@
    "titulo": "Productos con batería, líquidos y aerosoles: cuándo el envío requiere validación",
    "tipo": "confianza",
    "productos": null,
-   "estado": "pending"
+   "estado": "published",
+   "publicado": "2026-11-21"
   },
   {
    "orden": 31,
