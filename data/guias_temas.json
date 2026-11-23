@@ -438,7 +438,8 @@
     "max_usd": 60,
     "count": 12
    },
-   "estado": "pending"
+   "estado": "published",
+   "publicado": "2026-11-22"
   },
   {
    "orden": 32,
@@ -572,6 +573,113 @@
    "titulo": "Cómo enviar un regalo a tu familia en Venezuela si vives fuera",
    "tipo": "confianza",
    "productos": null,
+   "estado": "pending"
+  },
+  {
+   "orden": 41,
+   "slug": "decoracion-navidena-para-la-casa",
+   "titulo": "Decoración navideña para la casa: luces, adornos y más",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Hogar",
+     "Iluminación"
+    ],
+    "include": [
+     "navidad",
+     "navideñ",
+     "luces",
+     "guirnalda",
+     "arbol",
+     "árbol"
+    ],
+    "max_usd": 80,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 42,
+   "slug": "regalos-de-navidad-para-ninos-por-edad",
+   "titulo": "Regalos de Navidad para niños según su edad",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Juguetes",
+     "Bebés"
+    ],
+    "max_usd": 80,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 43,
+   "slug": "pedidos-de-diciembre-fechas-y-consejos",
+   "titulo": "Pedidos de diciembre: cómo planificar tus compras para que lleguen a tiempo",
+   "tipo": "confianza",
+   "productos": null,
+   "estado": "pending"
+  },
+  {
+   "orden": 44,
+   "slug": "estrenos-de-fin-de-ano-ropa-y-calzado",
+   "titulo": "Estrenos de fin de año: ropa y calzado para diciembre",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Ropa",
+     "Calzado"
+    ],
+    "max_usd": 80,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 45,
+   "slug": "regalos-de-reyes-y-ano-nuevo",
+   "titulo": "Regalos de Año Nuevo y Reyes por menos de 30 dólares",
+   "tipo": "compra",
+   "productos": {
+    "max_usd": 30,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 46,
+   "slug": "uniformes-y-zapatos-escolares",
+   "titulo": "Uniformes y zapatos escolares: cómo pedir la talla correcta",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Ropa",
+     "Calzado"
+    ],
+    "include": [
+     "escolar",
+     "colegial",
+     "uniforme",
+     "zapato"
+    ],
+    "max_usd": 60,
+    "count": 12
+   },
+   "estado": "pending"
+  },
+  {
+   "orden": 47,
+   "slug": "electrodomesticos-para-estrenar-en-ano-nuevo",
+   "titulo": "Electrodomésticos para estrenar en Año Nuevo",
+   "tipo": "compra",
+   "productos": {
+    "categories": [
+     "Electrodomésticos"
+    ],
+    "max_usd": 300,
+    "count": 10
+   },
    "estado": "pending"
   }
  ]
